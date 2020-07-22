@@ -54,3 +54,4 @@ app.*.map.json
 .android/Flutter/build
 .android/Flutter/*.iml
 *.iml
+build
