@@ -46,3 +46,11 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+.android/local.properties
+.android/*.iml
+.android/build
+.android/app/build
+.android/Flutter/build
+.android/Flutter/*.iml
+*.iml
