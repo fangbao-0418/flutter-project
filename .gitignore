@@ -62,5 +62,7 @@ app.*.map.json
 *.iml
 
  
+ # Flutter project
+ *.lock
  
  
