@@ -1,4 +1,0 @@
-#Wed Jul 22 15:20:35 CST 2020
-base.0=/Users/Yuan/workproj/Android/xtyouxuan-Android/flutter-submodule/build/host/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex

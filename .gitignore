@@ -39,8 +39,8 @@ Icon?
 # .android/
 .ios/Flutter/flutter_export_environment.sh
 .ios/Flutter/Generated.xcconfig
-# .flutter-plugins
-# .flutter-plugins-dependencies
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # Symbolication related
 app.*.symbols
@@ -48,6 +48,8 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Android project
+.android/.gradle/
 .android/local.properties
 .android/*.iml
 .android/build
