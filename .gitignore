@@ -35,18 +35,13 @@ xcuserdata
 Icon?
 .tags*
 
-#build/
-# .android/
-.ios/Flutter/flutter_export_environment.sh
-.ios/Flutter/Generated.xcconfig
-# .flutter-plugins
-# .flutter-plugins-dependencies
+.android/
+.ios/
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # Symbolication related
 app.*.symbols
-
-# Obfuscation related
-app.*.map.json
 
 .android/local.properties
 .android/*.iml
@@ -56,3 +51,6 @@ app.*.map.json
 .android/Flutter/*.iml
 *.iml
 build
+
+# Obfuscation related
+app.*.map.json

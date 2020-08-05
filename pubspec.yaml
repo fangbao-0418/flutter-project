@@ -18,7 +18,7 @@ description: A new flutter module project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -33,10 +33,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
+  dio: ^3.0.9
+
+  provider: ^4.0.4
+
   flutter_boost:
     git:
       url: 'https://github.com/alibaba/flutter_boost.git'
-      ref: '1.12.13+1'
+      ref: '1.12.13+3'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

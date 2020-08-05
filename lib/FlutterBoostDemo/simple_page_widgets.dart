@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
+import '../XTConfig/AppConfig/XTMethodChannelConfig.dart';
+import '../XTConfig/AppConfig/XTMethodConfig.dart';
 // import 'package:flutter_boost_example/platform_view.dart';
 
 class FirstRouteWidget extends StatefulWidget {
@@ -13,13 +16,12 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
   _FirstRouteWidgetState();
 
   // flutter 侧MethodChannel配置，channel name需要和native侧一致
-  static const MethodChannel _methodChannel = MethodChannel('flutter_native_channel');
   String _systemVersion = '';
 
   Future<dynamic> _getPlatformVersion() async {
-
     try {
-      final String result = await _methodChannel.invokeMethod('getPlatformVersion');
+      final String result =
+          await XTMTDChannel.invokeMethod('getPlatformVersion');
       print('getPlatformVersion:' + result);
       setState(() {
         _systemVersion = result;
@@ -27,12 +29,12 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
     } on PlatformException catch (e) {
       print(e.message);
     }
-
   }
 
   @override
   void initState() {
-    print('initState');
+    print('initState1111');
+
     super.initState();
   }
 
@@ -73,7 +75,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
               onPressed: () {
                 print('open natve page!');
                 FlutterBoost.singleton
-                    .open('native')
+                    .open(makeRouter(true, {"name": 123, "age": 10}, "6666"))
                     .then((Map<dynamic, dynamic> value) {
                   print(
                       'call me when page is finished. did recieve native route result $value');
@@ -131,8 +133,20 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
               },
             ),
             RaisedButton(
-              child: Text('Get system version by method channel:' + _systemVersion),
+              child: Text(
+                  'Get system version by method channel:' + _systemVersion),
               onPressed: () => _getPlatformVersion(),
+            ),
+            RaisedButton(
+              child: Text('infoUser:'),
+              onPressed: () {
+                FlutterBoost.singleton.open('info',
+                    urlParams: <String, dynamic>{
+                      'present': true
+                    }).then((Map<dynamic, dynamic> value) {
+                  print('infoUser  result $value');
+                });
+              },
             ),
           ],
         ),
@@ -151,7 +165,8 @@ class _FirstFirstRouteWidgetState extends State<FirstFirstRouteWidget> {
 
   @override
   void initState() {
-    print('initState');
+    print("-------initState---------");
+
     super.initState();
   }
 
@@ -341,15 +356,12 @@ class FlutterRouteWidget extends StatefulWidget {
 }
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
-
-  // flutter 侧MethodChannel配置，channel name需要和native侧一致
-  static const MethodChannel _methodChannel = MethodChannel('flutter_native_channel');
   String _systemVersion = '';
 
   Future<dynamic> _getPlatformVersion() async {
-
     try {
-      final String result = await _methodChannel.invokeMethod('getPlatformVersion');
+      final String result =
+          await XTMTDChannel.invokeMethod('getPlatformVersion');
       print('getPlatformVersion:' + result);
       setState(() {
         _systemVersion = result;
@@ -357,7 +369,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     } on PlatformException catch (e) {
       print(e.message);
     }
-
   }
 
   @override
