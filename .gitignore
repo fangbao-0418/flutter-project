@@ -36,11 +36,11 @@ Icon?
 .tags*
 
 #build/
-.android/
+# .android/
 .ios/Flutter/flutter_export_environment.sh
 .ios/Flutter/Generated.xcconfig
-.flutter-plugins
-.flutter-plugins-dependencies
+# .flutter-plugins
+# .flutter-plugins-dependencies
 
 # Symbolication related
 app.*.symbols
