@@ -36,13 +36,23 @@ Icon?
 .tags*
 
 #build/
-#.android/
-#.ios/
-#.flutter-plugins
-#.flutter-plugins-dependencies
+.android/
+.ios/Flutter/flutter_export_environment.sh
+.ios/Flutter/Generated.xcconfig
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # Symbolication related
 app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+.android/local.properties
+.android/*.iml
+.android/build
+.android/app/build
+.android/Flutter/build
+.android/Flutter/*.iml
+*.iml
+build
