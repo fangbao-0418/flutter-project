@@ -35,6 +35,10 @@ xcuserdata
 Icon?
 .tags*
 
+ 
+
+ 
+build
 .android/
 .ios/
 .flutter-plugins
@@ -43,14 +47,20 @@ Icon?
 # Symbolication related
 app.*.symbols
 
-.android/local.properties
+ 
+# Obfuscation related
+app.*.map.json
+
+# Android project
+.android/.gradle/
+ .android/local.properties
 .android/*.iml
 .android/build
 .android/app/build
 .android/Flutter/build
 .android/Flutter/*.iml
 *.iml
-build
 
-# Obfuscation related
-app.*.map.json
+ 
+ 
+ 
