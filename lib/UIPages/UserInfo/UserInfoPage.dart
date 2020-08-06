@@ -9,6 +9,7 @@ import '../../XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import '../../XTConfig/AppConfig/XTMethodConfig.dart';
 import '../../XTConfig/Extension/IntExtension.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -22,8 +23,6 @@ class _UserInfoPageState extends State<UserInfoPage>
   Future<dynamic> _updateHeader() async {
     try {
       final String result = await XTMTDChannel.invokeMethod('updateHeader');
-      // UserInfoVM.
-
     } catch (e) {
       print(e.message);
     }
@@ -53,7 +52,13 @@ class _UserInfoPageState extends State<UserInfoPage>
           _model = snapshot.data;
           print(snapshot.data);
           return Scaffold(
-              appBar: AppBar(title: Text("个人信息")),
+              appBar: AppBar(
+                  leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: () {
+                        FlutterBoost.singleton.close("info");
+                      }),
+                  title: Text("个人信息")),
               body: Card(
                 margin: EdgeInsets.all(10),
                 child: ListView.builder(

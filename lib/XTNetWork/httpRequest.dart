@@ -13,10 +13,8 @@ class HttpRequest {
       });
   static final Dio dio = Dio(baseOptions);
 
-  static Future<T> request<T>(String url,
-      {String method = "get",
-      Map<String, dynamic> params,
-      Interceptor inter}) async {
+  static Future<T> request<T>(String url, String method,
+      Map<String, dynamic> params, Interceptor inter) async {
     // 1.创建单独配置
     final options = Options(method: method);
 
@@ -26,7 +24,6 @@ class HttpRequest {
       print("请求拦截");
       return options;
     }, onResponse: (response) {
-      print("1233" + response.toString());
       print("响应拦截");
       return response;
     }, onError: (err) {
@@ -46,9 +43,26 @@ class HttpRequest {
     // 2.发送网络请求
     try {
       Response response =
-          await dio.request(url, queryParameters: params, options: options);
+          await dio.request(url, data: params, options: options);
+      print("----------11111------------");
+      print(url);
+      print(params);
+      print(options.toString());
+      print(response.request.uri);
+      print(response.request.baseUrl);
+      print(response.request.path);
+      print(response.request.queryParameters);
+      print(response.request.method);
+      print("----------11111------------");
       return response.data;
     } on DioError catch (e) {
+      print("----------11111------------");
+      print(e.request.toString());
+      print(e.request.method);
+      print(e.request.baseUrl);
+      print(e.request.path);
+      print(e.request.queryParameters);
+      print("----------11111------------");
       return Future.error(e);
     }
   }
