@@ -13,8 +13,10 @@ class HttpRequest {
       });
   static final Dio dio = Dio(baseOptions);
 
-  static Future<T> request<T>(String url, String method,
-      Map<String, dynamic> params, Interceptor inter) async {
+  static Future<T> request<T>(String url,
+      {String method = "get",
+      Map<String, dynamic> params,
+      Interceptor inter}) async {
     // 1.创建单独配置
     final options = Options(method: method);
 
@@ -44,7 +46,7 @@ class HttpRequest {
     try {
       Response response =
           await dio.request(url, data: params, options: options);
-      print("----------11111------------");
+      print("----------response start ------------");
       print(url);
       print(params);
       print(options.toString());
@@ -53,16 +55,17 @@ class HttpRequest {
       print(response.request.path);
       print(response.request.queryParameters);
       print(response.request.method);
-      print("----------11111------------");
+      print(response.data.toString());
+      print("----------response end ------------");
       return response.data;
     } on DioError catch (e) {
-      print("----------11111------------");
+      print("----------response error start ------------");
       print(e.request.toString());
       print(e.request.method);
       print(e.request.baseUrl);
       print(e.request.path);
       print(e.request.queryParameters);
-      print("----------11111------------");
+      print("----------response error end------------");
       return Future.error(e);
     }
   }

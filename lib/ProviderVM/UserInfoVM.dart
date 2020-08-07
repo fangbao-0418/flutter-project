@@ -39,4 +39,16 @@ class UserInfoVM extends ChangeNotifier {
   UserInfoModel get user {
     return _user;
   }
+
+  bool get isRealName {
+    return _user.idCard != "" ;
+  }
+
+  String get resRealName {
+    return isRealName ?  _user.userName :"未认证" ;
+  }
+
+  String get resIdentity {
+    return isRealName ?  _user.idCard :"未认证" ;
+  }
 }
