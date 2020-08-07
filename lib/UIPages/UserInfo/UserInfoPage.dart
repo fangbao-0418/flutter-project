@@ -1,14 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
-import 'package:xtflutter/XTModel/UserInfoModel.dart';
+import 'package:xtflutter/XTConfig/Extension/StringExtension.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
 import '../../XTConfig/AppConfig/XTColorConfig.dart';
-import 'package:flutter_boost/flutter_boost.dart';
-import '../../XTConfig/AppConfig/XTMethodConfig.dart';
-import '../../XTConfig/Extension/IntExtension.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -18,15 +16,27 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage>
     with SingleTickerProviderStateMixin {
-  UserInfoModel _model;
-
-  Future<dynamic> _updateHeader() async {
+  Future<dynamic> _updateHeader(UserInfoVM vm) async {
     try {
       final String result = await XTMTDChannel.invokeMethod('updateHeader');
+      final rsl = await XTUserInfoRequest.updateUserInfo({"headImage": result});
+      if (rsl == true) {
+        vm.updateHeader(result.imgUrl);
+      }
     } catch (e) {
       print(e.message);
     }
   }
+
+  Future<dynamic> _updateRealName() async {
+    try {
+      final bool result = await XTMTDChannel.invokeMethod('updateRealName');
+    } catch (e) {
+      print(e.message);
+    }
+  }
+
+  final userTextStyle = TextStyle(color: mainGrayColor, fontSize: 14);
 
   @override
   void initState() {
@@ -40,142 +50,142 @@ class _UserInfoPageState extends State<UserInfoPage>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: XTUserInfoRequest.getUserInfoData(),
-        builder: (ctx, snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
-          if (snapshot.error != null)
-            return Center(
-              child: Text("请求失败"),
+    return Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
+      return FutureBuilder(
+          future: XTUserInfoRequest.getUserInfoData(),
+          builder: (ctx, snapshot) {
+            print("FutureBuilder --------start");
+            if (!snapshot.hasData)
+              return Center(child: CircularProgressIndicator());
+            if (snapshot.error != null)
+              return Center(
+                child: Text("请求失败"),
+              );
+            userInfo.updateUser(snapshot.data);
+            print(snapshot.data);
+            return Scaffold(
+                appBar: AppBar(
+                    leading: IconButton(
+                        icon: Icon(Icons.arrow_back_ios),
+                        onPressed: () {
+                          FlutterBoost.singleton.close("info");
+                        }),
+                    title: Text("个人信息")),
+                body: Card(
+                  margin: EdgeInsets.all(10),
+                  child: userItem(userInfo),
+                ));
+          });
+    });
+  }
+
+  Widget userItem(UserInfoVM userInfo) {
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 5,
+      itemBuilder: (ctx, index) {
+        switch (index) {
+          case 0:
+            return GestureDetector(
+              onTap: () => _updateHeader(userInfo),
+              child: Container(
+                  height: 80, 
+                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                  child: basicContent(
+                    context,
+                    "头像",
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          image: DecorationImage(
+                            image: NetworkImage(userInfo.user.headImage),
+                          )),
+                    ),
+                    false,
+                  )),
             );
-          _model = snapshot.data;
-          print(snapshot.data);
-          return Scaffold(
-              appBar: AppBar(
-                  leading: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        FlutterBoost.singleton.close("info");
-                      }),
-                  title: Text("个人信息")),
-              body: Card(
-                margin: EdgeInsets.all(10),
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (ctx, index) {
-                    switch (index) {
-                      case 0:
-                        return GestureDetector(
-                          onTap: () => _updateHeader(),
-                          child: Container(
-                              color: Colors.yellow,
-                              height: 80,
-                              padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                              child: basicContent(
-                                context,
-                                "头像",
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      image: DecorationImage(
-                                        image: NetworkImage(_model.headImage),
-                                      )),
-                                ),
-                                false,
-                              )),
-                        );
-                        break;
-                      case 1:
-                        return GestureDetector(
-                            onTap: () {
-                              FlutterBoost.singleton
-                                  .open('editPage')
-                                  .then((Map<dynamic, dynamic> value) {
-                                print(
-                                    'editName  finished. did recieve second route result $value');
-                              });
-                            },
-                            child: Container(
-                                color: Colors.brown,
-                                height: 40,
-                                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                                child: basicContent(
-                                    context,
-                                    "昵称",
-                                    Text(_model.nickName,
-                                        style: TextStyle(
-                                            color: mainGrayColor,
-                                            fontSize: 14)),
-                                    false)));
-                        break;
-                      case 2:
-                        return GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                                color: Colors.purple,
-                                height: 40,
-                                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                                child: basicContent(
-                                    context,
-                                    "手机号",
-                                    Text(_model.phone,
-                                        style: TextStyle(
-                                            color: mainGrayColor,
-                                            fontSize: 14)),
-                                    false)));
-                        break;
-                      case 3:
-                        return GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                                color: Colors.green,
-                                height: 40,
-                                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                                child: basicContent(
-                                    context,
-                                    "真实姓名",
-                                    Text(
-                                        _model.userName == null
-                                            ? "未认证"
-                                            : _model.userName,
-                                        style: TextStyle(
-                                            color: mainGrayColor,
-                                            fontSize: 14)),
-                                    true)));
-                        break;
-                      case 4:
-                        print("idCard ----" + _model.idCard + "idCard ----");
-                        return GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                                color: Colors.yellowAccent,
-                                height: 40,
-                                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                                child: basicContent(
-                                    context,
-                                    "身份证号",
-                                    Text(
-                                        (_model.idCard == null ||
-                                                _model.idCard == "")
-                                            ? "未认证"
-                                            : _model.idCard,
-                                        style: TextStyle(
-                                            color: mainGrayColor,
-                                            fontSize: 14)),
-                                    true)));
-                        break;
-                      default:
-                    }
-                  },
-                ),
-              ));
-        });
+            break;
+          case 1:
+            return GestureDetector(
+                onTap: () {
+                  FlutterBoost.singleton
+                      .open('editPage', urlParams: <String, dynamic>{
+                    'nickName': userInfo.user.nickName,
+                  }).then((Map<dynamic, dynamic> value) {
+                    print(
+                        'editName  finished. did recieve second route result $value');
+                  });
+                },
+                child: Container(
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    child: basicContent(
+                        context,
+                        "昵称",
+                        Text(userInfo.user.nickName, style: userTextStyle),
+                        false)));
+            break;
+          case 2:
+            return GestureDetector(
+                onTap: () {},
+                child: Container(
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    child: basicContent(
+                        context,
+                        "手机号",
+                        Text(userInfo.user.phone, style: userTextStyle),
+                        false)));
+            break;
+          case 3:
+            return GestureDetector(
+                onTap: () {
+                  if (userInfo.user.userName == null) {
+                    _updateRealName();
+                  }
+                },
+                child: Container(
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    child: basicContent(
+                        context,
+                        "真实姓名",
+                        Text(
+                            userInfo.user.userName == null
+                                ? "未认证"
+                                : userInfo.user.userName,
+                            style: userTextStyle),
+                        true)));
+            break;
+          case 4:
+            return GestureDetector(
+                onTap: () {
+                  if (userInfo.user.userName == null) {
+                    _updateRealName();
+                  }
+                },
+                child: Container(
+                    height: 40,
+                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    child: basicContent(
+                        context,
+                        "身份证号",
+                        Text(
+                            (userInfo.user.idCard == null ||
+                                    userInfo.user.idCard == "")
+                                ? "未认证"
+                                : userInfo.user.idCard,
+                            style: userTextStyle),
+                        true)));
+            break;
+          default:
+        }
+      },
+    );
   }
 
 // Image.network(imageHeader),
@@ -190,7 +200,7 @@ class _UserInfoPageState extends State<UserInfoPage>
         ),
         Expanded(
           flex: 1,
-          child: Container(color: Colors.red, height: 60),
+          child: Container(color: Colors.white, height: 60),
         ),
         Align(
           alignment: Alignment.centerRight,
@@ -207,14 +217,5 @@ class _UserInfoPageState extends State<UserInfoPage>
         ),
       ],
     );
-
-    // onPressed: () {
-    //   FlutterBoost.singleton
-    //       .open(makeRouter(false, {"name": 123, "age": 10}, "6666"))
-    //       .then((Map<dynamic, dynamic> value) {
-    //     print(
-    //         'call me when page is finished. did recieve native route result $value');
-    //   });
-    // },
   }
 }

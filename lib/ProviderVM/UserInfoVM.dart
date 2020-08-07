@@ -12,23 +12,29 @@ class UserInfoVM extends ChangeNotifier {
 
   void updateUserName(String info) {
     _user.userName = info;
+    notifyListeners();
   }
 
   void updateNiceName(String info) {
     _user.nickName = info;
+    notifyListeners();
   }
 
   void updatephone(String info) {
     _user.phone = info;
+    notifyListeners();
   }
 
   void updateCardnumber(String info) {
     _user.idCard = info;
+    notifyListeners();
   }
 
   void updateHeader(String info) {
     _user.headImage = info;
+    notifyListeners();
   }
+
   ///获取当前用户
   UserInfoModel get user {
     return _user;
