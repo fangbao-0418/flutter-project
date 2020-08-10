@@ -1,18 +1,10 @@
-import 'dart:math';
-
-import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
-import 'package:xtflutter/UIPages/UserInfo/EditNamePage.dart';
-import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';
-
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
-import 'package:xtflutter/XTNetWork/HttpConfig.dart';
-import 'FlutterBoostDemo/simple_page_widgets.dart';
-import 'package:flutter_boost/flutter_boost.dart';
-import 'package:provider/provider.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -22,8 +14,6 @@ void main() {
     child: MyApp(),
   ));
 }
-// MyApp()
-// runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   @override
@@ -35,66 +25,42 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
-      'embeded': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          EmbeddedFirstRouteWidget(),
-      'first': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          FirstRouteWidget(),
-      'firstFirst': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          FirstFirstRouteWidget(),
-      'second': (pageName, params, String _) => SecondRouteWidget(),
-      'secondStateful':
-          (String pageName, Map<dynamic, dynamic> params, String _) =>
-              SecondStatefulRouteWidget(),
-      'tab': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          TabRouteWidget(),
-      'platformView':
-          (String pageName, Map<dynamic, dynamic> params, String _) =>
-              PlatformRouteWidget(),
-      'flutterFragment':
-          (String pageName, Map<dynamic, dynamic> params, String _) =>
-              FragmentRouteWidget(params),
-      'info': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          UserInfoPage(),
-       'editPage': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          EditNamePage(),  
-
-      ///可以在native层通过 getContainerParams 来传递参数
-      'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
-        print('flutterPage params:$params');
-
-        return FlutterRouteWidget(params: params);
-      },
+    ///客户端更新用户或者切换环境使用
+    FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
+        (name, arguments) {
+      //todo
+      print("updateFlutterHeader --- start");
+      Map configMode = new Map.from(arguments);
+      AppConfig.updateConfig(configMode["baseURL"], configMode["device"],
+          configMode["black"], configMode["token"], configMode["platform"]);
+      print("updateFlutterHeader --- end");
+      return;
     });
+
+    ///路由配置 -- flutter_boost
+    XTRouter.routerCongfig();
+
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
     getDeviceInfo();
   }
 
   void getDeviceInfo() async {
-    print("object-------getDeviceInfo");
-    var jsModel = await XTMTDChannel.invokeMethod("getDevice");
+    /// baseURL 、device、black、token、platform
+    var jsModel =
+        new Map.from(await XTMTDChannel.invokeMethod("getNetWorkInfo"));
     setState(() {
-      print("-----3333333-------");
-      // HttpConfig.getInstance().updateConfig(, dict, black, token, platform)
-      print(jsModel["platform"]);
-      print(jsModel["black"]);
-      print(jsModel["device"]);
-      print("-----3333333-------");
-      HttpConfig.getInstance().updateConfig(
-          jsModel["baseURL"],
-          jsModel["device"],
-          jsModel["black"],
-          jsModel["token"],
-          jsModel["platform"]);
-
-      print(HttpConfig.getInstance().device);
-      print(HttpConfig.getInstance().baseURL);
-      print(HttpConfig.getInstance().black);
-      print("-----3333113333-------");
-
-      // var mo = UserModel.fromMap(new Map<String, dynamic>.from(jsModel));
+      print("-----get platform info-------");
+      AppConfig.updateConfig(jsModel["baseURL"], jsModel["device"],
+          jsModel["black"], jsModel["token"], jsModel["platform"]);
+      print("-----get platform info-------");
     });
+    var uiInfo = new Map.from(await XTMTDChannel.invokeMethod("getUIInfo"));
+    print("uiInfo" + uiInfo.toString());
+    AppConfig.updateVersion(uiInfo["appVersion"]);
+    AppConfig.updateStatusHeight(uiInfo["statusHeight"]);
+    AppConfig.updateNavHeight(uiInfo["navHeight"]);
+    AppConfig.updateBottomMargin(uiInfo["bottomMargin"]);
   }
 
   @override
@@ -103,9 +69,9 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         color: Colors.black,
         theme: ThemeData(
-          primarySwatch: Colors.orange,
+          // primarySwatch: Colors.orange,
           primaryColor: Colors.white,
-          accentColor: Colors.green,
+          // accentColor: Colors.green,
           primaryColorBrightness: Brightness.light,
         ),
         title: 'Flutter Boost example',

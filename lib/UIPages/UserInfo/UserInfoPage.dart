@@ -4,43 +4,47 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/Extension/StringExtension.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
 import '../../XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import '../../XTConfig/Extension/DoubleExtension.dart';
-import '../../XTConfig/Extension/IntExtension.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
 }
 
+//更新用户头像
 class _UserInfoPageState extends State<UserInfoPage>
     with SingleTickerProviderStateMixin {
-  Future<dynamic> _updateHeader(UserInfoVM vm) async {
+  Future<dynamic> _updateAvAtar(UserInfoVM vm) async {
     try {
-      final String result = await XTMTDChannel.invokeMethod('updateHeader');
+      final String result = await XTMTDChannel.invokeMethod('updateAvAtar');
       final rsl = await XTUserInfoRequest.updateUserInfo({"headImage": result});
       if (rsl == true) {
-        vm.updateHeader(result.imgUrl);
+        vm.updateAvAtar(result.imgUrl);
       }
     } catch (e) {
       print(e.message);
     }
   }
 
-  Future<dynamic> _updateRealName() async {
+//更新身份证
+  Future<dynamic> _updateRealName(UserInfoVM vm) async {
     try {
-      final bool result = await XTMTDChannel.invokeMethod('updateRealName');
+      final Map<String, dynamic> result = new Map<String, dynamic>.from(
+          await XTMTDChannel.invokeMethod('updateRealName'));
+      vm.updateRealInfo(result["card"], result["name"]);
     } catch (e) {
-      print(e.message);
+      print(e);
     }
   }
 
-  final userTextStyle = TextStyle(color: mainGrayColor, fontSize: 14);
+  final userTextStyle = TextStyle(color: main66GrayColor, fontSize: 14);
   final userRedTextStyle = TextStyle(color: mainRedColor, fontSize: 14);
   final userEdage = EdgeInsets.fromLTRB(10, 5, 10, 5);
   @override
@@ -53,40 +57,62 @@ class _UserInfoPageState extends State<UserInfoPage>
     super.dispose();
   }
 
+//返回
+  void _xtback(BuildContext context) {
+    final BoostContainerSettings settings = BoostContainer.of(context).settings;
+    FlutterBoost.singleton.close(settings.uniqueId,
+        result: <String, dynamic>{'result': 'data from second'});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
-      return FutureBuilder(
-          future: XTUserInfoRequest.getUserInfoData(),
-          builder: (ctx, snapshot) {
-            print("FutureBuilder --------start");
-            if (!snapshot.hasData) {
-              return Center(
-                  child: CircularProgressIndicator(
-                backgroundColor: Colors.yellow,
-              ));
-            }
-            if (snapshot.error != null) {
-              return Center(
-                child: Text("请求失败"),
-              );
-            }
-            print(snapshot.data);
-            userInfo.updateUser(snapshot.data);
-            return Scaffold(
-                appBar: AppBar(
-                    leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          FlutterBoost.singleton.close("info");
-                        }),
-                    title: Text("个人信息")),
-                body: Card(
+    return Scaffold(
+        appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
+        body: Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
+          return FutureBuilder(
+              future: XTUserInfoRequest.getUserInfoData(),
+              builder: (ctx, snapshot) {
+                print("FutureBuilder --------start");
+                if (!snapshot.hasData) {
+                  return Stack(
+                    children: <Widget>[
+                      SpinKitFadingCircle(
+                        itemBuilder: (BuildContext context, int index) {
+                          return DecoratedBox(
+                            decoration: BoxDecoration(
+                                color: main99GrayColor,
+                                borderRadius: BorderRadius.circular(20)),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+                        child: Center(
+                          child: Text(
+                            '加载中...',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: main99GrayColor),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  userInfo.updateUser(snapshot.data);
+                }
+                if (snapshot.error != null) {
+                  return Center(
+                    child: Text("请求失败"),
+                  );
+                }
+                return Card(
                   margin: EdgeInsets.all(10),
                   child: userInfoView(userInfo),
-                ));
-          });
-    });
+                );
+              });
+        }));
   }
 
   Widget userInfoView(UserInfoVM userInfo) {
@@ -108,27 +134,31 @@ class _UserInfoPageState extends State<UserInfoPage>
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
-                      image: NetworkImage(userInfo.user.headImage),
+                      image: NetworkImage(userInfo.user.headImage.safeStr),
                     )),
               ),
               hasChild: true,
               height: 80,
-              tapFunc: () => _updateHeader(userInfo),
+              tapFunc: () => _updateAvAtar(userInfo),
             );
             break;
           case 1:
-            return userInfoItem(context, userInfo, "昵称", tapFunc: () {
-              FlutterBoost.singleton
-                  .open('editPage', urlParams: <String, dynamic>{
-                'nickName': userInfo.user.nickName,
-              }).then((Map<dynamic, dynamic> value) {
-                print(
-                    'editName  finished. did recieve second route result $value');
-              });
-            },
-                name: userInfo.user.nickName,
-                style: userTextStyle,
-                );
+            return userInfoItem(
+              context,
+              userInfo,
+              "昵称",
+              tapFunc: () {
+                FlutterBoost.singleton
+                    .open('editPage', urlParams: <String, dynamic>{
+                  'nickName': userInfo.user.nickName,
+                }).then((Map<dynamic, dynamic> value) {
+                  print(
+                      'editName  finished. did recieve second route result $value');
+                });
+              },
+              name: userInfo.user.nickName,
+              style: userTextStyle,
+            );
 
             break;
           case 2:
@@ -149,8 +179,9 @@ class _UserInfoPageState extends State<UserInfoPage>
               userInfo,
               "真实姓名",
               tapFunc: () {
-                if (userInfo.isRealName) {
-                  _updateRealName();
+                print("object 88888");
+                if (!userInfo.isRealName) {
+                  _updateRealName(userInfo);
                 }
               },
               style: userInfo.isRealName ? userTextStyle : userRedTextStyle,
@@ -160,21 +191,18 @@ class _UserInfoPageState extends State<UserInfoPage>
 
             break;
           case 4:
-            return userInfoItem(
-              context,
-              userInfo,
-              "身份证号",
-              tapFunc: () {
-                if (userInfo.isRealName) {
-                  _updateRealName();
-                }
-              },
-              style: userInfo.isRealName ? userTextStyle : userRedTextStyle,
-              name: userInfo.resIdentity,
-              hasArrow: false,
-            );
+            return userInfoItem(context, userInfo, "身份证号", tapFunc: () {
+              if (!userInfo.isRealName) {
+                _updateRealName(userInfo);
+              }
+            },
+                style: userInfo.isRealName ? userTextStyle : userRedTextStyle,
+                name: userInfo.resIdentity,
+                hasArrow: false,
+                hasLine: false);
             break;
           default:
+            return Container();
         }
       },
     );
@@ -186,22 +214,32 @@ class _UserInfoPageState extends State<UserInfoPage>
       TextStyle style,
       bool hasChild = false,
       bool hasArrow = true,
-      double height = 40,
+      bool hasLine = true,
+      double height = 50,
       Widget child}) {
     return GestureDetector(
         onTap: tapFunc,
-        child: Container(
-            height: height,
-            padding: userEdage,
-            child: basicContent(context, title,
-                hasChild ? child : Text(name, style: style), hasArrow)));
-    ;
+        child: Column(children: <Widget>[
+          Container(
+              height: height,
+              padding: userEdage,
+              child: basicContent(context, title,
+                  hasChild ? child : Text(name, style: style), hasArrow)),
+          Offstage(
+              offstage: !hasLine,
+              child: Container(
+                height: 1.0,
+                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                color: mainF5GrayColor,
+              )),
+        ]));
   }
 
 // Image.network(imageHeader),
   Widget basicContent(
       BuildContext context, String name, Widget childWidget, bool haveArrow) {
     return Row(
+      verticalDirection: VerticalDirection.down,
       children: <Widget>[
         Align(
           alignment: Alignment.centerLeft,
@@ -220,7 +258,7 @@ class _UserInfoPageState extends State<UserInfoPage>
               new Offstage(
                 offstage: !haveArrow,
                 child: new Icon(Icons.arrow_right,
-                    color: mainGrayColor, size: 20.0),
+                    color: main66GrayColor, size: 20.0),
               ),
             ],
           ),

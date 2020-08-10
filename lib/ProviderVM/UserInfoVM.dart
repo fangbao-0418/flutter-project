@@ -10,11 +10,6 @@ class UserInfoVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateUserName(String info) {
-    _user.userName = info;
-    notifyListeners();
-  }
-
   void updateNiceName(String info) {
     _user.nickName = info;
     notifyListeners();
@@ -25,12 +20,13 @@ class UserInfoVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateCardnumber(String info) {
-    _user.idCard = info;
+  void updateRealInfo(String idcard, String name) {
+    _user.idCard = idcard;
+    _user.userName = name;
     notifyListeners();
   }
 
-  void updateHeader(String info) {
+  void updateAvAtar(String info) {
     _user.headImage = info;
     notifyListeners();
   }
@@ -41,14 +37,14 @@ class UserInfoVM extends ChangeNotifier {
   }
 
   bool get isRealName {
-    return _user.idCard != "" ;
+    return _user.idCard != "";
   }
 
   String get resRealName {
-    return isRealName ?  _user.userName :"未认证" ;
+    return isRealName ? _user.userName : "未认证";
   }
 
   String get resIdentity {
-    return isRealName ?  _user.idCard :"未认证" ;
+    return isRealName ? _user.idCard : "未认证";
   }
 }

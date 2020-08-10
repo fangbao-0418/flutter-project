@@ -1,9 +1,9 @@
-import 'dart:async';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
@@ -20,43 +20,39 @@ class EditNamePage extends StatelessWidget {
     }
   }
 
+  void _xtback(BuildContext context) {
+    final BoostContainerSettings settings = BoostContainer.of(context).settings;
+    FlutterBoost.singleton.close(settings.uniqueId,
+        result: <String, dynamic>{'result': 'data from second'});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
       return Scaffold(
-        body: TextField(
-          controller: TextEditingController(
-            text: userInfo.user.nickName,
-          ),
-          textAlign: TextAlign.left,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(color: mainGrayColor, fontSize: 14),
-          ),
-          onChanged: (String change) {
-            _name = change;
-          },
-          onEditingComplete: () {
-            print("结束编辑");
-          },
-        ),
-        appBar: AppBar(
-          leading: IconButton(
-            color: mainBlackColor,
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              FlutterBoost.singleton.close("editPage");
+        body: Container(
+          padding: EdgeInsets.all(10),
+          child: TextField(
+            controller: TextEditingController(
+              text: userInfo.user.nickName,
+            ),
+            textAlign: TextAlign.left,
+            decoration: InputDecoration(
+              labelStyle: TextStyle(color: main66GrayColor, fontSize: 14),
+            ),
+            onChanged: (String change) {
+              _name = change;
+            },
+            onEditingComplete: () {
+              print("结束编辑");
             },
           ),
-          title: Text('导航'),
-          actions: <Widget>[
-            FlatButton(
-              color: Colors.pink,
-              textColor: Colors.white,
-              child: Text('完成'),
-              onPressed: () => _updateName(userInfo),
-            ),
-          ],
         ),
+        appBar: xtbackAndRightBar(
+            back: () => _xtback(context),
+            title: "修改信息",
+            rightTitle: "完成",
+            rightFun: () => _updateName(userInfo)),
       );
     });
   }

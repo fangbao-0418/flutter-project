@@ -1,0 +1,41 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
+
+/// 左返回 标题 右完成
+AppBar xtbackAndRightBar(
+    {VoidCallback back,
+    String title,
+    String rightTitle,
+    VoidCallback rightFun}) {
+  return AppBar(
+    leading: IconButton(
+      color: mainBlackColor,
+      icon: Icon(Icons.arrow_back_ios),
+      onPressed: back,
+    ),
+    title: Text(title),
+    actions: <Widget>[
+      FlatButton(
+        textColor: mainBlackColor,
+        child: Text(rightTitle, style: iosNavTextStyle),
+        onPressed: rightFun,
+      ),
+    ],
+  );
+}
+
+/// 左返回 标题 右完成
+AppBar xtBackBar({
+  VoidCallback back,
+  String title,
+}) {
+  return AppBar(
+    leading: IconButton(
+      color: mainBlackColor,
+      icon: Icon(Icons.arrow_back_ios),
+      onPressed: back,
+    ),
+    title: Text(title),
+  );
+}

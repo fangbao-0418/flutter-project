@@ -12,6 +12,7 @@ class XTSizeFit {
   static double rpx;
   static double px;
 
+  
   static void initialize({double standardSize = 750}) {
     // 1.手机的物理分辨率
     physicalWidth = window.physicalSize.width;
