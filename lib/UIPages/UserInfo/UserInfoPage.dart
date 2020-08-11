@@ -21,6 +21,7 @@ class UserInfoPage extends StatefulWidget {
 //更新用户头像
 class _UserInfoPageState extends State<UserInfoPage>
     with SingleTickerProviderStateMixin {
+  ///更新头像
   Future<dynamic> _updateAvAtar(UserInfoVM vm) async {
     try {
       final String result = await XTMTDChannel.invokeMethod('updateAvAtar');
@@ -33,7 +34,7 @@ class _UserInfoPageState extends State<UserInfoPage>
     }
   }
 
-//更新身份证
+  ///更新身份证
   Future<dynamic> _updateRealName(UserInfoVM vm) async {
     try {
       final Map<String, dynamic> result = new Map<String, dynamic>.from(
@@ -67,52 +68,59 @@ class _UserInfoPageState extends State<UserInfoPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
         body: Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
+          print("Consumer Consumer -----------------------------------");
           return FutureBuilder(
               future: XTUserInfoRequest.getUserInfoData(),
               builder: (ctx, snapshot) {
                 print("FutureBuilder --------start");
                 if (!snapshot.hasData) {
-                  return Stack(
-                    children: <Widget>[
-                      SpinKitFadingCircle(
-                        itemBuilder: (BuildContext context, int index) {
-                          return DecoratedBox(
-                            decoration: BoxDecoration(
-                                color: main99GrayColor,
-                                borderRadius: BorderRadius.circular(20)),
-                          );
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-                        child: Center(
-                          child: Text(
-                            '加载中...',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                color: main99GrayColor),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+                  return loadingpage();
                 } else {
                   userInfo.updateUser(snapshot.data);
                 }
                 if (snapshot.error != null) {
                   return Center(
-                    child: Text("请求失败"),
+                    child: Text("网络错误，请重试"),
                   );
                 }
                 return Card(
                   margin: EdgeInsets.all(10),
                   child: userInfoView(userInfo),
+                  shadowColor: mainF5GrayColor,
                 );
               });
         }));
+  }
+
+  Widget loadingpage() {
+    return Stack(
+      children: <Widget>[
+        SpinKitFadingCircle(
+          itemBuilder: (BuildContext context, int index) {
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                  color: main99GrayColor,
+                  borderRadius: BorderRadius.circular(20)),
+            );
+          },
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+          child: Center(
+            child: Text(
+              '加载中...',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: main99GrayColor),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget userInfoView(UserInfoVM userInfo) {
@@ -243,8 +251,10 @@ class _UserInfoPageState extends State<UserInfoPage>
       children: <Widget>[
         Align(
           alignment: Alignment.centerLeft,
-          child:
-              Text(name, style: TextStyle(color: mainBlackColor, fontSize: 18)),
+          child: Container(
+              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+              child: Text(name,
+                  style: TextStyle(color: mainBlackColor, fontSize: 18))),
         ),
         Expanded(
           flex: 1,
@@ -255,11 +265,14 @@ class _UserInfoPageState extends State<UserInfoPage>
           child: Row(
             children: <Widget>[
               childWidget,
-              new Offstage(
-                offstage: !haveArrow,
-                child: new Icon(Icons.arrow_right,
-                    color: main66GrayColor, size: 20.0),
-              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Offstage(
+                  offstage: !haveArrow,
+                  child: Icon(Icons.keyboard_arrow_right,
+                      color: main99GrayColor, size: 22.0),
+                ),
+              )
             ],
           ),
         ),

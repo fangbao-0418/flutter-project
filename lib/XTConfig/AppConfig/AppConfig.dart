@@ -16,6 +16,9 @@ class AppConfig {
 
   ///App 版本
   String appVersion = "2.2.0";
+  
+  ///抓包代理 请查看自己本机IP地址 并替换
+  String proxy = "PROXY 192.168.14.201:8888";
 
   ///网络超时时常
   int timeout = 10000;

@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/adapter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 
 class HttpRequest {
@@ -10,7 +12,18 @@ class HttpRequest {
       baseUrl: AppConfig.getInstance().baseURL,
       connectTimeout: AppConfig.getInstance().timeout,
     );
+
     Dio dio = Dio(baseOptions);
+
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.findProxy = (uri) {
+        return AppConfig.getInstance().proxy;
+      };
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+    };
+
     // 1.网络配置
     final options = Options(method: method, headers: {
       "xt-platform": AppConfig.getInstance().platform,
@@ -45,11 +58,11 @@ class HttpRequest {
       Response response =
           await dio.request(url, data: params, options: options);
       print("----------response start ------------");
-      print(url);
-      print(params.toString());
-      print(options.toString());
-      xtprintRequest(response.request);
-      print(response.data.toString());
+      // print(url);
+      // print(params.toString());
+      // print(options.toString());
+      // xtprintRequest(response.request);
+      // print(response.data.toString());
       print("----------response end ------------");
       return response.data;
     } on DioError catch (e) {
@@ -61,11 +74,11 @@ class HttpRequest {
   }
 
   static void xtprintRequest(RequestOptions request) {
-    print(request.uri);
-    print(request.baseUrl);
-    print(request.path);
-    print(request.queryParameters);
-    print(request.method);
-    print(request.headers.toString());
+    // print(request.uri);
+    // print(request.baseUrl);
+    // print(request.path);
+    // print(request.queryParameters);
+    // print(request.method);
+    // print(request.headers.toString());
   }
 }
