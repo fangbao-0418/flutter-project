@@ -1,8 +1,8 @@
 class AppConfig {
   String device = "";
   String black = "";
-  String token = "";
-  String baseURL = "";
+  String token = "eyJhbGciOiJIUzUxMiJ9.eyJ0aW1lIjoxNTk2Njc3OTk1MTIwLCJwbGF0Zm9ybSI6Img1IiwibWVtYmVySWQiOjY0NDIwMX0.puVbHP67ItVS3GZ_s7HxoMu6vNYS4Kn_HbQH-bj-tkjaMoOBwH9emq4XMhU7Q_IjI5yFTgpTdkk3CZamJE5hhQ";
+  String baseURL = "https://youxuan-api.hzxituan.com";
   String platform = "ios";
 
   ///App 电池栏高度

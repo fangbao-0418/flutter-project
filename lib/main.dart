@@ -5,6 +5,7 @@ import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'UIPages/UserInfo/EditPhonePage.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -42,7 +43,7 @@ class _MyAppState extends State<MyApp> {
 
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
-    getDeviceInfo();
+    // getDeviceInfo();
   }
 
   void getDeviceInfo() async {
@@ -76,7 +77,7 @@ class _MyAppState extends State<MyApp> {
         ),
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
-        home: Container(color: Colors.white));
+        home: Container(color: Colors.white, child: EditPhonePage(),));
   }
 
   void _onRoutePushed(
