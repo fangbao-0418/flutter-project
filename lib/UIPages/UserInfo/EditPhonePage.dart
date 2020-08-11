@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 
-class EditPhonePage extends StatefulWidget {
-  @override
-  _EditPhonePageState createState() => _EditPhonePageState();
-}
-
 Widget Label (String data) {
   return Align(
     alignment: Alignment.centerLeft,
@@ -13,21 +8,30 @@ Widget Label (String data) {
   );
 }
 
-FocusNode focusNode = new FocusNode();
+FocusNode focusNode1 = new FocusNode();
+FocusNode focusNode2 = new FocusNode();
 
-class _EditPhonePageState extends State<EditPhonePage> {
+class EditPhonePage extends StatefulWidget {
+  @override
+  _EditPhonePageState createState() => _EditPhonePageState();
+}
+
+class _EditPhonePageState extends State<EditPhonePage> with WidgetsBindingObserver {
   bool showButton = true;
-  initState () {
+  @override
+  void initState () {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
-    focusNode.addListener((){
-      print(focusNode.hasFocus);
+  }
+  @override
+  void didChangeMetrics () {
+    super.didChangeMetrics();
+    print('didChangeMetrics');
+    WidgetsBinding.instance.addPostFrameCallback((cb) {
       setState(() {
-        showButton = !focusNode.hasFocus;
+        showButton = MediaQuery.of(context).viewInsets.bottom == 0;
       });
     });
-  }
-  dispose () {
-    // focusNode
   }
   Widget build (BuildContext context) {
     return Scaffold(
@@ -62,11 +66,19 @@ class _EditPhonePageState extends State<EditPhonePage> {
                   ),
                 ),
                 child: TextField(
-                  // focusNode: focusNode,
+                  focusNode: focusNode1,
+                  onTap: () {
+                    setState(() {
+                      showButton = false;
+                    });
+                  },
+                  maxLength: 11,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     enabledBorder: UnderlineInputBorder(borderSide: BorderSide.none,),
                     focusedBorder: UnderlineInputBorder(borderSide: BorderSide.none,),
                     hintText: '请输入手机号',
+                    counterText: '',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                 ),
@@ -86,7 +98,12 @@ class _EditPhonePageState extends State<EditPhonePage> {
                   children: <Widget>[
                     Expanded(
                       child:  TextField(
-                        // focusNode: focusNode,
+                        focusNode: focusNode2,
+                        onTap: () {
+                          setState(() {
+                            showButton = false;
+                          });
+                        },
                         maxLength: 6,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -112,7 +129,9 @@ class _EditPhonePageState extends State<EditPhonePage> {
           ),
           Positioned(
             bottom: 20,
-            child: Align(
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 0),
+              opacity: showButton ? 1 : 0,
               child: RaisedButton(
                 padding: EdgeInsets.only(left: 40, right: 40),
                 color: Color(0xFFE60113),
@@ -127,5 +146,10 @@ class _EditPhonePageState extends State<EditPhonePage> {
         ]
       ),
     );
+  }
+  @override
+  void dispose () {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }
