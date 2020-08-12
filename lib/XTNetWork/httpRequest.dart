@@ -12,6 +12,7 @@ class HttpRequest {
       baseUrl: AppConfig.getInstance().baseURL,
       connectTimeout: AppConfig.getInstance().timeout,
     );
+
     Dio dio = Dio(baseOptions);
     local.helper(dio);
     // 1.网络配置
@@ -52,27 +53,27 @@ class HttpRequest {
         options: options
       );
       print("----------response start ------------");
-      print(url);
-      print(params.toString());
-      print(options.toString());
-      xtprintRequest(response.request);
+      // print(url);
+      // print(params.toString());
+      // print(options.toString());
+      // xtprintRequest(response.request);
       print(response.data.toString());
       print("----------response end ------------");
       return response.data;
     } on DioError catch (e) {
-      print("----------response error start ------------");
-      xtprintRequest(e.request);
+      print("----------response error start1 ------------");
+      print("----------response error start1 ------------");
       print("----------response error end------------");
       return Future.error(e);
     }
   }
 
   static void xtprintRequest(RequestOptions request) {
-    print(request.uri);
-    print(request.baseUrl);
-    print(request.path);
-    print(request.queryParameters);
-    print(request.method);
-    print(request.headers.toString());
+    // print(request.uri);
+    // print(request.baseUrl);
+    // print(request.path);
+    // print(request.queryParameters);
+    // print(request.method);
+    // print(request.headers.toString());
   }
 }

@@ -10,7 +10,7 @@ class XTRouter {
       'info': (String pageName, Map<dynamic, dynamic> params, String _) =>
           UserInfoPage(),
       'editPage': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          EditNamePage(),
+          EditNamePage(params: params,name: pageName),
 
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
