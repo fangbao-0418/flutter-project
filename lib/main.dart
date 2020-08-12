@@ -6,13 +6,23 @@ import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'UIPages/UserInfo/EditPhonePage.dart';
+
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (ctx) => UserInfoVM()),
-    ],
-    child: MyApp(),
-  ));
+  XTMTDChannel.invokeMethod("getNetWorkInfo").then((value) {
+    print("object0---------------------------");
+  });
+  Future.delayed(new Duration(seconds: 5), () {
+     XTMTDChannel.invokeMethod("getNetWorkInfo").then((value) {
+      print("object1---------------------------");
+    });
+    print('start');
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => UserInfoVM()),
+      ],
+      child: MyApp(),
+    ));
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -42,7 +52,7 @@ class _MyAppState extends State<MyApp> {
 
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
-    // getDeviceInfo();
+    getDeviceInfo();
   }
 
   void getDeviceInfo() async {
@@ -76,7 +86,10 @@ class _MyAppState extends State<MyApp> {
         ),
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
-        home: Container(color: Colors.white, child: EditPhonePage(),));
+        home: Container(
+          color: Colors.white,
+          child: EditPhonePage(),
+        ));
   }
 
   void _onRoutePushed(

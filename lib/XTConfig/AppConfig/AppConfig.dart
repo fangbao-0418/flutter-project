@@ -1,8 +1,12 @@
+import 'package:xtflutter/local/proxy.dart';
+
 class AppConfig {
+  ///是不是app的subModule
+  bool isAppSubModule = false;
   String device = "";
   String black = "";
-  String token = "eyJhbGciOiJIUzUxMiJ9.eyJ0aW1lIjoxNTk2Njc3OTk1MTIwLCJwbGF0Zm9ybSI6Img1IiwibWVtYmVySWQiOjY0NDIwMX0.puVbHP67ItVS3GZ_s7HxoMu6vNYS4Kn_HbQH-bj-tkjaMoOBwH9emq4XMhU7Q_IjI5yFTgpTdkk3CZamJE5hhQ";
-  String baseURL = "https://youxuan-api.hzxituan.com";
+  String token = localToken;
+  String baseURL = localBaseurl;
   String platform = "ios";
 
   ///App 电池栏高度
@@ -16,9 +20,6 @@ class AppConfig {
 
   ///App 版本
   String appVersion = "2.2.0";
-  
-  ///抓包代理 请查看自己本机IP地址 并替换
-  String proxy = "PROXY 192.168.14.201:8888";
 
   ///网络超时时常
   int timeout = 10000;
@@ -34,6 +35,7 @@ class AppConfig {
   ///更新 baseURL device（手机信息） black（同盾）token platform （iOS or Android）
   static updateConfig(String baseURL, String device, String black, String token,
       String platform) {
+    _instance.isAppSubModule = true;
     print(" updateConfig ==1=  " + baseURL);
     print(" updateConfig ==1=  " + device);
     print(" updateConfig ==1=  " + black);

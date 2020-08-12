@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
 class EditNamePage extends StatefulWidget {
@@ -41,9 +42,12 @@ class _EditNamePage extends State<EditNamePage> {
   }
 
   void _xtback(BuildContext context) {
-    final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    FlutterBoost.singleton.close(settings.uniqueId,
-        result: <String, dynamic>{'result': 'data from second'});
+
+        XTRouter.closePage(context: context);
+
+    // final BoostContainerSettings settings = BoostContainer.of(context).settings;
+    // FlutterBoost.singleton.close(settings.uniqueId,
+    //     result: <String, dynamic>{'result': 'data from second'});
   }
 
   @override

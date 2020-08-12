@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/Extension/StringExtension.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
@@ -61,9 +62,10 @@ class _UserInfoPageState extends State<UserInfoPage>
 
 //返回
   void _xtback(BuildContext context) {
-    final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    FlutterBoost.singleton.close(settings.uniqueId,
-        result: <String, dynamic>{'result': 'data from second'});
+    // final BoostContainerSettings settings = BoostContainer.of(context).settings;
+    XTRouter.closePage(context: context);
+    // FlutterBoost.singleton.close(settings.uniqueId,
+    // result: <String, dynamic>{'result': 'data from second'});
   }
 
   @override
@@ -156,13 +158,15 @@ class _UserInfoPageState extends State<UserInfoPage>
               userInfo,
               "昵称",
               tapFunc: () {
-                FlutterBoost.singleton
-                    .open('editPage', urlParams: <String, dynamic>{
+                XTRouter.pushToPage(routerName: "editPage", params: {
                   'nickName': userInfo.user.nickName,
-                }).then((Map<dynamic, dynamic> value) {
-                  print(
-                      'editName  finished. did recieve second route result $value');
                 });
+
+                // FlutterBoost.singleton
+                //     .open('editPage', urlParams: <String, dynamic>).then((value) {
+                //   print(
+                //       'editName  finished. did recieve second route result $value');
+                // });
               },
               name: userInfo.user.nickName,
               style: userTextStyle,
@@ -170,16 +174,19 @@ class _UserInfoPageState extends State<UserInfoPage>
 
             break;
           case 2:
-            return GestureDetector(
-                onTap: () {},
-                child: Container(
-                    height: 40,
-                    padding: userEdage,
-                    child: basicContent(
-                        context,
-                        "手机号",
-                        Text(userInfo.user.phone, style: userTextStyle),
-                        true)));
+            return userInfoItem(
+              context,
+              userInfo,
+              "手机号",
+              tapFunc: () {
+                XTRouter.pushToPage(routerName: "editPhone", params: {
+                  'nickName': userInfo.user.nickName,
+                });
+              },
+              style: userTextStyle,
+              name: userInfo.user.phone,
+              hasArrow: true,
+            );
             break;
           case 3:
             return userInfoItem(
