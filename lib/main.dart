@@ -6,7 +6,6 @@ import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'UIPages/UserInfo/EditPhonePage.dart';
-
 void main() {
   runApp(MultiProvider(
     providers: [

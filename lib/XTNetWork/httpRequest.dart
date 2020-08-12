@@ -1,16 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'package:xtflutter/local/helper.dart' as local;
 
 class HttpRequest {
   static Future<T> request<T>(String url,
       {String method = "get",
       Map<String, dynamic> params,
+      Map<String, dynamic> queryParameters,
       Interceptor inter}) async {
     BaseOptions baseOptions = BaseOptions(
       baseUrl: AppConfig.getInstance().baseURL,
       connectTimeout: AppConfig.getInstance().timeout,
     );
     Dio dio = Dio(baseOptions);
+    local.helper(dio);
     // 1.网络配置
     final options = Options(method: method, headers: {
       "xt-platform": AppConfig.getInstance().platform,
@@ -42,8 +45,12 @@ class HttpRequest {
 
     // 2.发送网络请求
     try {
-      Response response =
-          await dio.request(url, data: params, options: options);
+      Response response = await dio.request(
+        url,
+        data: params,
+        queryParameters: queryParameters,
+        options: options
+      );
       print("----------response start ------------");
       print(url);
       print(params.toString());
