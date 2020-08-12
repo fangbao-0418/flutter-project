@@ -62,12 +62,12 @@ class HttpRequest {
       // print(params.toString());
       // print(options.toString());
       // xtprintRequest(response.request);
-      // print(response.data.toString());
+      print(response.data.toString());
       print("----------response end ------------");
       return response.data;
     } on DioError catch (e) {
-      print("----------response error start ------------");
-      xtprintRequest(e.request);
+      print("----------response error start1 ------------");
+      print("----------response error start1 ------------");
       print("----------response error end------------");
       return Future.error(e);
     }

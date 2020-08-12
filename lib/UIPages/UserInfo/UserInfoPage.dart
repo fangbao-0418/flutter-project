@@ -48,6 +48,7 @@ class _UserInfoPageState extends State<UserInfoPage>
   final userTextStyle = TextStyle(color: main66GrayColor, fontSize: 14);
   final userRedTextStyle = TextStyle(color: mainRedColor, fontSize: 14);
   final userEdage = EdgeInsets.fromLTRB(10, 5, 10, 5);
+
   @override
   void initState() {
     super.initState();
@@ -70,29 +71,28 @@ class _UserInfoPageState extends State<UserInfoPage>
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
-        body: Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
-          print("Consumer Consumer -----------------------------------");
-          return FutureBuilder(
-              future: XTUserInfoRequest.getUserInfoData(),
-              builder: (ctx, snapshot) {
-                print("FutureBuilder --------start");
-                if (!snapshot.hasData) {
-                  return loadingpage();
-                } else {
-                  userInfo.updateUser(snapshot.data);
-                }
-                if (snapshot.error != null) {
-                  return Center(
-                    child: Text("网络错误，请重试"),
-                  );
-                }
+        body: FutureBuilder(
+            future: XTUserInfoRequest.getUserInfoData(),
+            builder: (ctx, snapshot) {
+              print("FutureBuilder --------start");
+              if (!snapshot.hasData) {
+                return loadingpage();
+              }
+              if (snapshot.error != null) {
+                return Center(
+                  child: Text("网络错误，请重试"),
+                );
+              }
+              return Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
+                userInfo.updateUser(snapshot.data);
+                print("Consumer Consumer -----------------------------------");
                 return Card(
                   margin: EdgeInsets.all(10),
                   child: userInfoView(userInfo),
                   shadowColor: mainF5GrayColor,
                 );
               });
-        }));
+            }));
   }
 
   Widget loadingpage() {
