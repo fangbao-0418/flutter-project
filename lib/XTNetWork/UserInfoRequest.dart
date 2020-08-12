@@ -24,4 +24,16 @@ class XTUserInfoRequest {
     print("/cweb/member ----" + resl.toString());
     return resl;
   }
+
+  /// 更换手机号
+  static Future<dynamic> changeUserPhone(Map<String, String> para) {
+    const url = "/bweb/member/getVerifyCode";
+    return HttpRequest.request(url, method: "post", queryParameters: para).then((res) {
+       if (res['code'] == '00000' && res['success']) {
+        return res['data'];
+      } else {
+        throw res;
+      }
+    });
+  }
 }

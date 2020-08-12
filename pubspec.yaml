@@ -97,3 +97,6 @@ flutter:
     androidX: true
     androidPackage: com.example.xtflutter
     iosBundleIdentifier: com.example.xtflutter
+
+  assets:
+    - images/edit-phone-icon.png
