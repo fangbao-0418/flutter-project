@@ -65,5 +65,7 @@ app.*.map.json
  
  # Flutter project
  *.lock
+
+ proxy.dart 
  
  
