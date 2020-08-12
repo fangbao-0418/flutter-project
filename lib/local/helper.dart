@@ -1,6 +1,7 @@
 import 'package:dio/adapter.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'proxy.dart';
 
 void helper (Dio dio) {
   (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
