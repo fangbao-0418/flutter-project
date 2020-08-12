@@ -2,6 +2,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/FlutterBoostDemo/simple_page_widgets.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditNamePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';
+import 'package:xtflutter/UIPages/Address/AddAddressPage.dart';
 
 class XTRouter {
   ///配置整体路由
@@ -10,7 +11,9 @@ class XTRouter {
       'info': (String pageName, Map<dynamic, dynamic> params, String _) =>
           UserInfoPage(),
       'editPage': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          EditNamePage(params: params,name: pageName),
+          EditNamePage(params: params, name: pageName),
+      'addAddress': (String pageName, Map<dynamic, dynamic> params, String _) =>
+          AddAddressPage(),
 
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
