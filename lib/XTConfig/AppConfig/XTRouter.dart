@@ -7,12 +7,15 @@ import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';
 import 'package:xtflutter/UIPages/Address/AddAddressPage.dart';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/UIPages/setting_page.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 
 class XTRouter {
   ///配置整体路由
   static routerCongfig() {
     FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
+      'setting': (String pageName, Map<dynamic, dynamic> params, String _) =>
+          SettingPage(),
       'info': (String pageName, Map<dynamic, dynamic> params, String _) =>
           UserInfoPage(),
       'editPage': (String pageName, Map<dynamic, dynamic> params, String _) =>
@@ -30,30 +33,42 @@ class XTRouter {
     });
   }
 
+  ///push到新页面
   static Future<T> pushToPage<T extends Object>({
     String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
     BuildContext context, //上下文
   }) {
     if (AppConfig.getInstance().isAppSubModule) {
-      return FlutterBoost.singleton
-          .open(routerName, urlParams: Map.from(params))
-          .then((res) {
-        print("----- ----FlutterBoost.singleton-------- -----------");
-        return res as T;
-      });
+      print("55666666");
+
+      if (params != null) {
+        return FlutterBoost.singleton
+            .open(routerName, urlParams: Map.from(params))
+            .then((res) {
+          print("----- ----FlutterBoost.singleton-------- -----------");
+          return res as T;
+        });
+      } else {
+        return FlutterBoost.singleton.open(routerName).then((res) {
+          return res as T;
+        });
+      }
     } else {
       return Navigator.pushNamed(context, routerName, arguments: params);
     }
   }
 
+  ///present到新页面
   static Future<T> presentToPage<T extends Object>({
     String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
     BuildContext context,
   }) {
     if (AppConfig.getInstance().isAppSubModule) {
-      Map tp = new Map.from(params);
+      Map tp = params == null
+          ? new Map.from({"present": true})
+          : new Map.from(params);
       tp["present"] = true;
       return FlutterBoost.singleton.open(routerName, urlParams: tp).then((res) {
         print("------- ---FlutterBoost.singleton-------- -------");
@@ -64,6 +79,7 @@ class XTRouter {
     }
   }
 
+  ///关闭页面
   static Future<T> closePage<T extends Object>(
       {String routerName, //路由名称
       Map<String, dynamic> params, //路由参数
