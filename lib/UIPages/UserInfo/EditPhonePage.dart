@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
+import 'package:xtflutter/Utils/Toast.dart';
 
 Widget Label(String data) {
   return Align(
@@ -16,6 +17,9 @@ Widget Label(String data) {
 
 FocusNode focusNode1 = new FocusNode();
 FocusNode focusNode2 = new FocusNode();
+
+final phoneController = TextEditingController();
+final codeController = TextEditingController();
 
 class EditPhonePage extends StatefulWidget {
   @override
@@ -44,14 +48,32 @@ class _EditPhonePageState extends State<EditPhonePage>
     });
   }
 
+  bool verifyPhone() {
+    bool res = false;
+    var phone = phoneController.text;
+    var partten = RegExp("^1\\d{10}\$");
+    if (phone.isEmpty) {
+      Toast.showToast(msg: '手机号不能为空', context: context);
+    } else if (!partten.hasMatch(phone)) {
+      print(partten.hasMatch(phone));
+      Toast.showToast(msg: '手机号格式错误', context: context);
+    } else {
+      res = true;
+    }
+    return res;
+  }
+
   // 倒计时
   void countDown() {
+    if (!verifyPhone()) {
+      return;
+    }
+    var phone = phoneController.text;
     var counter = 59;
     if (_countdownTimer != null) {
       return;
     }
-    XTUserInfoRequest.changeUserPhone({"phone": "13051605413", "flag": "3"})
-        .then((data) {
+    XTUserInfoRequest.sendCode(phone: phone).then((data) {
       setState(() {
         counterText = '发送验证码(60)';
       });
@@ -68,6 +90,27 @@ class _EditPhonePageState extends State<EditPhonePage>
           });
         }
       });
+    });
+  }
+
+  void onSubmit() {
+    var phone = phoneController.text;
+    var code = codeController.text;
+    if (!verifyPhone()) {
+      return;
+    }
+    print(code.isEmpty);
+    if (code.isEmpty) {
+      Toast.showToast(context: context, msg: '手机验证码不能为空');
+      return;
+    } else if (!RegExp('^\\d{6}\$').hasMatch(code)) {
+      Toast.showToast(context: context, msg: '手机验证码格式错误');
+      return;
+    }
+    XTUserInfoRequest.changeUserPhone(phone, code).then((res) {
+      Toast.showToast(context: context, msg: '修改成功');
+    }, onError: (e) {
+      Toast.showToast(context: context, msg: e['message']);
     });
   }
 
@@ -116,7 +159,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                     ),
                   ),
                   child: TextField(
-                    focusNode: focusNode1,
+                    controller: phoneController,
                     onTap: () {
                       setState(() {
                         showButton = false;
@@ -152,7 +195,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                     children: <Widget>[
                       Expanded(
                         child: TextField(
-                          focusNode: focusNode2,
+                          controller: codeController,
                           onTap: () {
                             setState(() {
                               showButton = false;
@@ -205,9 +248,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0)),
                       onPressed: () {
-                        Tooltip(
-                          message: 'xxxxx',
-                        );
+                        onSubmit();
                       },
                       child: Text("确认修改",
                           style: TextStyle(
