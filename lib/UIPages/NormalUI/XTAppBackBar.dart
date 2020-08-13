@@ -19,7 +19,7 @@ AppBar xtbackAndRightBar(
     actions: <Widget>[
       FlatButton(
         textColor: mainBlackColor,
-        child: Text(rightTitle, style: iosNavTextStyle),
+        child: Text(rightTitle, style: navStyle),
         onPressed: rightFun,
       ),
     ],
