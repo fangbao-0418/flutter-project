@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'dart:math';
+import '../../XTConfig/UtilTools/XTToast.dart';
 
 class AddAddressPage extends StatefulWidget {
   @override
@@ -16,12 +16,30 @@ void _xtback(BuildContext context) {
 
 class _AddAddressPageState extends State<AddAddressPage> {
   /// 收货人
-  final receiveTextCon = TextEditingController();
+  final TextEditingController receiveTextCon = TextEditingController();
   /// 手机号
-  final phoneTextCon = TextEditingController();
+  final TextEditingController phoneTextCon = TextEditingController();
   /// 地区
-  final addressTextCon = TextEditingController();
+  final TextEditingController addressTextCon = TextEditingController();
+  /// 是否选中默认地址
+  var isSelected = false;
 
+  var _showSelectAddr = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+    receiveTextCon.dispose();
+    phoneTextCon.dispose();
+    addressTextCon.dispose();
+  }
+
+  void saveAddressAction() {
+    String receiveStr = receiveTextCon.value.text;
+    
+    XTToast.show(receiveStr ?? "新增地址了哈");
+    // XTToast.showloading();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +60,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   addressView(),
                   Container(height: 10, color: Color(0xFFF9F9F9)),
                   selectAction(),
+                  SizedBox(height: 80),
+                  saveButton(),
                 ],
               ),
             )
@@ -62,7 +82,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
           Text(isReveive ? "收货人：" : "手机号：", style: TextStyle(color: Colors.black, fontSize: 14)),
           Expanded(
             child: TextField(
-              controller: receiveTextCon,
+              controller: isReveive ? receiveTextCon : phoneTextCon,
               decoration: InputDecoration(
                 hintText: isReveive ? "请填写收货人" : "请填写手机号",
                 hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 14),
@@ -82,16 +102,21 @@ class _AddAddressPageState extends State<AddAddressPage> {
       padding: EdgeInsets.only(left: 15),
       child: Column(
         children: <Widget>[
-          Container(
-            height: 50,
-            padding: EdgeInsets.only(right: 10),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text("选择地区", style: TextStyle(color: Colors.black, fontSize: 14)),
-                Icon(Icons.keyboard_arrow_right, color: Color(0xffb9b5b5),)
-              ],
+          GestureDetector(
+            onTap: () {
+              XTToast.show("msg");
+            },
+            child: Container(
+              height: 50,
+              padding: EdgeInsets.only(right: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("选择地区", style: TextStyle(color: Colors.black, fontSize: 14)),
+                  Icon(Icons.keyboard_arrow_right, color: Color(0xffb9b5b5),)
+                ],
+              ),
             ),
           ),
           Container(height: 1.5, color: Color(0xFFF9F9F9), margin: EdgeInsets.only(left: 15, right: 15)),
@@ -99,6 +124,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
             child: TextField(
               controller: addressTextCon,
               maxLines: 5,
+              keyboardType: TextInputType.text,
               inputFormatters: [
                 LengthLimitingTextInputFormatter(40)
               ],
@@ -120,46 +146,36 @@ class _AddAddressPageState extends State<AddAddressPage> {
       height: 50,
       child: Row(
         children: <Widget>[
-          Checkbox(value: null, onChanged: null)
+          Checkbox(
+            activeColor: Colors.red,
+            hoverColor: Colors.red,
+            value: isSelected, 
+            onChanged: (value) {
+              setState(() {
+                isSelected = value;
+              });
+            }
+          ),
+          Text("设置默认地址", style: TextStyle(color: Colors.black, fontSize: 14))
         ]
       ),
     );
   }
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class SliverListDemo extends StatelessWidget {
-  const SliverListDemo({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return ListTile(
-            leading: Icon(Icons.people),
-            title: Text("联系人$index"),
-          );
-        },
-        childCount: 2
-      )
+  Widget saveButton() {
+    return RaisedButton(
+      color: Color(0xffe60113),
+      child: Text(
+        "保存并使用",
+        style: TextStyle(color: Colors.white, fontSize: 16)
+      ),
+      padding: EdgeInsets.only(left: 40, right: 40),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8)
+      ),
+      onPressed: () {
+        saveAddressAction();
+      },
     );
   }
 }
