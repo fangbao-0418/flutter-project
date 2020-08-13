@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../XTModel/UserInfoModel.dart';
 import 'httpRequest.dart';
 
@@ -25,11 +27,27 @@ class XTUserInfoRequest {
     return resl;
   }
 
-  /// 更换手机号
-  static Future<dynamic> changeUserPhone(Map<String, String> para) {
+  // 发送验证码
+  static Future<dynamic> sendCode({@required String phone, num flag = 3}) {
     const url = "/bweb/member/getVerifyCode";
-    return HttpRequest.request(url, method: "post", queryParameters: para).then((res) {
-       if (res['code'] == '00000' && res['success']) {
+    return HttpRequest.request(url,
+        method: "post",
+        queryParameters: {"phone": phone, "flag": flag}).then((res) {
+      if (res['code'] == '00000' && res['success']) {
+        return res['data'];
+      } else {
+        throw res;
+      }
+    });
+  }
+
+  // 更换手机号
+  static Future<dynamic> changeUserPhone(String phone, String code) {
+    const url = "/bweb/member/update/mobile";
+    return HttpRequest.request(url,
+        method: "post",
+        queryParameters: {"mobile": phone, "code": code}).then((res) {
+      if (res['code'] == '00000' && res['success']) {
         return res['data'];
       } else {
         throw res;

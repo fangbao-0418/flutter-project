@@ -8,21 +8,22 @@ import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'UIPages/UserInfo/EditPhonePage.dart';
 
 void main() {
-  XTMTDChannel.invokeMethod("getNetWorkInfo").then((value) {
-    print("object0---------------------------");
-  });
-  Future.delayed(new Duration(seconds: 5), () {
-     XTMTDChannel.invokeMethod("getNetWorkInfo").then((value) {
-      print("object1---------------------------");
-    });
-    print('start');
-    runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => UserInfoVM()),
-      ],
-      child: MyApp(),
-    ));
-  });
+  // XTMTDChannel.invokeMethod("getNetWorkInfo").then((value) {
+  //   print("object0---------------------------");
+  // });
+  // Future.delayed(new Duration(seconds: 5), () {
+  //   //  XTMTDChannel.invokeMethod("getNetWorkInfo").then((value) {
+  //   //   print("object1---------------------------");
+  //   // });
+  //   print('start');
+
+  // });
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (ctx) => UserInfoVM()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
