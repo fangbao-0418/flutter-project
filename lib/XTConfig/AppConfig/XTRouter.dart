@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/FlutterBoostDemo/simple_page_widgets.dart';
+import 'package:xtflutter/UIPages/Address/AddressListPage.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditNamePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';
@@ -70,7 +71,8 @@ class XTRouter {
           AddAddressPage(),
       'editPhone': (String pageName, Map<dynamic, dynamic> params, String _) =>
           EditPhonePage(),
-
+      'addressList': (String pageName, Map<dynamic, dynamic> params, String _) =>
+          AddressListPage(),
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
         return FlutterRouteWidget(params: params);
