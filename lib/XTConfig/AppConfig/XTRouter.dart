@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/FlutterBoostDemo/simple_page_widgets.dart';
+import 'package:xtflutter/UIPages/Address/AddressListPage.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditNamePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';

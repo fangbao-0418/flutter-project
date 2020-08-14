@@ -58,7 +58,7 @@ flutter:
 
   # To add Flutter specific assets to your application, add an assets section, 
   # like this:
-  # assets:
+#assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -101,4 +101,5 @@ flutter:
     iosBundleIdentifier: com.example.xtflutter
 
   assets:
+    - images/my_address_list_edit.png
     - images/edit-phone-icon.png
