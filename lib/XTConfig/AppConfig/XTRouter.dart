@@ -18,7 +18,8 @@ import 'package:xtflutter/UIPages/TestPage/page2.dart';
 Map<String, PageBuilder> routeConfigs = {
   'setting': (pageName, params, _) => SettingPage(),
   'info': (pageName, params, _) => UserInfoPage(),
-  'editPage': (pageName, params, _) => EditNamePage(params: params, name: pageName),
+  'editPage': (pageName, params, _) =>
+      EditNamePage(params: params, name: pageName),
   'addAddress': (pageName, params, _) => AddAddressPage(),
   'editPhone': (pageName, params, _) => EditPhonePage(),
   'flutterPage': (pageName, params, _) => FlutterRouteWidget(params: params),
@@ -26,30 +27,23 @@ Map<String, PageBuilder> routeConfigs = {
   'page2': (pageName, params, _) => TestPage2()
 };
 
-Map<String, PageBuilder> getPageBuilder () {
- Map<String, PageBuilder> pageBuilder = {};
+Map<String, PageBuilder> getPageBuilder() {
+  Map<String, PageBuilder> pageBuilder = {};
   routeConfigs.forEach((key, value) {
     pageBuilder.addAll({
-      key: (String pageName, Map<dynamic, dynamic> params, String _) => Wrapper(child: value(
-        pageName,
-        params,
-        _
-      ))
+      key: (String pageName, Map<dynamic, dynamic> params, String _) =>
+          Wrapper(child: value(pageName, params, _))
     });
   });
   return pageBuilder;
 }
 
-Map<String, dynamic> getRoutes () {
-  final Map<String, Widget Function(BuildContext)> routes = {
-  };
+Map<String, dynamic> getRoutes() {
+  final Map<String, Widget Function(BuildContext)> routes = {};
   print(EditPhonePage);
   routeConfigs.forEach((key, value) {
     routes.addAll({
-      key: (context) => Wrapper(
-        routeContext: context,
-        child: value('', {}, '')
-      )
+      key: (context) => Wrapper(routeContext: context, child: value('', {}, ''))
     });
   });
   return routes;
@@ -58,36 +52,16 @@ Map<String, dynamic> getRoutes () {
 class XTRouter {
   ///配置整体路由
   static routerCongfig() {
-    
-    FlutterBoost.singleton.registerPageBuilders({
-      'setting': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          SettingPage(),
-      'info': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          UserInfoPage(),
-      'editPage': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          EditNamePage(params: params, name: pageName),
-      'addAddress': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          AddAddressPage(),
-      'editPhone': (String pageName, Map<dynamic, dynamic> params, String _) =>
-          EditPhonePage(),
-
-      ///可以在native层通过 getContainerParams 来传递参数
-      'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
-        return FlutterRouteWidget(params: params);
-      },
-    });
+    FlutterBoost.singleton.registerPageBuilders(getPageBuilder());
   }
 
   ///push到新页面
   static Future<T> pushToPage<T extends Object>({
-    String routerName, //路由名称
+    @required String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
-    BuildContext context, //上下文
+    @required BuildContext context, //上下文
   }) {
-    print('route entry');
-    print(routerName);
     if (AppConfig.getInstance().isAppSubModule) {
-      print("app route entry");
       if (params != null) {
         return FlutterBoost.singleton
             .open(routerName, urlParams: Map.from(params))
@@ -101,8 +75,6 @@ class XTRouter {
         });
       }
     } else {
-      print("flutter route entry");
-      print(Global.context);
       return Navigator.pushNamed(context, routerName, arguments: params);
     }
   }
@@ -111,7 +83,7 @@ class XTRouter {
   static Future<T> presentToPage<T extends Object>({
     String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
-    BuildContext context,
+    @required BuildContext context,
   }) {
     if (AppConfig.getInstance().isAppSubModule) {
       Map tp = params == null
@@ -132,7 +104,7 @@ class XTRouter {
   static Future<T> closePage<T extends Object>(
       {String routerName, //路由名称
       Map<String, dynamic> params, //路由参数
-      BuildContext context,
+      @required BuildContext context,
       Map<String, dynamic> result,
       Map<String, dynamic> exts}) {
     if (AppConfig.getInstance().isAppSubModule) {
