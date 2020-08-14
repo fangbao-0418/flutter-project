@@ -32,12 +32,11 @@ AppBar xtBackBar({
   String title,
 }) {
   return AppBar(
-    elevation: 0,
-    leading: IconButton(
-      color: mainBlackColor,
-      icon: Icon(Icons.arrow_back_ios),
-      onPressed: back,
-    ),
-    title: Text(title),
-  );
+      elevation: 0,
+      leading: IconButton(
+        color: mainBlackColor,
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: back,
+      ),
+      title: Text(title));
 }

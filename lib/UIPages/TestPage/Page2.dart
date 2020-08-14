@@ -15,13 +15,11 @@ class _PageState extends State<TestPage2> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: xtBackBar(title: "page2", back: () => _xtback(context)),
-      body: RaisedButton(
-        onPressed: () {
-          Toast.showToast(msg: 'page2');
-        },
-        child: Text('page2')
-      )
-    );
+        appBar: xtBackBar(title: "page2", back: () => _xtback(context)),
+        body: RaisedButton(
+            onPressed: () {
+              XTRouter.pushToPage(routerName: 'page2', context: context);
+            },
+            child: Text('page2')));
   }
 }

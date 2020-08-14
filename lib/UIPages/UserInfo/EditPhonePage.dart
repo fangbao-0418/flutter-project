@@ -108,154 +108,159 @@ class _EditPhonePageState extends State<EditPhonePage>
       return;
     }
     XTUserInfoRequest.changeUserPhone(phone, code).then((res) {
-      Toast.showToast(context: context, msg: '修改成功');
+      phoneController.text = '';
+      codeController.text = '';
+      Toast.showToast(msg: '修改成功').then(() {
+        XTRouter.closePage(context: context);
+      });
     }, onError: (e) {
-      Toast.showToast(context: context, msg: e['message']);
+      Toast.showToast(msg: e['message']);
     });
   }
 
   void _xtback(BuildContext context) {
     XTRouter.closePage(context: context);
-
-    // final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    // FlutterBoost.singleton.close(settings.uniqueId,
-    //     result: <String, dynamic>{'result': 'data from second'});
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: xtBackBar(title: "修改手机号", back: () => _xtback(context)),
-      body: Stack(
-          // color: Color.fromRGBO(0, 0, 0, .8),
-          alignment: Alignment.center,
-          fit: StackFit.expand,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 80, left: 40, right: 40),
-              child: Wrap(children: <Widget>[
-                Row(
-                  children: <Widget>[
+        appBar: xtBackBar(title: "修改手机号", back: () => _xtback(context)),
+        body: Container(
+          color: Colors.white,
+          child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.expand,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 80, left: 40, right: 40),
+                  child: Wrap(children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                            margin: EdgeInsets.only(right: 16),
+                            child: Image(
+                              image: AssetImage("images/edit-phone-icon.png"),
+                              width: 60.0,
+                            )),
+                        Text(
+                          '手机信息',
+                          style: TextStyle(fontSize: 16),
+                        )
+                      ],
+                    ),
                     Container(
-                        margin: EdgeInsets.only(right: 16),
-                        child: Image(
-                          image: AssetImage("images/edit-phone-icon.png"),
-                          width: 60.0,
-                        )),
-                    Text(
-                      '手机信息',
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 102),
-                  child: Label('手机号码'),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10),
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(width: 1.0, color: Color(0xFFDDDDDD)),
+                      margin: EdgeInsets.only(top: 102),
+                      child: Label('手机号码'),
                     ),
-                  ),
-                  child: TextField(
-                    controller: phoneController,
-                    onTap: () {
-                      setState(() {
-                        showButton = false;
-                      });
-                    },
-                    maxLength: 11,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
-                      hintText: '请输入手机号',
-                      counterText: '',
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 20),
-                  child: Label('验证码'),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10),
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(width: 1.0, color: Color(0xFFDDDDDD)),
-                    ),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: codeController,
-                          onTap: () {
-                            setState(() {
-                              showButton = false;
-                            });
-                          },
-                          maxLength: 6,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              counterText: '',
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              hintText: '请输入手机验证码',
-                              hintStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 16)),
+                    Container(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom:
+                              BorderSide(width: 1.0, color: Color(0xFFDDDDDD)),
                         ),
                       ),
-                      Container(
-                          width: 1,
-                          height: 12,
-                          margin: EdgeInsets.only(left: 10, right: 10),
-                          color: Color(0xFFDDDDDD)),
-                      GestureDetector(
+                      child: TextField(
+                        controller: phoneController,
                         onTap: () {
-                          countDown();
+                          setState(() {
+                            showButton = false;
+                          });
                         },
-                        child: Text(counterText != null ? counterText : '发送验证码',
-                            style: TextStyle(
-                                color: counterText == null
-                                    ? Color.fromRGBO(141, 141, 141, 1)
-                                    : Color.fromRGBO(216, 216, 216, 1),
-                                fontSize: 16)),
-                      )
-                    ],
-                  ),
-                )
+                        maxLength: 11,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: '请输入手机号',
+                          counterText: '',
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Label('验证码'),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom:
+                              BorderSide(width: 1.0, color: Color(0xFFDDDDDD)),
+                        ),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: TextField(
+                              controller: codeController,
+                              onTap: () {
+                                setState(() {
+                                  showButton = false;
+                                });
+                              },
+                              maxLength: 6,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  counterText: '',
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: '请输入手机验证码',
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 16)),
+                            ),
+                          ),
+                          Container(
+                              width: 1,
+                              height: 12,
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              color: Color(0xFFDDDDDD)),
+                          GestureDetector(
+                            onTap: () {
+                              countDown();
+                            },
+                            child: Text(
+                                counterText != null ? counterText : '发送验证码',
+                                style: TextStyle(
+                                    color: counterText == null
+                                        ? Color.fromRGBO(141, 141, 141, 1)
+                                        : Color.fromRGBO(216, 216, 216, 1),
+                                    fontSize: 16)),
+                          )
+                        ],
+                      ),
+                    )
+                  ]),
+                ),
+                Positioned(
+                    bottom: 35,
+                    child: AnimatedOpacity(
+                        duration: Duration(milliseconds: 0),
+                        opacity: showButton ? 1 : 0,
+                        child: RaisedButton(
+                          padding: EdgeInsets.only(left: 50, right: 50),
+                          color: Color(0xFFE60113),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                          onPressed: () {
+                            onSubmit();
+                          },
+                          child: Text("确认修改",
+                              style: TextStyle(
+                                  color: Color(0xFFFFFFFF), fontSize: 13)),
+                        )))
               ]),
-            ),
-            Positioned(
-                bottom: 20,
-                child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 0),
-                    opacity: showButton ? 1 : 0,
-                    child: RaisedButton(
-                      padding: EdgeInsets.only(left: 40, right: 40),
-                      color: Color(0xFFE60113),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      onPressed: () {
-                        onSubmit();
-                      },
-                      child: Text("确认修改",
-                          style: TextStyle(
-                              color: Color(0xFFFFFFFF), fontSize: 13)),
-                    )))
-          ]),
-    );
+        ));
   }
 
   @override

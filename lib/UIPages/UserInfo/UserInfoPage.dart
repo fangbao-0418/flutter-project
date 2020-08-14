@@ -179,9 +179,12 @@ class _UserInfoPageState extends State<UserInfoPage>
               userInfo,
               "手机号",
               tapFunc: () {
-                XTRouter.pushToPage(routerName: "editPhone", params: {
-                  'nickName': userInfo.user.nickName,
-                });
+                XTRouter.pushToPage(
+                    routerName: "editPhone",
+                    params: {
+                      'nickName': userInfo.user.nickName,
+                    },
+                    context: context);
               },
               style: userTextStyle,
               name: userInfo.user.phone,

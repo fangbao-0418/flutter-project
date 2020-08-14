@@ -7,6 +7,7 @@ import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'Widgets/Wrapper.dart';
 import 'UIPages/setting_page.dart';
+import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -26,6 +27,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    // Global.context = context;
+
     ///客户端更新用户或者切换环境使用
     FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
         (name, arguments) {
@@ -80,6 +83,7 @@ class _MyAppState extends State<MyApp> {
         home: Container(
           child: Wrapper(
             child: SettingPage(),
+            // child: EditPhonePage(),
           ),
         ));
   }

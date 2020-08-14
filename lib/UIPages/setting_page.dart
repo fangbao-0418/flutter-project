@@ -5,6 +5,7 @@ import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
+import 'package:xtflutter/Utils/Global.dart';
 
 // //返回
 //   void _xtback(BuildContext context) {
@@ -42,10 +43,11 @@ class SettingPage extends StatelessWidget {
       children: <Widget>[
         basicContent("个人信息", tapFunc: () {
           print("1233444");
-          XTRouter.pushToPage(routerName: "page1", context: context);
+          // Global.context = context;
+          XTRouter.pushToPage(routerName: "info", context: context);
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "page2", context: context);
+          XTRouter.pushToPage(routerName: "page1", context: context);
         }),
         basicContent("收货地址", tapFunc: () {
           XTRouter.pushToPage(routerName: "addAddress", context: context);
