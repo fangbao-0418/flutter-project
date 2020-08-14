@@ -28,13 +28,13 @@ class SettingPage extends StatelessWidget {
           Card(
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
-              child: listTab()),
+              child: listTab(context)),
         ],
       ),
     );
   }
 
-  Widget listTab() {
+  Widget listTab(context) {
     return ListView(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
@@ -42,16 +42,16 @@ class SettingPage extends StatelessWidget {
       children: <Widget>[
         basicContent("个人信息", tapFunc: () {
           print("1233444");
-          XTRouter.pushToPage(routerName: "info");
+          XTRouter.pushToPage(routerName: "page1", context: context);
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "editPhone");
+          XTRouter.pushToPage(routerName: "page2", context: context);
         }),
         basicContent("收货地址", tapFunc: () {
-          XTRouter.pushToPage(routerName: "editPhone");
+          XTRouter.pushToPage(routerName: "addAddress", context: context);
         }),
         basicContent("支付宝账号", tapFunc: () {
-          XTRouter.pushToPage(routerName: "editPhone");
+          XTRouter.pushToPage(routerName: "editPhone", context: context);
         }),
         basicContent("消息通知", tapFunc: () {
           XTRouter.pushToPage(routerName: "editPhone");

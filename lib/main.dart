@@ -5,7 +5,8 @@ import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
-import 'UIPages/UserInfo/EditPhonePage.dart';
+import 'Widgets/Wrapper.dart';
+import 'UIPages/setting_page.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -25,7 +26,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     ///客户端更新用户或者切换环境使用
     FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
         (name, arguments) {
@@ -41,9 +41,8 @@ class _MyAppState extends State<MyApp> {
     ///路由配置 -- flutter_boost
     XTRouter.routerCongfig();
 
-    FlutterBoost.singleton
-        .addBoostNavigatorObserver(TestBoostNavigatorObserver());
-    getDeviceInfo();
+    // FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    // getDeviceInfo();
   }
 
   void getDeviceInfo() async {
@@ -77,9 +76,11 @@ class _MyAppState extends State<MyApp> {
         ),
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
+        routes: getRoutes(),
         home: Container(
-          color: Colors.white,
-          child: EditPhonePage(),
+          child: Wrapper(
+            child: SettingPage(),
+          ),
         ));
   }
 

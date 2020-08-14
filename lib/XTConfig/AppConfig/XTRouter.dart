@@ -9,11 +9,57 @@ import 'package:xtflutter/UIPages/Address/AddAddressPage.dart';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/setting_page.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'package:xtflutter/Widgets/Wrapper.dart';
+import 'package:xtflutter/Utils/Global.dart';
+
+import 'package:xtflutter/UIPages/TestPage/page1.dart';
+import 'package:xtflutter/UIPages/TestPage/page2.dart';
+
+Map<String, PageBuilder> routeConfigs = {
+  'setting': (pageName, params, _) => SettingPage(),
+  'info': (pageName, params, _) => UserInfoPage(),
+  'editPage': (pageName, params, _) => EditNamePage(params: params, name: pageName),
+  'addAddress': (pageName, params, _) => AddAddressPage(),
+  'editPhone': (pageName, params, _) => EditPhonePage(),
+  'flutterPage': (pageName, params, _) => FlutterRouteWidget(params: params),
+  'page1': (pageName, params, _) => TestPage1(),
+  'page2': (pageName, params, _) => TestPage2()
+};
+
+Map<String, PageBuilder> getPageBuilder () {
+ Map<String, PageBuilder> pageBuilder = {};
+  routeConfigs.forEach((key, value) {
+    pageBuilder.addAll({
+      key: (String pageName, Map<dynamic, dynamic> params, String _) => Wrapper(child: value(
+        pageName,
+        params,
+        _
+      ))
+    });
+  });
+  return pageBuilder;
+}
+
+Map<String, dynamic> getRoutes () {
+  final Map<String, Widget Function(BuildContext)> routes = {
+  };
+  print(EditPhonePage);
+  routeConfigs.forEach((key, value) {
+    routes.addAll({
+      key: (context) => Wrapper(
+        routeContext: context,
+        child: value('', {}, '')
+      )
+    });
+  });
+  return routes;
+}
 
 class XTRouter {
   ///配置整体路由
   static routerCongfig() {
-    FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
+    
+    FlutterBoost.singleton.registerPageBuilders({
       'setting': (String pageName, Map<dynamic, dynamic> params, String _) =>
           SettingPage(),
       'info': (String pageName, Map<dynamic, dynamic> params, String _) =>
@@ -27,7 +73,6 @@ class XTRouter {
 
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
-        print('flutterPage params:$params');
         return FlutterRouteWidget(params: params);
       },
     });
@@ -39,9 +84,10 @@ class XTRouter {
     Map<String, dynamic> params, //路由参数
     BuildContext context, //上下文
   }) {
+    print('route entry');
+    print(routerName);
     if (AppConfig.getInstance().isAppSubModule) {
-      print("55666666");
-
+      print("app route entry");
       if (params != null) {
         return FlutterBoost.singleton
             .open(routerName, urlParams: Map.from(params))
@@ -55,6 +101,8 @@ class XTRouter {
         });
       }
     } else {
+      print("flutter route entry");
+      print(Global.context);
       return Navigator.pushNamed(context, routerName, arguments: params);
     }
   }
@@ -75,7 +123,8 @@ class XTRouter {
         return res as T;
       });
     } else {
-      return Navigator.pushNamed(context, routerName, arguments: params);
+      print(Global.context);
+      return Navigator.pushNamed(context, 'editPhone');
     }
   }
 

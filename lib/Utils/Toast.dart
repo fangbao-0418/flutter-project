@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' as FT;
+import 'package:xtflutter/Utils/Global.dart';
 
 class Toast {
   FT.FToast fToast;
@@ -24,9 +25,9 @@ class Toast {
 
   Toast.showToast(
       {@required String msg,
-      @required BuildContext context,
+      BuildContext context,
       num duration = 2}) {
-    fToast = FT.FToast(context);
+    fToast = FT.FToast(Global.context);
     fToast.showToast(
       child: toast(msg),
       gravity: FT.ToastGravity.CENTER,
