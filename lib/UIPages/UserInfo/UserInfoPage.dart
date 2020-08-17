@@ -160,7 +160,7 @@ class _UserInfoPageState extends State<UserInfoPage>
               tapFunc: () {
                 XTRouter.pushToPage(routerName: "editPage", params: {
                   'nickName': userInfo.user.nickName,
-                });
+                }, context: context);
 
                 // FlutterBoost.singleton
                 //     .open('editPage', urlParams: <String, dynamic>).then((value) {

@@ -77,7 +77,7 @@ class XTRouter {
         });
       }
     } else {
-      return Navigator.of(Global.context).pushNamed(routerName, arguments: params);
+      return Navigator.of(context ?? Global.context).pushNamed(routerName, arguments: params);
     }
   }
 
@@ -118,7 +118,7 @@ class XTRouter {
         return value as T;
       });
     } else {
-      Navigator.of(Global.context).pop(result);
+      Navigator.of(context ?? Global.context).pop(result);
       Completer<T> com = Completer();
       return com.future;
     }
