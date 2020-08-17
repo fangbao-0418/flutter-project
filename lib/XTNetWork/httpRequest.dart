@@ -76,4 +76,28 @@ class HttpRequest {
     // print(request.method);
     // print(request.headers.toString());
   }
+
+  static Future<T> requestOnly<T>(String url, {String method = "get"}) async {
+    BaseOptions baseOptions = BaseOptions(
+      connectTimeout: AppConfig.getInstance().timeout,
+    );
+    Dio dio = Dio(baseOptions);
+    local.helper(dio);
+    final options = Options(method: method, headers: {
+      "xt-platform": AppConfig.getInstance().platform,
+      "device-info": AppConfig.getInstance().device,
+      "xt-token": AppConfig.getInstance().token,
+      "black-box": AppConfig.getInstance().black,
+    });
+
+    try {
+      Response response = await dio.request(
+        url,
+        options: options
+      );
+      return response.data;
+    } on DioError catch (e) {
+      return Future.error(e);
+    }
+  }
 }

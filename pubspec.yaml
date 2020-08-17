@@ -46,6 +46,8 @@ dev_dependencies:
       ref: '1.12.13+3'
 
   fluttertoast: ^7.0.2
+  flutter_picker: ^1.1.5
+  city_pickers: ^0.1.30
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
