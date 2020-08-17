@@ -42,8 +42,7 @@ class _EditNamePage extends State<EditNamePage> {
   }
 
   void _xtback(BuildContext context) {
-
-        XTRouter.closePage(context: context);
+    XTRouter.closePage(context: context);
 
     // final BoostContainerSettings settings = BoostContainer.of(context).settings;
     // FlutterBoost.singleton.close(settings.uniqueId,
@@ -61,7 +60,7 @@ class _EditNamePage extends State<EditNamePage> {
     final String name = widget.params["nickName"];
     _tname = name;
     editing.text = _tname;
-    print(name + "88888888");
+    // print(name + "88888888");
     // print(params);
     return GestureDetector(
         behavior: HitTestBehavior.translucent,

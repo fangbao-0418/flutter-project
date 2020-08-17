@@ -110,11 +110,11 @@ class _EditPhonePageState extends State<EditPhonePage>
     XTUserInfoRequest.changeUserPhone(phone, code).then((res) {
       phoneController.text = '';
       codeController.text = '';
-      Toast.showToast(msg: '修改成功').then(() {
+      Toast.showToast(msg: '修改成功', context: context).then(() {
         XTRouter.closePage(context: context);
       });
     }, onError: (e) {
-      Toast.showToast(msg: e['message']);
+      Toast.showToast(msg: e['message'], context: context);
     });
   }
 

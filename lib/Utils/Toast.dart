@@ -5,6 +5,7 @@ import 'package:xtflutter/Utils/Global.dart';
 
 class Toast {
   FT.FToast fToast;
+  BuildContext context;
   num duration;
   Widget toast(String msg) {
     return Container(
@@ -26,8 +27,9 @@ class Toast {
   }
 
   Toast.showToast(
-      {@required String msg, BuildContext context, this.duration = 2}) {
-    fToast = FT.FToast(Global.context);
+      {@required String msg, @required this.context, this.duration = 2}) {
+    Toast.cancel();
+    fToast = FT.FToast(context ?? Global.context);
     fToast.showToast(
       child: toast(msg),
       gravity: FT.ToastGravity.CENTER,
@@ -51,10 +53,10 @@ class Toast {
   }
 
   Toast.cancel() {
-    FT.FToast(Global.context).removeCustomToast();
+    FT.FToast(context ?? Global.context).removeCustomToast();
   }
 
   Toast.cancelAll() {
-    FT.FToast(Global.context).removeQueuedCustomToasts();
+    FT.FToast(context ?? Global.context).removeQueuedCustomToasts();
   }
 }

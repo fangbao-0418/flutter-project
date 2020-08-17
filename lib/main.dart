@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     print('app init state');
+
     ///路由配置 -- flutter_boost
     XTRouter.routerCongfig();
 
@@ -124,18 +125,20 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _Home();
+  }
+}
+
+class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     print('home build');
     Global.context = context;
-    return Container(
-      // height: 100,
-      color: Colors.green,
-      child: Wrapper(
-        child: SettingPage(),
-      ),
-    );
+    return Container(child: SettingPage());
   }
 }
 
