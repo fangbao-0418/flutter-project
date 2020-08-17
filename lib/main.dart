@@ -8,6 +8,7 @@ import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'Widgets/Wrapper.dart';
 import 'UIPages/setting_page.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
+import 'package:xtflutter/UIPages/TestPage/Page3.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +19,10 @@ void main() {
     ],
     child: MyApp(),
   ));
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // reportError(details.exception, details.stack);
+    print('reportError');
+  };
 }
 
 class MyApp extends StatefulWidget {
@@ -138,7 +143,8 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     print('home build');
     Global.context = context;
-    return Container(child: SettingPage());
+    // return Container(child: SettingPage());
+    return TestPage3();
   }
 }
 
