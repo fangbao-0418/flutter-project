@@ -9,6 +9,7 @@ class AppConfig {
   String baseURL = localBaseurl;
   String platform = "ios";
 
+  ///添加测试
   ///App 电池栏高度
   double statusHeight = 20;
 

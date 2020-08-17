@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTSizeFit.dart';
-import 'package:xtflutter/XTConfig/UtilTools/XTToast.dart';
+import 'package:xtflutter/Utils/Toast.dart';
 
 class AddressListPage extends StatelessWidget {
   void _xtback(BuildContext context) {
@@ -98,7 +98,7 @@ class _CheckBoxDemoState extends State<CheckBoxDemo> {
         value: isSelected,
         onChanged: (isCheck){
           if (isCheck) {
-            XTToast.show("改变了：$isCheck");
+            Toast.showToast(msg: "改变了：$isCheck", context: context);
           }
           isSelected = isCheck;
           //改变_CheckBoxState
