@@ -44,10 +44,10 @@ class SettingPage extends StatelessWidget {
         basicContent("个人信息", tapFunc: () {
           print("1233444");
           // Global.context = context;
-          XTRouter.pushToPage(routerName: "info", context: context);
+          XTRouter.pushToPage(routerName: "info");
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "page1", context: context);
+          XTRouter.pushToPage(routerName: "page1");
         }),
         basicContent("收货地址", tapFunc: () {
           XTRouter.pushToPage(routerName: "addAddress", context: context);

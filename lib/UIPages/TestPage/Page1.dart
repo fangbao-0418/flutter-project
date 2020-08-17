@@ -20,19 +20,22 @@ class _PageState extends State<TestPage1> {
         body: Column(children: <Widget>[
           RaisedButton(
               onPressed: () {
-                toast = Toast.showToast(msg: 'page1').then((res) {
+                toast = Toast.showToast(msg: 'page1').then(() {
                   print('xxxx');
                 });
+                // print('show');
               },
               child: Text('show toast')),
           RaisedButton(
               onPressed: () {
-                toast.cancel();
+                // print('hide');
+                // print(toast);
+                toast?.cancel();
               },
               child: Text('ins hide toast')),
           RaisedButton(
               onPressed: () {
-                toast.cancelAll();
+                toast?.cancelAll();
               },
               child: Text('ins hide all toast')),
           RaisedButton(

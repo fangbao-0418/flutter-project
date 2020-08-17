@@ -41,7 +41,7 @@ Map<String, PageBuilder> getPageBuilder() {
 
 Map<String, dynamic> getRoutes() {
   final Map<String, Widget Function(BuildContext)> routes = {};
-  print(EditPhonePage);
+  // print(EditPhonePage);
   routeConfigs.forEach((key, value) {
     routes.addAll({
       key: (context) => Wrapper(routeContext: context, child: value('', {}, ''))
@@ -54,6 +54,7 @@ class XTRouter {
   ///配置整体路由
   static routerCongfig() {
     FlutterBoost.singleton.registerPageBuilders(getPageBuilder());
+    print('registerPageBuilders end');
   }
 
   ///push到新页面
@@ -76,7 +77,7 @@ class XTRouter {
         });
       }
     } else {
-      return Navigator.pushNamed(context, routerName, arguments: params);
+      return Navigator.of(Global.context).pushNamed(routerName, arguments: params);
     }
   }
 
@@ -117,7 +118,7 @@ class XTRouter {
         return value as T;
       });
     } else {
-      Navigator.of(context).pop(result);
+      Navigator.of(Global.context).pop(result);
       Completer<T> com = Completer();
       return com.future;
     }
