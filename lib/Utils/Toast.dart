@@ -51,18 +51,10 @@ class Toast {
   }
 
   Toast.cancel() {
-    if (fToast != null) {
-      fToast.removeCustomToast();
-    } else {
-      FT.FToast(Global.context).removeCustomToast();
-    }
+    FT.FToast(Global.context).removeCustomToast();
   }
 
   Toast.cancelAll() {
-    if (fToast != null) {
-      fToast.removeQueuedCustomToasts();
-    } else {
-      FT.FToast(Global.context).removeQueuedCustomToasts();
-    }
+    FT.FToast(Global.context).removeQueuedCustomToasts();
   }
 }
