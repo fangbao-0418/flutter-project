@@ -3,10 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import '../NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import '../../XTConfig/UtilTools/XTToast.dart';
-import '../../Utils/Toast.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 import 'package:flutter_picker/Picker.dart';
+import '../../Utils/Toast.dart';
 
 class AddAddressPage extends StatefulWidget {
   @override
@@ -29,8 +28,13 @@ class _AddAddressPageState extends State<AddAddressPage> {
   var isSelected = false;
   /// 地区文案
   String selectAddrStr = "选择地区";
+  /// 选中行，默认全部第一行
+  List<int> selectValue = [0, 0, 0];
   /// 城市区域列表
-  List cityList = [];
+  List cityNameList = [];
+  List cityValueList = [];
+  /// 地址信息
+  AddressCityModel cityInfoModel = AddressCityModel(provinceId: "", cityId: "", areaId: "");
 
   @override
   void initState() {
@@ -46,33 +50,37 @@ class _AddAddressPageState extends State<AddAddressPage> {
     super.dispose();
   }
 
+  void showToast(String msg) {
+    Toast.showToast(msg: msg, context: context);
+  }
+
   void saveAddressAction() async {
     if (receiveTextCon.text.isEmpty) {
-      XTToast.show("请填写收货人");
+      showToast("请填写收货人");
       return;
     }
     if (phoneTextCon.text.isEmpty) {
-      XTToast.show("请填写手机号码");
+      showToast("请填写手机号码");
       return;
     }
     if (phoneTextCon.text.length < 11) {
-      XTToast.show("请输入正确的手机号码");
+      showToast("请输入正确的手机号码");
       return;
     }
-    // if (cityResult.provinceName.isEmpty) {
-    //   XTToast.show("请选择省份");
-    //   return;
-    // }
+    if (cityInfoModel.infoIsEmpty()) {
+      showToast("请选择省份");
+      return;
+    }
     if (addressTextCon.text.isEmpty) {
-      XTToast.show("请填写详细地址");
+      showToast("请填写详细地址");
       return;
     }
 
     Map<String, String> params = {
       "consignee": receiveTextCon.text,
-      "provinceId": "cityResult.provinceId",
-      "cityId": "cityResult.cityId",
-      "districtId": "cityResult.areaId",
+      "provinceId": cityInfoModel.provinceId,
+      "cityId": cityInfoModel.cityId,
+      "districtId": cityInfoModel.areaId,
       "street": addressTextCon.text,
       "phone": phoneTextCon.text,
       "defaultAddress": isSelected ? "1" : "0"
@@ -87,13 +95,59 @@ class _AddAddressPageState extends State<AddAddressPage> {
       bool isSuccess = result["success"];
       String msg = result["message"];
       if (isSuccess) {
-        // FlutterBoost.singleton.close("addAddress");
-        XTRouter.closePage(routerName: "addAddress");
+        XTRouter.closePage(context: context);
       } else {
-        XTToast.show(msg);
+        showToast(msg);
       }
     } catch (error) {
       print("flutter address error == ${error.toString()}");
+    }
+  }
+
+  /// 展示地址选择窗
+  void showPicker(List data) {
+    Picker picker = Picker(
+      height: 300,
+      itemExtent: 40,
+      selecteds: selectValue,
+      adapter: PickerDataAdapter<String>(pickerdata: data),
+      changeToFirst: false,
+      textAlign: TextAlign.left,
+      textStyle: const TextStyle(fontSize: 15, color: Colors.black),
+      selectedTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+      columnPadding: const EdgeInsets.all(8.0),
+      title: Text("所在地区", style: TextStyle(fontSize: 16, color: Colors.black)),
+      cancelText: "取消",
+      cancelTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
+      confirmText: "确定",
+      confirmTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
+      onConfirm: (Picker picker, List value) {
+        /// 记录选中行
+        selectValue = value;
+        /// 获取地区code
+        Map firstValue = cityValueList[value[0]];
+        String firstCode = firstValue.keys.first;
+        Map secondValue = firstValue[firstCode][value[1]];
+        String secondCode = secondValue.keys.first;
+        String thirdCode = secondValue[secondCode][value[2]];
+        /// 选中地区
+        setState(() {
+          selectAddrStr = picker.getSelectedValues().toString().replaceAll("[", "").replaceAll("]", "").replaceAll(",", " ");
+          cityInfoModel = AddressCityModel(provinceId: firstCode, cityId: secondCode, areaId: thirdCode);
+        });
+      }
+    );
+    picker.showModal(context);
+  }
+
+  /// 获取省市区数据
+  void getCityList() async {
+    try {
+      Map dataMap = await XTUserInfoRequest.getCityList();
+      cityNameList = dataMap["cityName"];
+      cityValueList = dataMap["cityValue"];
+    } catch (err) {
+      print(err);
     }
   }
 
@@ -170,7 +224,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              showPicker(cityList);
+              showPicker(cityNameList);
             },
             child: Container(
               height: 50,
@@ -245,40 +299,16 @@ class _AddAddressPageState extends State<AddAddressPage> {
       },
     );
   }
-  
-  List<int> selectValue = [0, 0, 0];
-  void showPicker(List data) {
-    Picker picker = Picker(
-      height: 300,
-      itemExtent: 40,
-      selecteds: selectValue,
-      adapter: PickerDataAdapter<String>(pickerdata: data),
-      changeToFirst: false,
-      textAlign: TextAlign.left,
-      textStyle: const TextStyle(fontSize: 15, color: Colors.black),
-      selectedTextStyle: TextStyle(fontSize: 15, color: Colors.black),
-      columnPadding: const EdgeInsets.all(8.0),
-      title: Text("所在地区", style: TextStyle(fontSize: 16, color: Colors.black)),
-      cancelText: "取消",
-      cancelTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
-      confirmText: "确定",
-      confirmTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
-      onConfirm: (Picker picker, List value) {
-        selectValue = value;
-        List selectNameList = picker.getSelectedValues();
-        setState(() {
-          selectAddrStr = selectNameList.toString().replaceAll("[", "").replaceAll("]", "").replaceAll(",", " ");
-        });
-      }
-    );
-    picker.showModal(context);
-  }
+}
 
-  void getCityList() async {
-    try {
-      cityList = await XTUserInfoRequest.getCityList();
-    } catch (err) {
-      print(err);
-    }
+class AddressCityModel {
+  AddressCityModel({this.provinceId, this.cityId, this.areaId});
+
+  String provinceId = "";
+  String cityId = "";
+  String areaId = "";
+
+  bool infoIsEmpty() {
+    return provinceId.isEmpty || cityId.isEmpty || areaId.isEmpty;
   }
 }

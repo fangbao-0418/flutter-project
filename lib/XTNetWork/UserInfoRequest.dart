@@ -84,7 +84,7 @@ class XTUserInfoRequest {
     return await HttpRequest.requestOnly(realUrl);
   }
 
-  static List cityDataSuccess(List provinceResult, List cityResult, List areaResult) {
+  static Map cityDataSuccess(List provinceResult, List cityResult, List areaResult) {
     List<Map<String, dynamic>> allList = [];
     List<Map<String, dynamic>> allItemList = [];
     for (int i = 0; i < provinceResult.length; i ++) {
@@ -109,15 +109,17 @@ class XTUserInfoRequest {
         for (int k = 0; k < areaResult.length; k ++) {
           String areaName = areaResult[k]["name"];
           String areaParent = areaResult[k]["parent"];
+
+          String areaValue = areaResult[k]["value"];
           if (areaParent == cityValue) {
             areaNameList.add(areaName);
             
-            areaItemList.add(areaResult[k]);
+            areaItemList.add(areaValue);
           }
         }
         cityMap[cityName] = areaNameList;
 
-        cityItemMap[cityName] = areaItemList;
+        cityItemMap[cityValue] = areaItemList;
         if (cityParent == provinceValue) {
           cityNameList.add(cityMap);
 
@@ -127,14 +129,19 @@ class XTUserInfoRequest {
       provinceMap[provinceName] = cityNameList;
       allList.add(provinceMap);
 
-      provinceItemMap[provinceName] = cityItemList;
+      provinceItemMap[provinceValue] = cityItemList;
       allItemList.add(provinceItemMap);
     }
-    return allList;
+
+    // print("allItemListallItemList == ${allItemList.toString()}");
+
+    Map dataMap = {"cityName": allList, "cityValue": allItemList};
+
+    return dataMap;
   }
 
   /// 获取省市区列表
-  static Future<List> getCityList() async {
+  static Future<Map> getCityList() async {
     return await Future.wait([
       getCityDataList(0),
       getCityDataList(1),
