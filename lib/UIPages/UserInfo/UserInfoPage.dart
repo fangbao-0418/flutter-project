@@ -8,6 +8,7 @@ import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/Extension/StringExtension.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
 import '../../XTConfig/AppConfig/XTColorConfig.dart';
@@ -70,6 +71,8 @@ class _UserInfoPageState extends State<UserInfoPage>
 
   @override
   Widget build(BuildContext context) {
+    final usermodel = Provider.of<UserInfoVM>(context);
+
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
@@ -78,7 +81,11 @@ class _UserInfoPageState extends State<UserInfoPage>
             builder: (ctx, snapshot) {
               print("FutureBuilder --------start");
               if (!snapshot.hasData) {
-                return loadingpage();
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: userInfoView(usermodel),
+                  shadowColor: mainF5GrayColor,
+                );
               }
               if (snapshot.error != null) {
                 return Center(
@@ -158,9 +165,12 @@ class _UserInfoPageState extends State<UserInfoPage>
               userInfo,
               "昵称",
               tapFunc: () {
-                XTRouter.pushToPage(routerName: "editPage", params: {
-                  'nickName': userInfo.user.nickName,
-                }, context: context);
+                XTRouter.pushToPage(
+                    routerName: "editPage",
+                    params: {
+                      'nickName': userInfo.user.nickName,
+                    },
+                    context: context);
 
                 // FlutterBoost.singleton
                 //     .open('editPage', urlParams: <String, dynamic>).then((value) {

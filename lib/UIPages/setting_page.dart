@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
@@ -6,6 +7,9 @@ import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/Utils/Global.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
+import 'package:provider/provider.dart';
+
 
 // //返回
 //   void _xtback(BuildContext context) {
@@ -36,6 +40,10 @@ class SettingPage extends StatelessWidget {
   }
 
   Widget listTab(context) {
+
+      final usermodel = Provider.of<UserInfoVM>(context);
+
+       
     return ListView(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
@@ -44,10 +52,10 @@ class SettingPage extends StatelessWidget {
         basicContent("个人信息", tapFunc: () {
           print("1233444");
           // Global.context = context;
-          XTRouter.pushToPage(routerName: "info");
+          XTRouter.pushToPage(context: context, routerName: "info");
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "page1");
+          XTRouter.pushToPage(context: context, routerName: "page1");
         }),
         basicContent("收货地址", tapFunc: () {
           XTRouter.pushToPage(routerName: "addAddress", context: context);
@@ -56,15 +64,20 @@ class SettingPage extends StatelessWidget {
           XTRouter.pushToPage(routerName: "editPhone", context: context);
         }),
         basicContent("消息通知", tapFunc: () {
-          XTRouter.pushToPage(routerName: "editPhone");
+          XTRouter.pushToPage(
+              context: context,
+              routerName: makeRouter(true, null, "gotoNotice"));
         }),
         basicContent("微信信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "editPhone");
+          XTRouter.pushToPage(
+              context: context,
+              routerName: makeRouter(true, null, "gotoNotice"));
         }),
         basicContent("关于喜团",
             childStr: "v" + AppConfig.getInstance().appVersion,
             haveLine: false, tapFunc: () {
           XTRouter.pushToPage(
+              context: context,
               routerName: makeRouter(true, null, "aboutXiTuan"));
         })
       ],
