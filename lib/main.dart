@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
     ///客户端更新用户或者切换环境使用
     FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
         (name, arguments) {
@@ -50,7 +51,8 @@ class _MyAppState extends State<MyApp> {
     ///路由配置 -- flutter_boost
     XTRouter.routerCongfig();
 
-    FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    FlutterBoost.singleton
+        .addBoostNavigatorObserver(TestBoostNavigatorObserver());
     // getDeviceInfo();
   }
 
@@ -91,7 +93,7 @@ class _MyAppState extends State<MyApp> {
         //   child: TestPage3(),
         //   // child: EditPhonePage(),
         // ),
-      );
+        );
   }
 
   void _onRoutePushed(
@@ -120,8 +122,8 @@ class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Global.context = context;
-    return Container(child: SettingPage());
-    // return TestPage3();
+    // return Container(child: SettingPage());
+    return TestPage3();
   }
 }
 
