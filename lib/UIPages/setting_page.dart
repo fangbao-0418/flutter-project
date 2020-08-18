@@ -10,6 +10,9 @@ import 'package:xtflutter/Utils/Global.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:provider/provider.dart';
 
+import '../Utils/Toast.dart';
+import '../XTModel/UserInfoModel.dart';
+
 
 // //返回
 //   void _xtback(BuildContext context) {
@@ -58,10 +61,38 @@ class SettingPage extends StatelessWidget {
           XTRouter.pushToPage(context: context, routerName: "page1");
         }),
         basicContent("收货地址", tapFunc: () {
-          XTRouter.pushToPage(routerName: "addAddress", context: context);
+          /// 测试数据 待地址列表完成后即可删除
+          Map<String, dynamic> params = {
+            "address": "安徽省 安庆市 太湖县 仓前街道五迪中心A2幢4楼喜团科技",
+            "city": "安庆市",
+            "cityId": 340800,
+            "consignee": "朋学良",
+            "defaultAddress": 1,
+            "district": "太湖县",
+            "districtId": 340825,
+            "freight": 0,
+            "id": 65573,
+            "memberId": 7838383,
+            "phone": "18365295533",
+            "province": "安徽省",
+            "provinceId": 340000,
+            "street": "仓前街道五迪中心A2幢4楼喜团科技"
+          };
+          AddressListModel model = AddressListModel.fromJson(params);
+          XTRouter.pushToPage(
+            routerName: "addAddress", 
+            params: model.toJson(),
+            context: context,
+          );
         }),
         basicContent("支付宝账号", tapFunc: () {
-          XTRouter.pushToPage(routerName: "editPhone", context: context);
+          // XTRouter.pushToPage(routerName: "editPhone", context: context);
+          XTRouter.pushToPage(
+            routerName: "addAddress", 
+            context: context,
+          ).then((value) {
+            print("addAddressaddAddress == ${value.toString()}");
+          });
         }),
         basicContent("消息通知", tapFunc: () {
           XTRouter.pushToPage(

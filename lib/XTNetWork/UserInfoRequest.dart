@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../XTModel/UserInfoModel.dart';
@@ -84,7 +85,11 @@ class XTUserInfoRequest {
     return await HttpRequest.requestOnly(realUrl);
   }
 
-  static Map cityDataSuccess(List provinceResult, List cityResult, List areaResult) {
+  static Map cityDataSuccess(List resluts) {
+    List provinceResult = resluts[0];
+    List cityResult = resluts[1];
+    List areaResult = resluts[2];
+
     List<Map<String, dynamic>> allList = [];
     List<Map<String, dynamic>> allItemList = [];
     for (int i = 0; i < provinceResult.length; i ++) {
@@ -133,7 +138,7 @@ class XTUserInfoRequest {
       allItemList.add(provinceItemMap);
     }
 
-    // print("allItemListallItemList == ${allItemList.toString()}");
+    print("allItemListallItemList == ${allItemList.toString()}");
 
     Map dataMap = {"cityName": allList, "cityValue": allItemList};
 
@@ -141,13 +146,13 @@ class XTUserInfoRequest {
   }
 
   /// 获取省市区列表
-  static Future<Map> getCityList() async {
-    return await Future.wait([
+  static Future<Map> getCityList() {
+    return Future.wait([
       getCityDataList(0),
       getCityDataList(1),
       getCityDataList(2)
-    ]).then((resluts) {
-      return cityDataSuccess(resluts[0], resluts[1], resluts[2]);
+    ]).then((resluts) async {
+      return await compute(cityDataSuccess, resluts);
     }).catchError((err) {
       print(err);
     });

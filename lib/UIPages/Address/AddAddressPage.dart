@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
+import '../../XTModel/UserInfoModel.dart';
 import '../NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
@@ -8,6 +9,14 @@ import 'package:flutter_picker/Picker.dart';
 import '../../Utils/Toast.dart';
 
 class AddAddressPage extends StatefulWidget {
+
+  AddAddressPage({this.name, this.params});
+
+  /// 路由名称
+  final String name;
+  /// 传过来的参数
+  final Map<String, dynamic> params;
+
   @override
   _AddAddressPageState createState() => _AddAddressPageState();
 }
@@ -18,6 +27,10 @@ void _xtback(BuildContext context) {
 }
 
 class _AddAddressPageState extends State<AddAddressPage> {
+  /// 是否是添加地址
+  bool _isAddAddress = true;
+  /// 地址修改id
+  int _editAddrId;
   /// 收货人
   final TextEditingController receiveTextCon = TextEditingController();
   /// 手机号
@@ -39,6 +52,18 @@ class _AddAddressPageState extends State<AddAddressPage> {
   @override
   void initState() {
     super.initState();
+    /// 编辑地址参数
+    if (widget.params.isNotEmpty && widget.params.containsKey("consignee")) {
+      AddressListModel addressInfo = AddressListModel.fromJson(widget.params);
+      _isAddAddress = false;
+      _editAddrId = addressInfo.id;
+      receiveTextCon.text = addressInfo.consignee;
+      phoneTextCon.text = addressInfo.phone;
+      selectAddrStr = "${addressInfo.province} ${addressInfo.city} ${addressInfo.district}";
+      cityInfoModel = AddressCityModel(provinceId: addressInfo.provinceId.toString(), cityId: addressInfo.cityId.toString(), areaId: addressInfo.districtId.toString());
+      addressTextCon.text = addressInfo.street;
+      isSelected = addressInfo.defaultAddress == 1 ? true : false;
+    }
     getCityList();
   }
 
@@ -54,7 +79,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
     Toast.showToast(msg: msg, context: context);
   }
 
-  void saveAddressAction() async {
+  void saveAddressAction() {
     if (receiveTextCon.text.isEmpty) {
       showToast("请填写收货人");
       return;
@@ -85,7 +110,10 @@ class _AddAddressPageState extends State<AddAddressPage> {
       "phone": phoneTextCon.text,
       "defaultAddress": isSelected ? "1" : "0"
     };
-    addressInfoRequest(params, true);
+    if (!_isAddAddress) {
+      params["id"] = _editAddrId.toString();
+    }
+    addressInfoRequest(params, _isAddAddress);
   }
 
   /// 地址请求
@@ -95,6 +123,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
       bool isSuccess = result["success"];
       String msg = result["message"];
       if (isSuccess) {
+        showToast(_isAddAddress ? "保存成功" : "修改成功");
         XTRouter.closePage(context: context);
       } else {
         showToast(msg);
@@ -141,11 +170,37 @@ class _AddAddressPageState extends State<AddAddressPage> {
   }
 
   /// 获取省市区数据
-  void getCityList() async {
+  void getCityList() {
     try {
-      Map dataMap = await XTUserInfoRequest.getCityList();
-      cityNameList = dataMap["cityName"];
-      cityValueList = dataMap["cityValue"];
+      XTUserInfoRequest.getCityList().then((dataMap) {
+        cityNameList = dataMap["cityName"];
+        cityValueList = dataMap["cityValue"];
+
+        int firstValue = 0;
+        int secondValue = 0;
+        int thirdValue = 0;
+        if (!_isAddAddress) {
+          for (int i = 0; i < cityValueList.length; i ++) {
+            Map firstMap = cityValueList[i];
+            if (firstMap.containsKey(cityInfoModel.provinceId)) {
+              firstValue = i;
+              break;
+            }
+          }
+          List cityList = cityValueList[firstValue][cityInfoModel.provinceId];
+          for (int i = 0; i < cityList.length; i ++) {
+            Map secondMap = cityList[i];
+            if (secondMap.containsKey(cityInfoModel.cityId)) {
+              secondValue = i;
+              break;
+            }
+          }
+          List areaList = cityValueList[firstValue][cityInfoModel.provinceId][secondValue][cityInfoModel.cityId];
+          thirdValue = areaList.indexOf(cityInfoModel.areaId);
+
+          selectValue = [firstValue, secondValue, thirdValue];
+        }
+      });
     } catch (err) {
       print(err);
     }
@@ -154,7 +209,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: xtBackBar(title: "添加地址", back: () => _xtback(context)),
+      appBar: xtBackBar(title: _isAddAddress ? "添加地址" : "编辑地址", back: () => _xtback(context)),
       body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -287,7 +342,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
     return RaisedButton(
       color: Color(0xffe60113),
       child: Text(
-        "保存并使用",
+        _isAddAddress ? "保存并使用" : "保存修改",
         style: TextStyle(color: Colors.white, fontSize: 16)
       ),
       padding: EdgeInsets.only(left: 40, right: 40),
