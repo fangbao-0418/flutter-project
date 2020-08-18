@@ -105,3 +105,4 @@ flutter:
   assets:
     - images/my_address_list_edit.png
     - images/edit-phone-icon.png
+    - images/loading.gif

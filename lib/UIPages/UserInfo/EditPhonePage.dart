@@ -99,7 +99,6 @@ class _EditPhonePageState extends State<EditPhonePage>
     if (!verifyPhone()) {
       return;
     }
-    print(code.isEmpty);
     if (code.isEmpty) {
       Toast.showToast(context: context, msg: '手机验证码不能为空');
       return;
