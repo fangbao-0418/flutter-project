@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/Utils/Global.dart';
-
+import 'package:flutter/foundation.dart';
 class Loading {
   BuildContext context;
   static OverlayEntry newEntry;
   static num counter = 0;
+  num counterState = 0;
   Loading.show({@required this.context}) {
     counter++;
+    print(counter);
+    print(context);
+    print(Global.context);
     if (newEntry == null) {
       newEntry = OverlayEntry(builder: (context) {
         return Positioned(
@@ -25,6 +29,10 @@ class Loading {
               ),
             ));
       });
+      // context.findRootAncestorStateOfType<OverlayState>().insert(newEntry);
+      // (context.findRootAncestorStateOfType() as dynamic).setState(() { 
+      //   counterState = counter;
+      // });
       Overlay.of(context ?? Global.context).insert(newEntry);
     }
   }
@@ -37,5 +45,11 @@ class Loading {
       newEntry?.remove();
       newEntry = null;
     }
+  }
+
+  Loading.forceHide() {
+    counter = 0;
+    newEntry?.remove();
+    newEntry = null;
   }
 }

@@ -27,7 +27,12 @@ class _PageState extends State<TestPage3> {
               onPressed: () {
                 Loading.hide();
               },
-              child: Text('loading hide'))
+              child: Text('loading hide')),
+          RaisedButton(
+              onPressed: () {
+                Loading.forceHide();
+              },
+              child: Text('force loading hide'))
         ]));
   }
 }

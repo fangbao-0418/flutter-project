@@ -22,6 +22,7 @@ void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     // reportError(details.exception, details.stack);
     print('reportError');
+    print(details);
   };
 }
 
@@ -31,14 +32,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _batteryLevel = 'Unknown battery level.';
-  static const platform = const MethodChannel('flutter_native_channel');
   @override
   void initState() {
     super.initState();
-    // Global.context = context;
-    // print('xxxxxxxxx');
-    // _getBatteryLevel();
     ///客户端更新用户或者切换环境使用
     FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
         (name, arguments) {
@@ -51,32 +47,11 @@ class _MyAppState extends State<MyApp> {
       return;
     });
 
-    print('app init state');
-
     ///路由配置 -- flutter_boost
     XTRouter.routerCongfig();
 
-    // FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
     // getDeviceInfo();
-  }
-
-  Future<void> _getBatteryLevel() async {
-    String batteryLevel;
-    print('_getBatteryLevel');
-    print(platform);
-    try {
-      final int result = await platform.invokeMethod('getBatteryLevel');
-      print('getBatteryLevel');
-      print(result);
-      // batteryLevel = 'Battery level at $result % .';
-    } on PlatformException catch (e) {
-      // batteryLevel = "Failed to get battery level: '${e.message}'.";
-      print('error');
-    }
-
-    // setState(() {
-    //   _batteryLevel = batteryLevel;
-    // });
   }
 
   void getDeviceInfo() async {
@@ -99,7 +74,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print('my app build');
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         color: Colors.black,
@@ -112,7 +86,12 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
         routes: getRoutes(),
-        home: Home());
+        home: Home()
+        // home: Container(
+        //   child: TestPage3(),
+        //   // child: EditPhonePage(),
+        // ),
+      );
   }
 
   void _onRoutePushed(
@@ -124,7 +103,6 @@ class _MyAppState extends State<MyApp> {
   ) {}
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     print('app dispose');
   }
@@ -141,10 +119,9 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    print('home build');
     Global.context = context;
-    // return Container(child: SettingPage());
-    return TestPage3();
+    return Container(child: SettingPage());
+    // return TestPage3();
   }
 }
 
