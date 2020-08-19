@@ -28,7 +28,8 @@ class _UserInfoPageState extends State<UserInfoPage>
   Future<dynamic> _updateAvAtar(UserInfoVM vm) async {
     try {
       final String result = await XTMTDChannel.invokeMethod('updateAvAtar');
-      final rsl = await XTUserInfoRequest.updateUserInfo({"headImage": result});
+      final rsl =
+          await XTUserInfoRequest.updateUserInfo({"headImage": result.safeStr});
       if (rsl == true) {
         vm.updateAvAtar(result.imgUrl);
       }
@@ -74,6 +75,7 @@ class _UserInfoPageState extends State<UserInfoPage>
   Widget build(BuildContext context) {
     final usermodel = Provider.of<UserInfoVM>(context);
 
+    print("usermodel ----" + usermodel.user.headImage);
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
@@ -134,6 +136,7 @@ class _UserInfoPageState extends State<UserInfoPage>
   }
 
   Widget userInfoView(UserInfoVM userInfo) {
+    print(" -------111111111------ " + userInfo.user.headImage);
     return ListView.builder(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
       shrinkWrap: true,
@@ -172,12 +175,6 @@ class _UserInfoPageState extends State<UserInfoPage>
                       'nickName': userInfo.user.nickName,
                     },
                     context: context);
-
-                // FlutterBoost.singleton
-                //     .open('editPage', urlParams: <String, dynamic>).then((value) {
-                //   print(
-                //       'editName  finished. did recieve second route result $value');
-                // });
               },
               name: userInfo.user.nickName,
               style: userTextStyle,
