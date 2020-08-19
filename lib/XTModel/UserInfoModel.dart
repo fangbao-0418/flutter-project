@@ -2,7 +2,6 @@
 //
 //     final welcome = welcomeFromJson(jsonString);
 
-
 class UserInfoModel {
   UserInfoModel({
     this.id,
@@ -28,7 +27,7 @@ class UserInfoModel {
     this.allEarnings,
   });
 
-  int id; //用户ID
+  String id; //用户ID
   String phone; //手机号
   int memberType; //类型
   int memberTypeLevel;
@@ -53,7 +52,7 @@ class UserInfoModel {
   factory UserInfoModel.fromJson(Map<String, dynamic> json) => UserInfoModel(
         id: json["id"],
         phone: json["phone"],
-        memberType: json["memberType"],
+        memberType: int.parse(json["memberType"]),
         memberTypeLevel: json["memberTypeLevel"],
         memberTypeTime: json["memberTypeTime"],
         parentMemberId: json["parentMemberId"],
@@ -63,9 +62,10 @@ class UserInfoModel {
         userName: json["userName"],
         money: json["money"],
         count: json["count"],
-        idCard: json["idCard"],
+        idCard: json["idCard"].toString().trim(),
         canAuthen: json["canAuthen"],
-        inviteMemberVo: InviteMemberVo.fromJson(json["inviteMemberVO"]),
+        inviteMemberVo:
+            InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
         fansType: json["fansType"],
         lockFansTime: json["lockFansTime"],
         tradeLockPowderTime: json["tradeLockPowderTime"],
@@ -119,7 +119,7 @@ class InviteMemberVo {
   String joinTime;
   int memberType;
   int memberTypeLevel;
-  int isUpdateInvite;
+  bool isUpdateInvite;
   int updateInviteTime;
 
   factory InviteMemberVo.fromJson(Map<String, dynamic> json) {
@@ -127,7 +127,7 @@ class InviteMemberVo {
       return InviteMemberVo();
     }
     return InviteMemberVo(
-      id: json["id"],
+      id: int.parse(json["id"]),
       name: json["name"],
       headImage: json["headImage"],
       inviteCount: json["inviteCount"],
@@ -152,71 +152,95 @@ class InviteMemberVo {
       };
 }
 
-
 class AddressListModel {
+  AddressListModel(
+      {this.address,
+      this.city,
+      this.cityId,
+      this.consignee,
+      this.defaultAddress,
+      this.district,
+      this.districtId,
+      this.freight,
+      this.id,
+      this.memberId,
+      this.phone,
+      this.province,
+      this.provinceId,
+      this.street});
 
-  AddressListModel({
-    this.address,
-    this.city,
-    this.cityId,
-    this.consignee,
-    this.defaultAddress,
-    this.district,
-    this.districtId,
-    this.freight,
-    this.id,
-    this.memberId,
-    this.phone,
-    this.province,
-    this.provinceId,
-    this.street
-  });
+  String address;
 
-  String address;       /// 完整地址
-  String city;          /// 城市
-  int cityId;           /// 城市id
-  String consignee;     /// 姓名
-  int defaultAddress;   /// 是否默认地址
-  String district;      /// 地区
-  int districtId;       /// 地区id
-  int freight;       
-  int id;               /// 地址id
-  int memberId;         /// 会员id
-  String phone;         /// 手机号
-  String province;      /// 省名称
-  int provinceId;       /// 省id
-  String street;        /// 具体地址
+  /// 完整地址
+  String city;
 
-  factory AddressListModel.fromJson(Map<String, dynamic> json) => AddressListModel(
-    address: json["address"],
-    city: json["city"],
-    cityId: json["cityId"],
-    consignee: json["consignee"],
-    defaultAddress: json["defaultAddress"],
-    district: json["district"],
-    districtId: json["districtId"],
-    freight: json["freight"],
-    id: json["id"],
-    memberId: json["memberId"],
-    phone: json["phone"],
-    province: json["province"],
-    provinceId: json["provinceId"],
-    street: json["street"],
-  );
+  /// 城市
+  int cityId;
+
+  /// 城市id
+  String consignee;
+
+  /// 姓名
+  int defaultAddress;
+
+  /// 是否默认地址
+  String district;
+
+  /// 地区
+  int districtId;
+
+  /// 地区id
+  int freight;
+  int id;
+
+  /// 地址id
+  int memberId;
+
+  /// 会员id
+  String phone;
+
+  /// 手机号
+  String province;
+
+  /// 省名称
+  int provinceId;
+
+  /// 省id
+  String street;
+
+  /// 具体地址
+
+  factory AddressListModel.fromJson(Map<String, dynamic> json) =>
+      AddressListModel(
+        address: json["address"],
+        city: json["city"],
+        cityId: json["cityId"],
+        consignee: json["consignee"],
+        defaultAddress: json["defaultAddress"],
+        district: json["district"],
+        districtId: json["districtId"],
+        freight: json["freight"],
+        id: json["id"],
+        memberId: json["memberId"],
+        phone: json["phone"],
+        province: json["province"],
+        provinceId: json["provinceId"],
+        street: json["street"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "city": city,
-    "cityId": cityId,
-    "consignee": consignee,
-    "defaultAddress": defaultAddress,
-    "district": district,
-    "districtId": districtId,
-    "freight": freight,
-    "memberId": memberId,
-    "phone": phone,
-    "province": province,
-    "provinceId": provinceId,
-    "street": street,
-  };
+        "id": id,
+        "city": city,
+        "cityId": cityId,
+        "consignee": consignee,
+        "defaultAddress": defaultAddress,
+        "district": district,
+        "districtId": districtId,
+        "freight": freight,
+        "memberId": memberId,
+        "phone": phone,
+        "province": province,
+        "provinceId": provinceId,
+        "street": street,
+      };
 }

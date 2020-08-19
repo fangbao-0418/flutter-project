@@ -2,9 +2,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 // import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
+import 'package:xtflutter/local/proxy.dart';
 import 'Widgets/Wrapper.dart';
 import 'UIPages/setting_page.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
@@ -15,7 +18,8 @@ import 'package:flutter/services.dart';
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (ctx) => UserInfoVM()),
+      // ChangeNotifierProvider(create: (ctx) => AppConfig().userVM),
+      ChangeNotifierProvider(create: (ctx) => AppConfig().userVM),
     ],
     child: MyApp(),
   ));
@@ -48,30 +52,55 @@ class _MyAppState extends State<MyApp> {
       return;
     });
 
+    ///客户端用户退出或者更换用户
+    FlutterBoost.singleton.channel.addEventListener('updateUserInfo',
+        (name, arguments) {
+      // UserInfoVM
+      //todo
+      print("updateUserInfo --- start");
+      Map configMode = new Map.from(arguments);
+
+      print("configMode ---" + configMode.toString());
+      AppConfig().userVM.updateUser(UserInfoModel.fromJson(configMode));
+
+      // UserInfoVM
+
+      print("updateUserInfo --- end");
+      return;
+    });
+
     ///路由配置 -- flutter_boost
     XTRouter.routerCongfig();
 
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
-    // getDeviceInfo();
+    if (inApp) {
+      getDeviceInfo();
+    }
   }
 
   void getDeviceInfo() async {
     /// baseURL 、device、black、token、platform
-    // var jsModel =
-    //     new Map.from(await XTMTDChannel.invokeMethod("getNetWorkInfo"));
-    // setState(() {
-    //   print("-----get platform info-------");
-    //   AppConfig.updateConfig(jsModel["baseURL"], jsModel["device"],
-    //       jsModel["black"], jsModel["token"], jsModel["platform"]);
-    //   print("-----get platform info-------");
-    // });
-    // var uiInfo = new Map.from(await XTMTDChannel.invokeMethod("getUIInfo"));
-    // print("uiInfo" + uiInfo.toString());
-    // AppConfig.updateVersion(uiInfo["appVersion"]);
-    // AppConfig.updateStatusHeight(uiInfo["statusHeight"]);
-    // AppConfig.updateNavHeight(uiInfo["navHeight"]);
-    // AppConfig.updateBottomMargin(uiInfo["bottomMargin"]);
+
+    var jsModel =
+        new Map.from(await XTMTDChannel.invokeMethod("getNetWorkInfo"));
+
+    print("-----get platform info-------" + jsModel.toString());
+    AppConfig.updateConfig(jsModel["baseURL"], jsModel["device"],
+        jsModel["black"], jsModel["token"], jsModel["platform"]);
+    print("-----get platform info-------");
+
+    var uiInfo = Map.from(await XTMTDChannel.invokeMethod("getUIInfo"));
+    print("uiInfo" + uiInfo.toString());
+    AppConfig.updateVersion(uiInfo["appVersion"]);
+    AppConfig.updateStatusHeight(uiInfo["statusHeight"]);
+    AppConfig.updateNavHeight(uiInfo["navHeight"]);
+    AppConfig.updateBottomMargin(uiInfo["bottomMargin"]);
+
+    var userInfo = await XTMTDChannel.invokeMethod("userInfo");
+ 
+    AppConfig().userVM.updateUser(UserInfoModel.fromJson(Map.from(userInfo)));
+    print("userInfo -------2" + userInfo.toString());
   }
 
   @override

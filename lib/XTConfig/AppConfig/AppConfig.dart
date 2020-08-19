@@ -1,6 +1,9 @@
+import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/local/proxy.dart';
 
 class AppConfig {
+  UserInfoVM userVM = UserInfoVM();
+
   ///是不是app的subModule
   bool isAppSubModule = false;
   String device = "";
@@ -24,25 +27,25 @@ class AppConfig {
 
   ///网络超时时常
   int timeout = 10000;
-  AppConfig._();
-  static AppConfig _instance;
+
+  //私有构造函数
+  AppConfig._internal();
+
+  //保存单例
+  static AppConfig _instance = new AppConfig._internal();
+
+  //工厂构造函数
+  factory AppConfig() => _instance;
+
   static AppConfig getInstance() {
-    if (_instance == null) {
-      _instance = AppConfig._();
-    }
     return _instance;
   }
 
   ///更新 baseURL device（手机信息） black（同盾）token platform （iOS or Android）
   static updateConfig(String baseURL, String device, String black, String token,
       String platform) {
-    _instance.isAppSubModule = true;
-    print(" updateConfig ==1=  " + baseURL);
-    print(" updateConfig ==1=  " + device);
-    print(" updateConfig ==1=  " + black);
-    print(" updateConfig ==1=  " + token);
-    print(" updateConfig ==1=  " + platform);
     AppConfig.getInstance();
+    _instance.isAppSubModule = true;
     _instance.baseURL = baseURL;
     _instance.device = device;
     _instance.black = black;
@@ -105,5 +108,9 @@ class AppConfig {
   ///App版本
   static get version {
     return _instance.appVersion;
+  }
+
+  static get user {
+    return _instance.userVM.user;
   }
 }
