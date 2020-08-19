@@ -19,6 +19,8 @@ AppBar xtbackAndRightBar(
     actions: <Widget>[
       FlatButton(
         textColor: mainBlackColor,
+        splashColor: whiteColor,
+        highlightColor: whiteColor,
         child: Text(rightTitle, style: navStyle),
         onPressed: rightFun,
       ),
@@ -35,8 +37,8 @@ AppBar xtBackBar({
       elevation: 0,
       leading: IconButton(
         color: mainBlackColor,
-        icon: Icon(Icons.arrow_back_ios),
+        icon: Icon(Icons.arrow_back ,size: 28,),
         onPressed: back,
       ),
-      title: Text(title));
+      title: Text(title, style: navStyle));
 }

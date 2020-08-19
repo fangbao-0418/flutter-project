@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 
 class UserInfoVM extends ChangeNotifier {
-  UserInfoModel _user;
+  UserInfoModel _user = UserInfoModel();
 
   ///更新用户信息
   void updateUser(UserInfoModel info) {
@@ -33,6 +33,9 @@ class UserInfoVM extends ChangeNotifier {
 
   ///获取当前用户
   UserInfoModel get user {
+    if (_user.headImage == null) {
+      _user.headImage = "";
+    }
     return _user;
   }
 
