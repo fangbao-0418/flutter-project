@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:xtflutter/Utils/Global.dart';
+// import 'package:xtflutter/Utils/Global.dart';
 import 'package:xtflutter/Utils/Toast.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 
 class Wrapper extends StatefulWidget {
   final Widget child;
@@ -20,7 +21,9 @@ class _WrapperState extends State<Wrapper> {
     return Container(child: child);
   }
 
+  @override
   void dispose() {
+    Loading.forceHide();
     Toast.cancelAll();
     super.dispose();
   }
