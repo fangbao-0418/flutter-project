@@ -17,12 +17,6 @@ Widget label(String data) {
               color: mainBlackColor)));
 }
 
-FocusNode focusNode1 = new FocusNode();
-FocusNode focusNode2 = new FocusNode();
-
-final phoneController = TextEditingController();
-final codeController = TextEditingController();
-
 class EditPhonePage extends StatefulWidget {
   @override
   _EditPhonePageState createState() => _EditPhonePageState();
@@ -35,6 +29,10 @@ class _EditPhonePageState extends State<EditPhonePage>
   Timer _countdownTimer;
   bool isOnFocus1 = false;
   bool isOnFocus2 = false;
+  final phoneController = TextEditingController();
+  final codeController = TextEditingController();
+  FocusNode focusNode1 = new FocusNode();
+  FocusNode focusNode2 = new FocusNode();
 
   @override
   void initState() {

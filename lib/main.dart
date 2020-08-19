@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/Utils/Error/ReportError.dart';
 // import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
@@ -20,9 +21,7 @@ void main() {
     child: MyApp(),
   ));
   FlutterError.onError = (FlutterErrorDetails details) {
-    // reportError(details.exception, details.stack);
-    print('reportError');
-    print(details);
+    reportError(details);
   };
 }
 
@@ -35,6 +34,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    // throw ('error test');
 
     ///客户端更新用户或者切换环境使用
     FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
@@ -77,19 +77,17 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      color: Colors.black,
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        primaryColorBrightness: Brightness.light,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent
-      ),
-      title: 'Flutter Boost example',
-      builder: FlutterBoost.init(postPush: _onRoutePushed),
-      routes: getRoutes(),
-      home: Home()
-    );
+        debugShowCheckedModeBanner: false,
+        color: Colors.black,
+        theme: ThemeData(
+            primaryColor: Colors.white,
+            primaryColorBrightness: Brightness.light,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent),
+        title: 'Flutter Boost example',
+        builder: FlutterBoost.init(postPush: _onRoutePushed),
+        routes: getRoutes(),
+        home: Home());
   }
 
   void _onRoutePushed(
