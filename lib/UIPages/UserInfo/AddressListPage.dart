@@ -12,15 +12,35 @@ class AddressListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: xtBackBar(title:"我的收货地址",back: () => _xtback(context)),
-      body: Container(
+      body: ListView(
         padding: EdgeInsets.only(top: 10),
-        child: ListView(
-          children: <Widget>[
-            AddressListCell(),
-            AddressListCell(),
-          ],
-        ),
+        children: <Widget>[
+          SizedBox(height: 10,child: Container(color: Color(0xFFF9F9F9),),),
+          AddressListCell(),
+          SizedBox(height: 10,child: Container(color: Color(0xFFF9F9F9),),),
+          AddressListCell(),
+          SizedBox(height: 10,child: Container(color: Color(0xFFF9F9F9),),),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(top:98),
+            margin: EdgeInsets.only(top: 10),
+            child: Container(
+              padding: EdgeInsets.only(left: 98,right: 98),
+              height: 40,
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)
+                ),
+                color: Colors.red,
+                onPressed: (){},
+                child:Text("新增收货地址",style: TextStyle(fontSize: 15, color: Colors.white),
+                )
+            ),)
+            ,
+          )
+        ],
       ),
     );
   }
