@@ -86,13 +86,10 @@ class SettingPage extends StatelessWidget {
           );
         }),
         basicContent("支付宝账号", tapFunc: () {
-          // XTRouter.pushToPage(routerName: "editPhone", context: context);
           XTRouter.pushToPage(
-            routerName: "addAddress", 
-            context: context,
-          ).then((value) {
-            print("addAddressaddAddress == ${value.toString()}");
-          });
+            routerName: "alipayAccount", 
+            context: context
+          );
         }),
         basicContent("消息通知", tapFunc: () {
           XTRouter.pushToPage(

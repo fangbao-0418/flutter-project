@@ -35,7 +35,6 @@ dependencies:
   dio: ^3.0.9
   provider: ^4.0.4
   flutter_picker: ^1.1.5
-  city_pickers: ^0.1.30
 
 dev_dependencies:
   flutter_test:
