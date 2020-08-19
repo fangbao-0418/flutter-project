@@ -55,7 +55,7 @@ class SettingPage extends StatelessWidget {
         basicContent("个人信息", tapFunc: () {
           print("1233444");
           // Global.context = context;
-          XTRouter.pushToPage(context: context, routerName: "info");
+          XTRouter.pushToPage(context: context, routerName: "fl-user-info");
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
           XTRouter.pushToPage(context: context, routerName: "page1");

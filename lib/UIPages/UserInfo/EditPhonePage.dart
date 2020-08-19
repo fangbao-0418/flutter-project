@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 import 'package:xtflutter/Utils/Toast.dart';
@@ -10,9 +11,9 @@ Widget Label(String data) {
       alignment: Alignment.centerLeft,
       child: Text(data,
           style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(0, 0, 0, 1))));
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: mainBlackColor)));
 }
 
 FocusNode focusNode1 = new FocusNode();
@@ -133,26 +134,26 @@ class _EditPhonePageState extends State<EditPhonePage>
                 Container(
                   margin: EdgeInsets.only(top: 80, left: 40, right: 40),
                   child: Wrap(children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.only(right: 16),
-                            child: Image(
-                              image: AssetImage("images/edit-phone-icon.png"),
-                              width: 60.0,
-                            )),
-                        Text(
-                          '手机信息',
-                          style: TextStyle(fontSize: 16),
-                        )
-                      ],
-                    ),
+                    // Row(
+                    //   children: <Widget>[
+                    //     Container(
+                    //         margin: EdgeInsets.only(right: 16),
+                    //         child: Image(
+                    //           image: AssetImage("images/edit-phone-icon.png"),
+                    //           width: 60.0,
+                    //         )),
+                    //     Text(
+                    //       '手机信息',
+                    //       style: TextStyle(fontSize: 16),
+                    //     )
+                    //   ],
+                    // ),
                     Container(
                       margin: EdgeInsets.only(top: 102),
                       child: Label('手机号码'),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 0, right: 10),
                       decoration: const BoxDecoration(
                         border: Border(
                           bottom:
@@ -178,7 +179,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                           hintText: '请输入手机号',
                           counterText: '',
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
+                              TextStyle(color: main99GrayColor, fontSize: 16),
                         ),
                       ),
                     ),
@@ -187,7 +188,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                       child: Label('验证码'),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 0, right: 10),
                       decoration: const BoxDecoration(
                         border: Border(
                           bottom:
@@ -214,9 +215,9 @@ class _EditPhonePageState extends State<EditPhonePage>
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide.none,
                                   ),
-                                  hintText: '请输入手机验证码',
+                                  hintText: '请输入验证码',
                                   hintStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 16)),
+                                      color: main99GrayColor, fontSize: 16)),
                             ),
                           ),
                           Container(
@@ -242,7 +243,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                   ]),
                 ),
                 Positioned(
-                    bottom: 35,
+                    bottom: 100,
                     child: AnimatedOpacity(
                         duration: Duration(milliseconds: 0),
                         opacity: showButton ? 1 : 0,

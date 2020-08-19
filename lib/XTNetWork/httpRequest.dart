@@ -2,6 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/local/helper.dart' as local;
 
+class XTErrorCode extends DioError {
+  int errorCode = 0;
+}
+
 class HttpRequest {
   static Future<T> request<T>(String url,
       {String method = "get",
@@ -46,12 +50,8 @@ class HttpRequest {
 
     // 2.发送网络请求
     try {
-      Response response = await dio.request(
-        url,
-        data: params,
-        queryParameters: queryParameters,
-        options: options
-      );
+      Response response = await dio.request(url,
+          data: params, queryParameters: queryParameters, options: options);
       print("----------response start ------------");
       // print(url);
       // print(params.toString());
@@ -59,8 +59,17 @@ class HttpRequest {
       // xtprintRequest(response.request);
       print(response.data.toString());
       print("----------response end ------------");
-      return response.data;
-    } on DioError catch (e) {
+      Map map = response.data as Map<String, dynamic>;
+      if (map["success"] == false) {
+        XTErrorCode err = XTErrorCode();
+        err.type = DioErrorType.DEFAULT;
+        err.error = map["message"];
+        err.errorCode = map["code"];
+        return Future.error(err);
+      } else {
+        return response.data;
+      }
+    } on XTErrorCode catch (e) {
       print("----------response error start1 ------------");
       print("----------response error start1 ------------");
       print("----------response error end------------");
@@ -91,10 +100,7 @@ class HttpRequest {
     });
 
     try {
-      Response response = await dio.request(
-        url,
-        options: options
-      );
+      Response response = await dio.request(url, options: options);
       return response.data;
     } on DioError catch (e) {
       return Future.error(e);

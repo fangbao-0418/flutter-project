@@ -15,7 +15,7 @@ import 'package:xtflutter/UIPages/TestPage/page3.dart';
 
 Map<String, PageBuilder> routeConfigs = {
   'setting': (pageName, params, _) => SettingPage(),
-  'info': (pageName, params, _) => UserInfoPage(),
+  'fl-user-info': (pageName, params, _) => UserInfoPage(),
   'editPage': (pageName, params, _) => EditNamePage(params: params, name: pageName),
   'addAddress': (pageName, params, _) => AddAddressPage(params: params, name: pageName),
   'editPhone': (pageName, params, _) => EditPhonePage(),
