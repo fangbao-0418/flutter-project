@@ -14,12 +14,13 @@ class Toast {
         borderRadius: BorderRadius.circular(5.0),
         color: Color(0xFF333333),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        // mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             msg,
             style: TextStyle(color: Colors.white),
+            softWrap: true,
           ),
         ],
       ),
