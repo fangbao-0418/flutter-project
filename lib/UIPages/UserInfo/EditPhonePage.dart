@@ -304,9 +304,8 @@ class _EditPhonePageState extends State<EditPhonePage>
                                 child:
                                     Container(color: Colors.white, height: 60),
                               ),
-                              AnimatedOpacity(
-                                  duration: Duration(milliseconds: 0),
-                                  opacity: showButton ? 1 : 0,
+                              Offstage(
+                                  offstage: !showButton,
                                   child: FlatButton(
                                     splashColor: mainRedColor,
                                     highlightColor: mainRedColor,
