@@ -220,3 +220,29 @@ class AddressListModel {
     "street": street,
   };
 }
+
+
+class AlipayAccountModel {
+
+  AlipayAccountModel({
+    this.memberId,
+    this.accountNumber,
+    this.accountUserName
+  });
+
+  String memberId;
+  String accountUserName;
+  String accountNumber;
+
+  factory AlipayAccountModel.fromJson(Map<String, dynamic> json) => AlipayAccountModel(
+    memberId: json["memberId"],
+    accountUserName: json["accountUserName"],
+    accountNumber: json["accountNumber"]
+  );
+
+  Map<String, dynamic> toJson() => {
+    "memberId": memberId,
+    "accountUserName": accountUserName,
+    "accountNumber": accountNumber
+  };
+}

@@ -3,7 +3,7 @@ import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/local/helper.dart' as local;
 
 class XTErrorCode extends DioError {
-  int errorCode = 0;
+  String errorCode = "";
 }
 
 class HttpRequest {

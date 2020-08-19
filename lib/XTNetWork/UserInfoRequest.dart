@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../XTModel/UserInfoModel.dart';
 import 'httpRequest.dart';
 
@@ -156,5 +155,21 @@ class XTUserInfoRequest {
     }).catchError((err) {
       print(err);
     });
+  }
+
+  /// 获取用户绑定支付宝账号信息
+  static Future<AlipayAccountModel> getAlipayAccountReq() async {
+    final url = "/cweb/wx/withdrawals/selectAccountNumber";
+    final result = await HttpRequest.request(url);
+    AlipayAccountModel model = AlipayAccountModel.fromJson(result["data"]);
+    return model;
+  }
+
+  /// 保存用户支付宝账号信息
+  static Future<bool> saveAlipayAccountReq(Map<String, String> params) async {
+    final url = "/cweb/member/alipayAccount";
+    final result = await HttpRequest.request(url, method: "put", params: params);
+    bool isSuccess = result["data"];
+    return isSuccess;
   }
 }

@@ -77,23 +77,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        color: Colors.black,
-        theme: ThemeData(
-          // primarySwatch: Colors.orange,
-          primaryColor: Colors.white,
-          // accentColor: Colors.green,
-          primaryColorBrightness: Brightness.light,
-        ),
-        title: 'Flutter Boost example',
-        builder: FlutterBoost.init(postPush: _onRoutePushed),
-        routes: getRoutes(),
-        home: Home()
-        // home: Container(
-        //   child: TestPage3(),
-        //   // child: EditPhonePage(),
-        // ),
-        );
+      debugShowCheckedModeBanner: false,
+      color: Colors.black,
+      theme: ThemeData(
+        primaryColor: Colors.white,
+        primaryColorBrightness: Brightness.light,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent
+      ),
+      title: 'Flutter Boost example',
+      builder: FlutterBoost.init(postPush: _onRoutePushed),
+      routes: getRoutes(),
+      home: Home()
+    );
   }
 
   void _onRoutePushed(
