@@ -13,6 +13,7 @@ import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 import '../../XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override

@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
-import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/Utils/Loading.dart';
 
 class TestPage3 extends StatefulWidget {
@@ -58,12 +55,12 @@ class _PageState extends State<TestPage3> with SingleTickerProviderStateMixin {
       ),
     );
     //启动动画(正向执行)
-    // controller.forward();
+    controller.forward();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: xtBackBar(title: "page2", back: () => _xtback(context)),
+        appBar: xtBackBar(title: "page3", back: () => _xtback(context)),
         body: Column(children: [
           RaisedButton(
               onPressed: () {
@@ -80,16 +77,20 @@ class _PageState extends State<TestPage3> with SingleTickerProviderStateMixin {
                 Loading.forceHide();
               },
               child: Text('force loading hide')),
-          // Container(
-          //     color: Color.fromRGBO(165, 175, color.value.toInt(), 1),
-          //     width: 50,
-          //     height: animation.value)
           AnimatedBuilder(
               animation: controller,
-              builder: (c, child) => Container(
-                  color: Color.fromRGBO(165, 175, color.value.toInt(), 1),
-                  width: 50,
-                  height: animation.value))
+              builder: (c, child) {
+                // print(animation.value);
+                return Container(
+                    color: Color.fromRGBO(165, 175, color.value.toInt(), 1),
+                    width: 50,
+                    height: animation.value);
+              })
         ]));
+  }
+  @override
+  void dispose () {
+    super.dispose();
+    controller.dispose();
   }
 }

@@ -112,18 +112,15 @@ class _MyAppState extends State<MyApp> {
 
 class Home extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _Home();
-  }
+  State<StatefulWidget> createState() => _Home();
 }
 
 class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Global.context = context;
-    // return Container(child: SettingPage());
-    return TestPage3();
+    return Container(child: SettingPage());
+    // return TestPage3();
   }
 }
 
