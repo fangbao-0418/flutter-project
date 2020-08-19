@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/local/helper.dart' as local;
+import 'package:xtflutter/Utils/Error/ReportError.dart';
 
 class XTErrorCode extends DioError {
   String errorCode = "";

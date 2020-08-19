@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:xtflutter/XTNetWork/httpRequest.dart';
+import 'dart:async';
 import 'package:xtflutter/local/helper.dart' as local;
 
 /**
@@ -30,12 +31,12 @@ void reportOrigin(FlutterErrorDetails details) {
     'md': 'iPhone 7 Plus',
     'mid': '142185',
     'ip': '220.173.134.120',
-    'ei': jsonEncode({'EVT_MSG': '所有IP都已经尝试失败,可以放弃治疗'}),
+    // 'ei': jsonEncode({'EVT_MSG': '所有IP都已经尝试失败,可以放弃治疗'}),
     'gid': 'k61uk8df90',
     'os': 'iOS',
     'ov': '13.3.1',
-    'moonid': 'ijmtxxg4t'
-    // 'stack': details
+    // 'moonid': 'ijmtxxg4t',
+    'stack': details.toString()
   });
   final data = {'env': 'prod', 'xt_logdata': xtLogdata};
 
@@ -46,13 +47,17 @@ void reportOrigin(FlutterErrorDetails details) {
     return options; //continue
   }));
   local.helper(dio);
-  dio.post(url, data: data).then((res) {
-    print(res);
+  new Timer(Duration(microseconds: 100), () {
+    dio.post(url, data: data);
   });
 }
 
 void reportError(FlutterErrorDetails details) {
   print('reportError');
-  // print(details);
-  // reportOrigin(details);
+  print(details);
+  reportOrigin(details);
+}
+
+void throwError(String title, String message) {
+  // throw Exception(message);
 }

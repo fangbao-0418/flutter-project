@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/Utils/Toast.dart';
+import 'package:xtflutter/Utils/Error/ReportError.dart';
+import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 
 class TestPage1 extends StatefulWidget {
   @override
@@ -48,6 +50,16 @@ class _PageState extends State<TestPage1> {
                 Toast.cancelAll();
               },
               child: Text('global hide all toast')),
+          RaisedButton(
+              onPressed: () {
+                // throw ('error test');
+                // throwError('title', )
+                throwError('title', 'XXXX');
+                // XTUserInfoRequest.getUserInfoData().then((res) {
+                //   throwError('title', res.toString());
+                // });
+              },
+              child: Text('throw error')),
         ]));
   }
 }
