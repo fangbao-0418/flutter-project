@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/local/helper.dart' as local;
-
-class XTErrorCode extends DioError {
-  String errorCode = "";
-}
+import 'package:xtflutter/Utils/Error/ReportError.dart';
+import 'package:xtflutter/Utils/Toast.dart';
+import 'package:xtflutter/Utils/Error/XtError.dart';
 
 class HttpRequest {
   static Future<T> request<T>(String url,
@@ -28,52 +29,68 @@ class HttpRequest {
     });
     // 拦截器
     Interceptor dInter = InterceptorsWrapper(onRequest: (options) {
-      print("请求拦截");
       return options;
     }, onResponse: (response) {
-      print("响应拦截");
       return response;
     }, onError: (err) {
-      print(options.headers.toString());
-      print("错误拦截");
       return err;
     });
     List<Interceptor> inters = [dInter];
-
     // 请求单独拦截器
     if (inter != null) {
       inters.add(inter);
     }
-
     // 统一添加到拦截器中
     dio.interceptors.addAll(inters);
-
     // 2.发送网络请求
     try {
       Response response = await dio.request(url,
           data: params, queryParameters: queryParameters, options: options);
-      print("----------response start ------------");
-      // print(url);
-      // print(params.toString());
-      // print(options.toString());
-      // xtprintRequest(response.request);
-      print(response.data.toString());
-      print("----------response end ------------");
-      Map map = response.data as Map<String, dynamic>;
+      print(response);
+      Map<String, dynamic> map = response.data.nn.ss;
       if (map["success"] == false) {
-        XTErrorCode err = XTErrorCode();
-        err.type = DioErrorType.DEFAULT;
-        err.error = map["message"];
-        err.errorCode = map["code"];
-        return Future.error(err);
+        XTNetError xtNetError = XTNetError(
+            type: XTNetErrorType.DEFAULT,
+            message: map["message"],
+            data: map,
+            error: DioError(
+                type: DioErrorType.DEFAULT,
+                request: response.request,
+                response: response));
+        // default error
+        return Future.error(xtNetError);
       } else {
         return response.data;
       }
-    } on XTErrorCode catch (e) {
-      print("----------response error start1 ------------");
-      print("----------response error start1 ------------");
-      print("----------response error end------------");
-      return Future.error(e);
+    } catch (e) {
+      XTNetError xtNetError;
+      if (e is DioError) {
+        // dio error
+        xtNetError = XTNetError(
+          dioErrorType: e.type,
+          error: e,
+          type: XTNetErrorType.DIO_ERROR,
+        );
+        if (e.type == DioErrorType.DEFAULT) {
+          Toast.showToast(msg: '网络异常');
+        } else if (e.type == DioErrorType.RESPONSE) {
+          xtNetError.data = e.response;
+          Toast.showToast(msg: '网络异常');
+        } else if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+          Toast.showToast(msg: '网络连接超时');
+        } else if (e.type == DioErrorType.SEND_TIMEOUT) {
+          Toast.showToast(msg: '发送请求超时');
+        } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
+          Toast.showToast(msg: '数据接收超时');
+        } else if (e.type == DioErrorType.CANCEL) {
+          //
+        }
+      } else {
+        // syntax error
+        Toast.showToast(msg: '数据处理失败');
+        xtNetError = XTNetError(type: XTNetErrorType.SYNTAX_ERROR, error: e);
+      }
+      return Future.error(xtNetError);
     }
   }
 

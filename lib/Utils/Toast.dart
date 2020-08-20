@@ -27,8 +27,7 @@ class Toast {
     );
   }
 
-  Toast.showToast(
-      {@required String msg, @required this.context, this.duration = 2}) {
+  Toast.showToast({@required String msg, this.context, this.duration = 2}) {
     Toast.cancel();
     fToast = FT.FToast(context ?? Global.context);
     fToast.showToast(

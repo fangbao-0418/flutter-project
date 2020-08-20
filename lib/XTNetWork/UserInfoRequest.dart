@@ -12,7 +12,7 @@ class XTUserInfoRequest {
     final result = await HttpRequest.request(url);
     final userModel = result["data"];
     UserInfoModel model = UserInfoModel.fromJson(userModel);
-    print("getMember ----" + model.toJson().toString());
+    // print("getMember ----" + model.toJson().toString());
     return model;
   }
 
@@ -45,8 +45,7 @@ class XTUserInfoRequest {
   static Future<dynamic> changeUserPhone(String phone, String code) {
     const url = "/bweb/member/update/mobile";
     return HttpRequest.request(url,
-        method: "post",
-        queryParameters: {"mobile": phone, "code": code}).then((res) {
+        method: "post", params: {"mobile": phone, "code": code}).then((res) {
       if (res['code'] == '00000' && res['success']) {
         return res['data'];
       } else {
@@ -66,15 +65,18 @@ class XTUserInfoRequest {
 
 
   /// 地址信息（新增/修改）
-  static Future<Map<String, dynamic>> addressInfoRequest(Map<String, String> para, bool isAdd) async {
-    final url = isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
+  static Future<Map<String, dynamic>> addressInfoRequest(
+      Map<String, String> para, bool isAdd) async {
+    final url =
+        isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
     final result = await HttpRequest.request(url, method: "post", params: para);
     return result;
   }
 
   /// 获取省市区数据
   static Future<List> getCityDataList(int type) async {
-    final provinceUrl = "https://assets.hzxituan.com/data/v1.0.0/address/province.json";
+    final provinceUrl =
+        "https://assets.hzxituan.com/data/v1.0.0/address/province.json";
     final cityUrl = "https://assets.hzxituan.com/data/v1.0.0/address/city.json";
     final areaUrl = "https://assets.hzxituan.com/data/v1.0.0/address/area.json";
     String realUrl = "";
@@ -101,7 +103,7 @@ class XTUserInfoRequest {
 
     List<Map<String, dynamic>> allList = [];
     List<Map<String, dynamic>> allItemList = [];
-    for (int i = 0; i < provinceResult.length; i ++) {
+    for (int i = 0; i < provinceResult.length; i++) {
       String provinceName = provinceResult[i]["name"];
       String provinceValue = provinceResult[i]["value"].toString();
       Map<String, List> provinceMap = {};
@@ -110,7 +112,7 @@ class XTUserInfoRequest {
       Map<String, List> provinceItemMap = {};
       List<Map<String, List>> cityItemList = [];
 
-      for (int j = 0; j < cityResult.length; j ++) {
+      for (int j = 0; j < cityResult.length; j++) {
         String cityName = cityResult[j]["name"];
         String cityValue = cityResult[j]["value"];
         String cityParent = cityResult[j]["parent"].toString();
@@ -120,14 +122,14 @@ class XTUserInfoRequest {
         Map<String, List> cityItemMap = {};
         List areaItemList = [];
 
-        for (int k = 0; k < areaResult.length; k ++) {
+        for (int k = 0; k < areaResult.length; k++) {
           String areaName = areaResult[k]["name"];
           String areaParent = areaResult[k]["parent"];
 
           String areaValue = areaResult[k]["value"];
           if (areaParent == cityValue) {
             areaNameList.add(areaName);
-            
+
             areaItemList.add(areaValue);
           }
         }
@@ -156,11 +158,9 @@ class XTUserInfoRequest {
 
   /// 获取省市区列表
   static Future<Map> getCityList() {
-    return Future.wait([
-      getCityDataList(0),
-      getCityDataList(1),
-      getCityDataList(2)
-    ]).then((resluts) async {
+    return Future.wait(
+            [getCityDataList(0), getCityDataList(1), getCityDataList(2)])
+        .then((resluts) async {
       return await compute(cityDataSuccess, resluts);
     }).catchError((err) {
       print(err);
@@ -178,7 +178,8 @@ class XTUserInfoRequest {
   /// 保存用户支付宝账号信息
   static Future<bool> saveAlipayAccountReq(Map<String, String> params) async {
     final url = "/cweb/member/alipayAccount";
-    final result = await HttpRequest.request(url, method: "put", params: params);
+    final result =
+        await HttpRequest.request(url, method: "put", params: params);
     bool isSuccess = result["data"];
     return isSuccess;
   }
