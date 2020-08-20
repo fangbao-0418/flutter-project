@@ -55,6 +55,16 @@ class XTUserInfoRequest {
     });
   }
 
+   // 获取实名列表
+  static Future<dynamic> memberAuthentication(String phone, String code)  async {
+    const url = "/cweb/memberAuthentication/getList";
+    final result = await HttpRequest.request(url);
+    final model = result["data"];
+    return model;
+    
+  }
+
+
   /// 地址信息（新增/修改）
   static Future<Map<String, dynamic>> addressInfoRequest(Map<String, String> para, bool isAdd) async {
     final url = isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
