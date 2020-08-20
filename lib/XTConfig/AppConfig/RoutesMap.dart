@@ -8,6 +8,7 @@ import 'package:xtflutter/UIPages/UserInfo/EditNamePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';
 import 'package:xtflutter/UIPages/UserInfo/AddAddressPage.dart';
+import 'package:xtflutter/UIPages/UserInfo/WeChatInfoPage.dart';
 import 'package:xtflutter/UIPages/setting_page.dart';
 import 'package:xtflutter/UIPages/TestPage/page1.dart';
 import 'package:xtflutter/UIPages/TestPage/page2.dart';
@@ -20,6 +21,7 @@ Map<String, PageBuilder> routeConfigs = {
   'addAddress': (pageName, params, _) => AddAddressPage(params: params, name: pageName),
   'editPhone': (pageName, params, _) => EditPhonePage(),
   'alipayAccount': (pageName, params, _) => AlipayAccountPage(),
+  'wechatInfo': (pageName, params, _) => WeChatInfoPage(),
   'flutterPage': (pageName, params, _) => FlutterRouteWidget(params: params),
   'page1': (pageName, params, _) => TestPage1(),
   'page2': (pageName, params, _) => TestPage2(),

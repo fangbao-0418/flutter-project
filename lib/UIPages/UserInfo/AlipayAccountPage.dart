@@ -159,7 +159,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
             bottom: 80,
             child: RaisedButton(
               elevation: 0,
-              padding: EdgeInsets.only(left: 50, right: 50),
+              padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
               color: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
@@ -250,7 +250,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
         "保存",
         style: TextStyle(color: Colors.white, fontSize: 16)
       ),
-      padding: EdgeInsets.only(left: 80, right: 80),
+      padding: EdgeInsets.fromLTRB(80, 10, 80, 10),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8)
       ),
