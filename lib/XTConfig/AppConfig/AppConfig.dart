@@ -4,6 +4,8 @@ import 'package:xtflutter/local/proxy.dart';
 class AppConfig {
   UserInfoVM userVM = UserInfoVM();
 
+  AppSoftInfo softInfo = AppSoftInfo();
+
   ///是不是app的subModule
   bool isAppSubModule = false;
   String device = "";
@@ -52,6 +54,17 @@ class AppConfig {
     _instance.token = token;
     _instance.platform = platform;
     print(" token ==2=" + token);
+  }
+
+  static updateSoftInfo(
+      String av, String dv, String md, String gid, String os, String ov) {
+    AppConfig.getInstance();
+    _instance.softInfo.av = av;
+    _instance.softInfo.dv = dv;
+    _instance.softInfo.md = md;
+    _instance.softInfo.gid = gid;
+    _instance.softInfo.os = os;
+    _instance.softInfo.ov = ov;
   }
 
   static updateBaseUrl(String baseURL) {
@@ -113,4 +126,18 @@ class AppConfig {
   static get user {
     return _instance.userVM.user;
   }
+
+  static get soft {
+    return _instance.softInfo;
+  }
+}
+
+class AppSoftInfo {
+  String av = "";
+  String dv = "";
+  String md = "";
+  String mid = "";
+  String gid = "";
+  String os = "";
+  String ov = "";
 }

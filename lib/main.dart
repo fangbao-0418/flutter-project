@@ -79,6 +79,9 @@ class _MyAppState extends State<MyApp> {
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
     if (inApp) {
       getDeviceInfo();
+      getUIInfo();
+      getSoftInfo();
+      getUserInfo();
     }
   }
 
@@ -93,17 +96,40 @@ class _MyAppState extends State<MyApp> {
         jsModel["black"], jsModel["token"], jsModel["platform"]);
     print("-----get platform info-------");
 
+    var userInfo = await XTMTDChannel.invokeMethod("userInfo");
+
+    AppConfig().userVM.updateUser(UserInfoModel.fromJson(Map.from(userInfo)));
+    print("userInfo -------2" + userInfo.toString());
+
+    var map = await XTMTDChannel.invokeMethod("softInfo");
+    print("softInfo ------- " + map.toString());
+    AppConfig.updateSoftInfo(
+        map["av"], map["dv"], map["md"], map["gid"], map["os"], map["ov"]);
+    print("userInfo -------2" + userInfo.toString());
+  }
+
+  void getUIInfo() async {
+    /// baseURL 、device、black、token、platform
     var uiInfo = Map.from(await XTMTDChannel.invokeMethod("getUIInfo"));
     print("uiInfo" + uiInfo.toString());
     AppConfig.updateVersion(uiInfo["appVersion"]);
     AppConfig.updateStatusHeight(uiInfo["statusHeight"]);
     AppConfig.updateNavHeight(uiInfo["navHeight"]);
     AppConfig.updateBottomMargin(uiInfo["bottomMargin"]);
+  }
 
+  void getUserInfo() async {
     var userInfo = await XTMTDChannel.invokeMethod("userInfo");
- 
     AppConfig().userVM.updateUser(UserInfoModel.fromJson(Map.from(userInfo)));
     print("userInfo -------2" + userInfo.toString());
+  }
+
+  void getSoftInfo() async {
+
+    var map = await XTMTDChannel.invokeMethod("softInfo");
+    print("softInfo ------- " + map.toString());
+    AppConfig.updateSoftInfo(
+        map["av"], map["dv"], map["md"], map["gid"], map["os"], map["ov"]);
   }
 
   @override
