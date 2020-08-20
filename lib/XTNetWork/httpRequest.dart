@@ -35,8 +35,8 @@ class HttpRequest {
       print("响应拦截");
       return response;
     }, onError: (err) {
-      print(options.headers.toString());
       print("错误拦截");
+      // print(err);
       return err;
     });
     List<Interceptor> inters = [dInter];
@@ -54,11 +54,11 @@ class HttpRequest {
       Response response = await dio.request(url,
           data: params, queryParameters: queryParameters, options: options);
       print("----------response start ------------");
-      // print(url);
-      // print(params.toString());
-      // print(options.toString());
-      // xtprintRequest(response.request);
-      print(response.data.toString());
+      // // print(url);
+      // // print(params.toString());
+      // // print(options.toString());
+      // // xtprintRequest(response.request);
+      print(response);
       print("----------response end ------------");
       Map map = response.data as Map<String, dynamic>;
       if (map["success"] == false) {

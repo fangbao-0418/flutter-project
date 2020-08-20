@@ -15,7 +15,7 @@ const moonid = 'ijmtxxg4t';
 // http://127.0.0.1:2222/    https://rlcas.hzxituan.com
 String baseUrl = 'https://rlcas.hzxituan.com';
 
-void reportOrigin(FlutterErrorDetails details) {
+void sendReport(String message, StackTrace stack) {
   // 1.发送网络请求
   final url = baseUrl + "/rlcas/ijmtxxg4t";
   final List<dynamic> xtLogdata = [];
@@ -36,10 +36,10 @@ void reportOrigin(FlutterErrorDetails details) {
     'os': 'iOS',
     'ov': '13.3.1',
     // 'moonid': 'ijmtxxg4t',
-    'stack': details.toString()
+    'message': message,
+    'stack': stack?.toString()
   });
   final data = {'env': 'prod', 'xt_logdata': xtLogdata};
-
   Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
   dio.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
@@ -54,10 +54,21 @@ void reportOrigin(FlutterErrorDetails details) {
 
 void reportError(FlutterErrorDetails details) {
   print('reportError');
-  print(details);
-  reportOrigin(details);
+  // print(details);
+  // sendReport(details.toString(), details.stack);
 }
 
 void throwError(String title, String message) {
-  // throw Exception(message);
+  // throw(message);
+  // const stack = StackTrace(message: '').current;
+  // try {
+   
+  // } catch (e) {
+  //   print('eeeeeee');
+  //   print(e?.stack);
+  // print(message);
+  // reportError(FlutterErrorDetails(stack: StackTrace.fromString(message), library: 'xxx', exception: message));
+  // }
+  // FlutterErrorDetails details = ;
+  // 
 }

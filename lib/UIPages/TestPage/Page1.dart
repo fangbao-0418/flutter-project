@@ -14,8 +14,8 @@ class _PageState extends State<TestPage1> {
   void _xtback(BuildContext context) {
     XTRouter.closePage(context: context);
   }
-
   Toast toast;
+  dynamic s;
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: xtBackBar(title: "page1", back: () => _xtback(context)),
@@ -54,12 +54,16 @@ class _PageState extends State<TestPage1> {
               onPressed: () {
                 // throw ('error test');
                 // throwError('title', )
-                throwError('title', 'XXXX');
-                // XTUserInfoRequest.getUserInfoData().then((res) {
-                //   throwError('title', res.toString());
-                // });
+                // throwError('title', 'XXXX');
+                XTUserInfoRequest.getUserInfoData().then((res) {
+                  // print(res.toJson());
+                  // throwError('title', res.toJson().toString());
+                  // throw 'xxxxx';
+                }, onError: () {
+                  print('fetch user fail');
+                });
               },
-              child: Text('throw error')),
+              child: Text('throw error' ?? s.ss)),
         ]));
   }
 }
