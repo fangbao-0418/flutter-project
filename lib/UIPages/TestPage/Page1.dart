@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/Utils/Toast.dart';
+import 'package:xtflutter/Utils/Error/ReportError.dart';
+import 'package:xtflutter/XTNetWork/httpRequest.dart';
+import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
 
 class TestPage1 extends StatefulWidget {
   @override
@@ -14,6 +18,16 @@ class _PageState extends State<TestPage1> {
   }
 
   Toast toast;
+  dynamic s;
+  Future<UserInfoModel> getUserInfoData() async {
+    // 1.发送网络请求
+    final url = "/cweb/member/getMember/22";
+    final result = await HttpRequest.request(url);
+    final userModel = result["data"];
+    UserInfoModel model = UserInfoModel.fromJson(userModel);
+    return model;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: xtBackBar(title: "page1", back: () => _xtback(context)),
@@ -48,6 +62,25 @@ class _PageState extends State<TestPage1> {
                 Toast.cancelAll();
               },
               child: Text('global hide all toast')),
+          RaisedButton(
+              onPressed: () {
+                // throw ('error test');
+                // throwError('title', )
+                // throwError('title', 'XXXX');
+                XTUserInfoRequest.sendCode(phone: '');
+                // XTUserInfoRequest.getUserInfoData().then((res) {
+                //   print('res ok');
+                //   print(res);
+                //   // throwError('title', res.toJson().toString());
+                //   // throw 'xxxxx';
+                // });
+              },
+              child: Text('throw error' ?? s.ss)),
+          RaisedButton(
+              onPressed: () {
+                getUserInfoData();
+              },
+              child: Text(s.ss)),
         ]));
   }
 }

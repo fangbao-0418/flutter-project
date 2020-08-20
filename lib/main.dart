@@ -2,6 +2,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+// import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'package:xtflutter/Utils/Error/Monitor.dart';
 
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 
@@ -15,21 +19,19 @@ import 'package:xtflutter/local/proxy.dart';
 import 'Widgets/Wrapper.dart';
 import 'UIPages/setting_page.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
-import 'package:xtflutter/UIPages/TestPage/Page3.dart';
+import 'package:xtflutter/UIPages/TestPage/Page1.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      // ChangeNotifierProvider(create: (ctx) => AppConfig().userVM),
-      ChangeNotifierProvider(create: (ctx) => AppConfig().userVM),
-    ],
-    child: MyApp(),
-  ));
-  FlutterError.onError = (FlutterErrorDetails details) {
-    reportError(details);
-  };
+  monitor(() {
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => AppConfig().userVM),
+      ],
+      child: MyApp(),
+    ));
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -101,7 +103,7 @@ class _MyAppState extends State<MyApp> {
     AppConfig.updateBottomMargin(uiInfo["bottomMargin"]);
 
     var userInfo = await XTMTDChannel.invokeMethod("userInfo");
- 
+
     AppConfig().userVM.updateUser(UserInfoModel.fromJson(Map.from(userInfo)));
     print("userInfo -------2" + userInfo.toString());
   }
@@ -145,8 +147,8 @@ class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Global.context = context;
-    return Container(child: SettingPage());
-    // return TestPage3();
+    // return Container(child: SettingPage());
+    return TestPage1();
   }
 }
 
