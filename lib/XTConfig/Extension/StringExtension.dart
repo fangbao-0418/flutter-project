@@ -9,4 +9,8 @@ extension XtString on String {
   String get safeStr {
     return this == null ? "" : this;
   }
+
+  bool get xtEmpty {
+    return (this == null || this.trim().isEmpty);
+  }
 }

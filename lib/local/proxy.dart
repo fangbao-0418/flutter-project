@@ -7,3 +7,5 @@ const String localToken =
 
 ///BaseUel
 const String localBaseurl = "https://testing-myouxuan.hzxituan.com";
+
+const bool inApp = true;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
+import '../XTConfig/Extension/StringExtension.dart';
 
 class UserInfoVM extends ChangeNotifier {
   UserInfoModel _user = UserInfoModel();
@@ -7,6 +8,7 @@ class UserInfoVM extends ChangeNotifier {
   ///更新用户信息
   void updateUser(UserInfoModel info) {
     _user = info;
+
     notifyListeners();
   }
 
@@ -40,14 +42,16 @@ class UserInfoVM extends ChangeNotifier {
   }
 
   bool get isRealName {
-    return _user.idCard != "";
+    return _user.idCard.xtEmpty;
   }
 
   String get resRealName {
-    return isRealName ? _user.userName : "未认证";
+    return isRealName
+        ? (_user.userName == null ? "未认证" : _user.userName)
+        : "未认证";
   }
 
   String get resIdentity {
-    return isRealName ? _user.idCard : "未认证";
+    return isRealName ? (_user.idCard == null ? "未认证" : _user.idCard) : "未认证";
   }
 }
