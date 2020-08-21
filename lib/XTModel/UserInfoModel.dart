@@ -259,14 +259,13 @@ class AlipayAccountModel {
           accountNumber: json["accountNumber"]);
 
   Map<String, dynamic> toJson() => {
-    "memberId": memberId,
-    "accountUserName": accountUserName,
-    "accountNumber": accountNumber
-  };
+        "memberId": memberId,
+        "accountUserName": accountUserName,
+        "accountNumber": accountNumber
+      };
 }
 
 class WechatInfoModel {
-
   WechatInfoModel({
     this.wechat,
     this.wxQr,
@@ -275,19 +274,13 @@ class WechatInfoModel {
   String wechat;
   String wxQr;
 
-  factory WechatInfoModel.fromJson(Map<String, dynamic> json) => WechatInfoModel(
-    wechat: json["wechat"],
-    wxQr: json["wxQr"]
-  );
+  factory WechatInfoModel.fromJson(Map<String, dynamic> json) =>
+      WechatInfoModel(wechat: json["wechat"], wxQr: json["wxQr"]);
 
-  Map<String, dynamic> toJson() => {
-    "wechat": wechat,
-    "wxQr": wxQr
-  };
+  Map<String, dynamic> toJson() => {"wechat": wechat, "wxQr": wxQr};
 }
 
 class RealNameModel {
-  
   RealNameModel({this.id, this.idNo, this.name, this.isDefault});
 
   ///id

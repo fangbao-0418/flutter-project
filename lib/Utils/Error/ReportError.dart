@@ -1,12 +1,15 @@
 import 'dart:math';
-
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:dio/dio.dart';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'dart:convert';
+import 'package:convert/convert.dart';
 import 'dart:async';
+import 'package:crypto/crypto.dart';
 import 'package:xtflutter/local/helper.dart' as local;
+import 'package:xtflutter/Utils/Storage/SharedPreferences.dart';
 import './XtError.dart';
 
 /**
@@ -16,7 +19,32 @@ import './XtError.dart';
  */
 const moonid = 'ijmtxxg4t';
 
+// 上报数据大小 200kb
+const maxUploadSize = 1024 * 200;
+
 String baseUrl = 'https://rlcas.hzxituan.com';
+
+Future _sendRequest(Map<String, dynamic> info) {
+  final List<dynamic> xtLogdata = [];
+  xtLogdata.add(info);
+  final data = {'env': 'test', 'xt_logdata': xtLogdata};
+
+  final url = baseUrl + "/rlcas/ijmtxxg4t";
+  Dio dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: 10000,
+      headers: {'referer': 'https://myouxuan.hzxituan.com/'}));
+  local.helper(dio);
+
+  // return dio.post(url, data: data).then((v) {
+  //   print('send report success');
+  //   _detectionUnSendLog();
+  // }, onError: (e) {
+  //   collectData(jsonEncode(info));
+  //   print('send report failed');
+  // });
+  return Future.value();
+}
 
 void sendReport(
     {String message, String req, String res, StackTrace stack, int timestamp}) {
@@ -24,48 +52,119 @@ void sendReport(
     return;
   }
   timestamp = timestamp ?? new DateTime.now().millisecondsSinceEpoch;
-  // 1.发送网络请求
-  final url = baseUrl + "/rlcas/ijmtxxg4t";
-  final List<dynamic> xtLogdata = [];
+
   String stackString = stack?.toString() ?? '';
   List<String> stackList = stackString.split(new RegExp(r'[\t\r\n\v]'));
   stackString = stackList.sublist(0, min(stackList.length, 10)).join('\r\n');
-  xtLogdata.add({
+  Map<String, dynamic> info = {
     'flutter': true,
     'env': 'prod',
     't': 'error',
     'ap': 'AppStore',
     'at': timestamp,
-    'av': '2.1.1',
-    'code': 2222,
-    'dv': 'E79B5B23-034D-4D55-A472-C2D23A645DB2',
-    'md': 'iPhone 7 Plus',
-    'mid': '142185',
-    'ip': '220.173.134.120',
-    'gid': 'k61uk8df90',
-    'os': 'iOS',
-    'ov': '13.3.1',
+    'av': AppConfig.soft.av,
+    'dv': AppConfig.soft.dv,
+    'md': AppConfig.soft.md,
+    'mid': AppConfig.user.id,
+    // 'ip': '220.173.134.120',
+    'gid': AppConfig.soft.gid,
+    'os': AppConfig.soft.os,
+    'ov': AppConfig.soft.ov,
     'message': message,
     'stack': stackString,
     '_res': res,
     '_req': req
-  });
-  final data = {'env': 'prod', 'xt_logdata': xtLogdata};
-  Dio dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: 10000));
-  dio.interceptors
-      .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-    options.headers['referer'] = 'https://xt-crmadmin.hzxituan.com/';
-    return options; //continue
-  }));
-  local.helper(dio);
+  };
+
   new Timer(Duration(microseconds: 100), () {
-    print('send report start');
-    dio.post(url, data: data).then((v) {
-      print('send report success');
-    }, onError: (e) {
-      print('send report failed');
+    String infoStr = jsonEncode(info);
+    if (infoStr.length > maxUploadSize) {
+      // 数据大的情况下拆解数据上传
+      _sectionSend(info);
+    } else {
+      _sendRequest(info);
+    }
+  });
+}
+
+Map<String, dynamic> _getBaseInfo() {
+  return {
+    'flutter': true,
+    'env': 'prod',
+    't': 'error',
+    'ap': 'AppStore',
+    'av': AppConfig.soft.av,
+    'dv': AppConfig.soft.dv,
+    'md': AppConfig.soft.md,
+    'mid': AppConfig.user.id,
+    // 'ip': '220.173.134.120',
+    'gid': AppConfig.soft.gid,
+    'os': AppConfig.soft.os,
+    'ov': AppConfig.soft.ov,
+  };
+}
+
+// md5 加密
+String _generateMd5(String data) {
+  var content = new Utf8Encoder().convert(data);
+  var digest = md5.convert(content);
+  // 这里其实就是 digest.toString()
+  return hex.encode(digest.bytes);
+}
+
+void _sectionSend(Map<String, dynamic> info) {
+  Map<String, dynamic> baseInfo = _getBaseInfo();
+  String id = _generateMd5(baseInfo.toString());
+  int totalSize = jsonEncode(baseInfo).length;
+  // 每部分数据量
+  int partialSize = maxUploadSize - baseInfo.length;
+  // 分割长度
+  int len = (totalSize / partialSize).floor();
+  String ds = jsonEncode({
+    'message': info['message'],
+    'stack': info['stack'],
+    '_res': info['_res'],
+    '_req': info['_req']
+  });
+  List<Map<String, dynamic>> rows = [];
+  List.generate(len, (i) {
+    int start = i * maxUploadSize;
+    int end = min((i + 1) * maxUploadSize, ds.length);
+    String content = ds.substring(start, end);
+    String message = "${id}__part" + i.toString() + ": " + content;
+    Map<String, dynamic> info;
+    info.addAll({
+      ...baseInfo,
+      'message': message,
+    });
+    rows.add(info);
+    // rows.map(())
+    _sendRequest(rows[0]).whenComplete(() {
+      //
     });
   });
+}
+
+// 检测未成功的日志
+void _detectionUnSendLog() {
+  Prefs.getStringList('xt-logdata').then((data) {
+    if (data.length > 0) {
+      if (data[0].length > 1024 * 200) {
+        data.removeAt(0);
+      }
+      final info = jsonDecode(data[0]);
+      _sendRequest(info).then((res) {
+        data.removeAt(0);
+        Prefs.setStringList('xt-logdata', data);
+      });
+    }
+  });
+}
+
+void collectData(String data) async {
+  List<String> xtLogdata = await Prefs.getStringList('xt-logdata') ?? [];
+  xtLogdata.add(data);
+  Prefs.setStringList('xt-logdata', xtLogdata);
 }
 
 void reportError(FlutterErrorDetails details) {
