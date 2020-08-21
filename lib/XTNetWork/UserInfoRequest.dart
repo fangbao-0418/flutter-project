@@ -54,15 +54,21 @@ class XTUserInfoRequest {
     });
   }
 
-   // 获取实名列表
-  static Future<dynamic> memberAuthentication(String phone, String code)  async {
+  // 获取实名列表
+  static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";
     final result = await HttpRequest.request(url);
     final model = result["data"];
-    return model;
-    
+ 
+    var list = [];
+    for (var item in model) {
+      RealNameModel m = RealNameModel.fromJson(Map.of(item));
+     
+      list.add(m);
+    }
+    print(list.first.toString() + '8888899999992');
+    return list;
   }
-
 
   /// 地址信息（新增/修改）
   static Future<Map<String, dynamic>> addressInfoRequest(

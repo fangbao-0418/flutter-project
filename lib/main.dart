@@ -159,8 +159,8 @@ class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Global.context = context;
-    // return Container(child: SettingPage());
-    return TestPage1();
+    return Container(child: SettingPage());
+    // return TestPage1();
   }
 }
 

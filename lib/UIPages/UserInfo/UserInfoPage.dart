@@ -210,7 +210,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                   _updateRealName(userInfo);
                 }
               },
-              style: userInfo.isRealName  ? userTextStyle : userRedTextStyle,
+              style: userInfo.isRealName ? userTextStyle : userRedTextStyle,
               name: userInfo.resRealName,
               hasArrow: false,
             );
