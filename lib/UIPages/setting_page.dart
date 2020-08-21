@@ -60,27 +60,29 @@ class SettingPage extends StatelessWidget {
         basicContent("收货地址", tapFunc: () {
           /// 测试数据 待地址列表完成后即可删除
           Map<String, dynamic> params = {
-            "address": "安徽省 安庆市 太湖县 仓前街道五迪中心A2幢4楼喜团科技",
-            "city": "安庆市",
-            "cityId": 340800,
-            "consignee": "朋学良",
-            "defaultAddress": 1,
-            "district": "太湖县",
-            "districtId": 340825,
-            "freight": 0,
-            "id": 65573,
-            "memberId": 7838383,
-            "phone": "18365295533",
-            "province": "安徽省",
-            "provinceId": 340000,
-            "street": "仓前街道五迪中心A2幢4楼喜团科技"
+            // "address": "安徽省 安庆市 太湖县 仓前街道五迪中心A2幢4楼喜团科技",
+            // "city": "安庆市",
+            // "cityId": 340800,
+            // "consignee": "朋学良",
+            // "defaultAddress": 1,
+            // "district": "太湖县",
+            // "districtId": 340825,
+            // "freight": 0,
+            // "id": 65573,
+            // "memberId": 7838383,
+            // "phone": "18365295533",
+            // "province": "安徽省",
+            // "provinceId": 340000,
+            // "street": "仓前街道五迪中心A2幢4楼喜团科技"
           };
           AddressListModel model = AddressListModel.fromJson(params);
           XTRouter.pushToPage(
             routerName: "addAddress",
             params: model.toJson(),
             context: context,
-          );
+          ).then((value) {
+            print("新增/修改地址成功后，地址列表刷新");
+          });
         }),
         basicContent("支付宝账号", tapFunc: () {
           XTRouter.pushToPage(routerName: "alipayAccount", context: context);

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../Utils/Toast.dart';
-import '../../Utils/Toast.dart';
-import '../../Utils/Toast.dart';
 import '../../XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import '../../XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
@@ -41,10 +39,12 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
       Toast.showToast(msg: model.toJson().toString());
       if (model.wechat.isNotEmpty && model.wxQr.isNotEmpty) {
         setState(() {
-        _wechatAccountCon.text = model.wechat;
-        _wechatQrImgUrl = model.wxQr;
-        _state = WeChatInfoState.have;
-      });
+          _wechatAccountCon.text = model.wechat;
+          _wechatQrImgUrl = model.wxQr;
+          _state = WeChatInfoState.have;
+        });
+      } else {
+        setState(() => _state = WeChatInfoState.none);
       }
     } catch (err) {
     }
@@ -90,6 +90,35 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     }
   }
 
+  /// 前往修改信息页面
+  void _gotoInfoChangePage(bool isQr) {
+    if (isQr) {
+      /// 修改微信二维码
+      XTRouter.pushToPage(
+        routerName: "wechatQrChange", 
+        params: {"qrUrl": _wechatQrImgUrl},
+        context: context,
+      ).then((value) => {
+        setState(() {
+          Map result = Map<String, dynamic>.from(value);
+          _wechatQrImgUrl = result["qrUrl"];
+        })
+      });
+    } else {
+      /// 修改微信号
+      XTRouter.pushToPage(
+        routerName: "wechatNameChange", 
+        params: {"name": _wechatAccountCon.text},
+        context: context,
+      ).then((value) => {
+        setState(() {
+          Map result = Map<String, dynamic>.from(value);
+          _wechatAccountCon.text = result["name"];
+        })
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,11 +137,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                     GestureDetector(
                       onTap: () {
                         if (_state == WeChatInfoState.have) {
-                          XTRouter.pushToPage(
-                            routerName: "wechatNameChange", 
-                            params: {"name": _wechatAccountCon.text},
-                            context: context,
-                          );
+                          _gotoInfoChangePage(false);
                         }
                       },
                       child: Container(
@@ -149,11 +174,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                     GestureDetector(
                       onTap: () {
                         if (_state == WeChatInfoState.have) {
-                          XTRouter.pushToPage(
-                            routerName: "wechatQrChange", 
-                            params: {"qrUrl": _wechatQrImgUrl},
-                            context: context,
-                          );
+                          _gotoInfoChangePage(true);
                         }
                       },
                       child: Container(
@@ -169,16 +190,18 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (_state == WeChatInfoState.none) {
-                                  _uploadWxCodeImg();
-                                } if (_state == WeChatInfoState.uploaded) {
-                                  Toast.showToast(msg: "查看大图", context: context);
-                                } else {
-                                  XTRouter.pushToPage(
-                                    routerName: "wechatQrChange", 
-                                    params: {"qrUrl": _wechatQrImgUrl},
-                                    context: context,
-                                  );
+                                switch (_state) {
+                                  case WeChatInfoState.none:
+                                    _uploadWxCodeImg(); 
+                                    break;
+                                  case WeChatInfoState.uploaded: 
+                                    Toast.showToast(msg: "查看大图", context: context);
+                                    break;
+                                  case WeChatInfoState.none: 
+                                    _gotoInfoChangePage(true);
+                                    break;
+                                  default:
+                                    break;
                                 }
                               },
                               child: Container(

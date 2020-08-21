@@ -124,7 +124,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
       String msg = result["message"];
       if (isSuccess) {
         showToast(_isAddAddress ? "保存成功" : "修改成功");
-        XTRouter.closePage(context: context);
+        XTRouter.closePage(context: context, result: {"isRefresh": true});
       } else {
         showToast(msg);
       }
