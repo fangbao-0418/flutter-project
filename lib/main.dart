@@ -1,16 +1,14 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 // import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/Utils/Error/Monitor.dart';
-
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
-
 import 'package:xtflutter/Utils/Error/ReportError.dart';
-
 // import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
@@ -123,6 +121,15 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale.fromSubtags(languageCode: 'zh')
+        ],
         debugShowCheckedModeBanner: false,
         color: Colors.black,
         theme: ThemeData(
@@ -161,6 +168,7 @@ class _Home extends State<Home> {
     Global.context = context;
     // return Container(child: SettingPage());
     return TestPage1();
+    // return EditPhonePage();
   }
 }
 

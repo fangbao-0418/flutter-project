@@ -19,7 +19,9 @@ class XTNetError {
       this.data,
       this.dioErrorType,
       @required this.error}) {
+        print('============= XtError start =============');
     print(this.toString());
+    print('============= XtError end =============');
     reportNetError(this);
   }
   String toString() {
