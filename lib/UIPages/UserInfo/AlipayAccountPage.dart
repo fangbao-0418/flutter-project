@@ -105,15 +105,13 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
           children: <Widget>[
             Visibility(
               visible: _isShowHaveAccount,
-              child: Positioned.fromRelativeRect(
-                rect: RelativeRect.fromLTRB(0, 0, 0, 0),
+              child: Positioned.fill(
                 child: haveAccountInfoView()
               )
             ),
             Visibility(
               visible: _isShowNoAccount,
-              child: Positioned.fromRelativeRect(
-                rect: RelativeRect.fromLTRB(0, 0, 0, 0),
+              child: Positioned.fill(
                 child: noAccountInfoView()
               )
             ),
@@ -157,8 +155,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
           ),
           Positioned(
             bottom: 80,
-            child: RaisedButton(
-              elevation: 0,
+            child: FlatButton(
               padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
               color: Colors.white,
               shape: RoundedRectangleBorder(
@@ -231,7 +228,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
               controller: isAccount ? accountTextCon : nameTextCon,
               keyboardType: isAccount ? TextInputType.emailAddress : TextInputType.text,
               decoration: InputDecoration(
-                hintText: isAccount ? "请输入支付宝账号" : "请请输入真实姓名",
+                hintText: isAccount ? "请输入支付宝账号" : "请输入真实姓名",
                 hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 16),
                 contentPadding: EdgeInsets.only(left: 15, right: 15),
                 border: InputBorder.none,

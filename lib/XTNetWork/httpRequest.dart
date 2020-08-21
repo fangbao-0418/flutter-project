@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/local/helper.dart' as local;
-import 'package:xtflutter/Utils/Error/ReportError.dart';
 import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/Utils/Error/XtError.dart';
 
@@ -87,7 +84,7 @@ class HttpRequest {
         }
       } else {
         // syntax error
-        Toast.showToast(msg: '数据处理失败');
+        // Toast.showToast(msg: '数据处理失败');
         xtNetError = XTNetError(type: XTNetErrorType.SYNTAX_ERROR, error: e);
       }
       return Future.error(xtNetError);

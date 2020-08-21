@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'dart:core';
 import 'package:flutter/material.dart';
@@ -25,9 +27,9 @@ void sendReport(
   // 1.发送网络请求
   final url = baseUrl + "/rlcas/ijmtxxg4t";
   final List<dynamic> xtLogdata = [];
-  String stackString = stack?.toString();
-  stackString =
-      stackString.split(new RegExp(r'[\t\r\n\v]')).sublist(0, 10).join('\r\n');
+  String stackString = stack?.toString() ?? '';
+  List<String> stackList = stackString.split(new RegExp(r'[\t\r\n\v]'));
+  stackString = stackList.sublist(0, min(stackList.length, 10)).join('\r\n');
   xtLogdata.add({
     'flutter': true,
     'env': 'prod',
@@ -49,7 +51,7 @@ void sendReport(
     '_req': req
   });
   final data = {'env': 'prod', 'xt_logdata': xtLogdata};
-  Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
+  Dio dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: 10000));
   dio.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
     options.headers['referer'] = 'https://xt-crmadmin.hzxituan.com/';
@@ -57,10 +59,11 @@ void sendReport(
   }));
   local.helper(dio);
   new Timer(Duration(microseconds: 100), () {
+    print('send report start');
     dio.post(url, data: data).then((v) {
-      //
-    }, onError: () {
-      //
+      print('send report success');
+    }, onError: (e) {
+      print('send report failed');
     });
   });
 }
