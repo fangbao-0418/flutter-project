@@ -26,16 +26,17 @@ class _PageState extends State<TestPage1> {
   dynamic s;
   Future<UserInfoModel> getUserInfoData() async {
     // 1.发送网络请求
-    final url = "/cweb/member/getMember";
+    final url = "/cweb/member/getMember33";
     final result = await HttpRequest.request(url);
-    // print(result);
-    final userModel = result["data"];
-    print(userModel);
-    UserInfoModel model = UserInfoModel.fromJson(userModel);
-    print(model);
-    print('xxxxxxxxxxxxxxxxxxx');
-    return model;
-    // return Future.value('ssss');
+    return result;
+    // // print(result);
+    // final userModel = result["data"];
+    // print(userModel);
+    // UserInfoModel model = UserInfoModel.fromJson(userModel);
+    // print(model);
+    // print('xxxxxxxxxxxxxxxxxxx');
+    // return model;
+    // // return Future.value('ssss');
   }
 
   String title = 'page1';
@@ -59,14 +60,29 @@ class _PageState extends State<TestPage1> {
                   children: <Widget>[
                     RaisedButton(
                         onPressed: () {
-                          getUserInfoData();
-                          setState(() {
-                            title = 'xxx';
-                          });
-                          // toast = Toast.showToast(msg: 'page1').then(() {
+                          Map<String, String> o1 = {
+                            'a': 'a',
+                            'b': 'b'
+                          };
+                           Map<String, String> o2 = {
+                             ...o1,
+                             'c': 'c'
+                           };
+                          // getUserInfoData();
+                          // setState(() {
+                          //   title = 'xxx';
+                          // });
+                          // toast = Toast.showToast(msg: jsonEncode(o2)).then(() {
                           //   print('xxxx');
                           // });
-                          // print('show');
+                          Future.delayed(new Duration(milliseconds: 1000), () {
+                            print('delay');
+                          });
+                          print('show');
+                          // Prefs.getStringList('xt-logdata').then((value){
+                          //   print('get xt-logdata');
+                          //   print(value.length);
+                          // });
                         },
                         child: Text('show toast')),
                     RaisedButton(
@@ -93,10 +109,14 @@ class _PageState extends State<TestPage1> {
                         child: Text('global hide all toast')),
                     RaisedButton(
                         onPressed: () {
-                          writeCounter(2);
+                        //   writeCounter(2);
+                        //  readCounter().then((value) {
+                        //    print(value);
+                        //  });
+                        //   print('write');
                           // dynamic o;
                           // print(o.a.b);
-                          // throw ('error test');
+                          throw ('error test');
                           // throwError('title', )
                           // throwError('title', 'XXXX');
                           // XTUserInfoRequest.sendCode(phone: '');
@@ -131,14 +151,48 @@ class _PageState extends State<TestPage1> {
                                 jsonEncode({'a1': 'b1'}),
                                 jsonEncode({'a2': 'b2'})
                               ]);
-                              Prefs.setStringList('logs', data);
-                              print('set ok');
+                               print(data.sublist(0, 1));
+                              print(data.sublist(1));
+                              print(data.map((e) => jsonEncode(e)).toList());
+                              // Prefs.setStringList('logs', data);
+                              // print('set ok');
                             },
                             child: Text('storage set')),
                         RaisedButton(
                             onPressed: () {
-                              Prefs.getStringList('xt-logdata')
-                                  .then((value) => {print(value)});
+
+                              // getUserInfoData();
+                              // print('xxxxx');
+                              // Future fetchData () {
+                              //   return Future.error((err) {
+                              //     return 'err';
+                              //   });
+                              // }
+
+                              // fetchData().then((value) {
+                              //   print('value1');
+                              // }, onError: (e) {
+                              //   print('error');
+                              //   // return Future.error(e);
+                              //   // throw 'sss';
+                              // }).then((value) {
+                              //   print('value2');
+                              // });
+                              // List<String> row = ['1', '2' , '3', '4'];
+                              // print(row.sublist(2, 2));
+                              // loop () {
+                              //   Future.delayed(Duration(milliseconds: 500), () {
+                              //     if (row.length > 0) {
+                              //       row.removeAt(0);
+                              //       print(row);
+                              //       loop();
+                              //     }
+                              //   });
+                              // }
+
+                              // loop();
+                              // Prefs.getStringList('xt-logdata')
+                              //     .then((value) => {print(value)});
                             },
                             child: Text('storage get')),
                       ],

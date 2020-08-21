@@ -13,7 +13,7 @@ class Prefs {
 
   static Future<List<String>> getStringList(String key) async {
     return getInstance().then((pref) {
-      return pref.getStringList(key);
+      return pref.getStringList(key) ?? [];
     });
   }
 }

@@ -18,12 +18,13 @@ void monitor(cb) {
       child: Text("Flutter 走神了"),
     ));
   };
-  runZoned(() {
-    cb();
-  }, onError: (e, stack) {
-    print('============= zoned start =============');
-    print(e);
-    print(stack);
-    print('============= zoned end =============');
-  });
+   cb();
+  // runZoned(() {
+  //   cb();
+  // }, onError: (e, stack) {
+  //   print('============= zoned start =============');
+  //   print(e);
+  //   print(stack);
+  //   print('============= zoned end =============');
+  // });
 }
