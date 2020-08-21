@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../Utils/Toast.dart';
 import '../../Utils/Toast.dart';
+import '../../Utils/Toast.dart';
 import '../../XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import '../../XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
@@ -37,6 +38,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
   void _getWechatInfo() async {
     try {
       final WechatInfoModel model = await XTUserInfoRequest.getWechatInfoReq();
+      Toast.showToast(msg: model.toJson().toString());
       if (model.wechat.isNotEmpty && model.wxQr.isNotEmpty) {
         setState(() {
         _wechatAccountCon.text = model.wechat;
@@ -105,11 +107,13 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                     SizedBox(height: 1),
                     GestureDetector(
                       onTap: () {
-                        XTRouter.pushToPage(
-                          routerName: "wechatNameChange", 
-                          params: {"name": _wechatAccountCon.text},
-                          context: context,
-                        );
+                        if (_state == WeChatInfoState.have) {
+                          XTRouter.pushToPage(
+                            routerName: "wechatNameChange", 
+                            params: {"name": _wechatAccountCon.text},
+                            context: context,
+                          );
+                        }
                       },
                       child: Container(
                         height: 55,
@@ -144,11 +148,13 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                     SizedBox(height: 1),
                     GestureDetector(
                       onTap: () {
-                        XTRouter.pushToPage(
-                          routerName: "wechatQrChange", 
-                          params: {"qrUrl": _wechatQrImgUrl},
-                          context: context,
-                        );
+                        if (_state == WeChatInfoState.have) {
+                          XTRouter.pushToPage(
+                            routerName: "wechatQrChange", 
+                            params: {"qrUrl": _wechatQrImgUrl},
+                            context: context,
+                          );
+                        }
                       },
                       child: Container(
                         height: 120, 
