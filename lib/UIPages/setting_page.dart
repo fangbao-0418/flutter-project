@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../Utils/Toast.dart';
 import '../XTModel/UserInfoModel.dart';
 
-
 // //返回
 //   void _xtback(BuildContext context) {
 //     // final BoostContainerSettings settings = BoostContainer.of(context).settings;
@@ -43,10 +42,8 @@ class SettingPage extends StatelessWidget {
   }
 
   Widget listTab(context) {
+    final usermodel = Provider.of<UserInfoVM>(context);
 
-      final usermodel = Provider.of<UserInfoVM>(context);
-
-       
     return ListView(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
@@ -80,16 +77,13 @@ class SettingPage extends StatelessWidget {
           };
           AddressListModel model = AddressListModel.fromJson(params);
           XTRouter.pushToPage(
-            routerName: "addAddress", 
+            routerName: "addAddress",
             params: model.toJson(),
             context: context,
           );
         }),
         basicContent("支付宝账号", tapFunc: () {
-          XTRouter.pushToPage(
-            routerName: "alipayAccount", 
-            context: context
-          );
+          XTRouter.pushToPage(routerName: "alipayAccount", context: context);
         }),
         basicContent("消息通知", tapFunc: () {
           XTRouter.pushToPage(
@@ -97,17 +91,16 @@ class SettingPage extends StatelessWidget {
               routerName: makeRouter(true, null, "gotoNotice"));
         }),
         basicContent("微信信息", tapFunc: () {
-          XTRouter.pushToPage(
-            routerName: "wechatInfo", 
-            context: context
-          );
+          XTRouter.pushToPage(routerName: "wechatInfo", context: context);
         }),
         basicContent("关于喜团",
             childStr: "v" + AppConfig.getInstance().appVersion,
             haveLine: false, tapFunc: () {
-          XTRouter.pushToPage(
-              context: context,
-              routerName: makeRouter(true, null, "aboutXiTuan"));
+          XTRouter.pushToPage(routerName: "officalname", context: context);
+
+          // XTRouter.pushToPage(
+          //     context: context,
+          //     routerName: makeRouter(true, null, "aboutXiTuan"));
         })
       ],
     );

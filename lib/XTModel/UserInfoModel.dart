@@ -245,24 +245,18 @@ class AddressListModel {
       };
 }
 
-
 class AlipayAccountModel {
-
-  AlipayAccountModel({
-    this.memberId,
-    this.accountNumber,
-    this.accountUserName
-  });
+  AlipayAccountModel({this.memberId, this.accountNumber, this.accountUserName});
 
   String memberId;
   String accountUserName;
   String accountNumber;
 
-  factory AlipayAccountModel.fromJson(Map<String, dynamic> json) => AlipayAccountModel(
-    memberId: json["memberId"],
-    accountUserName: json["accountUserName"],
-    accountNumber: json["accountNumber"]
-  );
+  factory AlipayAccountModel.fromJson(Map<String, dynamic> json) =>
+      AlipayAccountModel(
+          memberId: json["memberId"],
+          accountUserName: json["accountUserName"],
+          accountNumber: json["accountNumber"]);
 
   Map<String, dynamic> toJson() => {
     "memberId": memberId,
@@ -290,4 +284,30 @@ class WechatInfoModel {
     "wechat": wechat,
     "wxQr": wxQr
   };
+}
+
+class RealNameModel {
+  
+  RealNameModel({this.id, this.idNo, this.name, this.isDefault});
+
+  ///id
+  int id;
+
+  ///号码
+  String idNo;
+
+  ///姓名
+  String name;
+
+  ///是否是默认
+  int isDefault;
+
+  factory RealNameModel.fromJson(Map<String, dynamic> json) => RealNameModel(
+      id: json["id"],
+      idNo: json["idNo"],
+      name: json["name"],
+      isDefault: json["isDefault"]);
+
+  Map<String, dynamic> toJson() =>
+      {"isDefault": isDefault, "name": name, "idNo": idNo, "id": id};
 }
