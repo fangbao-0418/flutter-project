@@ -197,7 +197,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                   case WeChatInfoState.uploaded: 
                                     Toast.showToast(msg: "查看大图", context: context);
                                     break;
-                                  case WeChatInfoState.none: 
+                                  case WeChatInfoState.have: 
                                     _gotoInfoChangePage(true);
                                     break;
                                   default:
