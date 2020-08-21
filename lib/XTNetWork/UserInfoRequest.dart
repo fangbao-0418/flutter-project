@@ -172,4 +172,20 @@ class XTUserInfoRequest {
     bool isSuccess = result["data"];
     return isSuccess;
   }
+
+  /// 获取用户微信信息
+  static Future<WechatInfoModel> getWechatInfoReq() async {
+    final url = "/ncweb/user/info/base/v1";
+    final result = await HttpRequest.request(url);
+    WechatInfoModel model = WechatInfoModel.fromJson(result["data"]);
+    return model;
+  }
+
+  /// 获取用户微信信息
+  static Future<bool> saveWechatInfoReq(Map<String, String> params) async {
+    final url = "/ncweb/user/modify/wx/v1";
+    final result = await HttpRequest.request(url, method: "post", params: params);
+    bool isSuccess = result["data"];
+    return isSuccess;
+  }
 }

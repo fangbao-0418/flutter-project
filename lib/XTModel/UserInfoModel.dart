@@ -270,3 +270,24 @@ class AlipayAccountModel {
     "accountNumber": accountNumber
   };
 }
+
+class WechatInfoModel {
+
+  WechatInfoModel({
+    this.wechat,
+    this.wxQr,
+  });
+
+  String wechat;
+  String wxQr;
+
+  factory WechatInfoModel.fromJson(Map<String, dynamic> json) => WechatInfoModel(
+    wechat: json["wechat"],
+    wxQr: json["wxQr"]
+  );
+
+  Map<String, dynamic> toJson() => {
+    "wechat": wechat,
+    "wxQr": wxQr
+  };
+}
