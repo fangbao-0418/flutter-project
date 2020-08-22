@@ -12,8 +12,20 @@ class Prefs {
   }
 
   static Future<List<String>> getStringList(String key) async {
-    return getInstance().then((pref) {
-      return pref.getStringList(key);
+    return getInstance().then((prefs) {
+      return prefs.getStringList(key) ?? [];
+    });
+  }
+
+  static Future remove(String key) {
+    return getInstance().then((prefs) {
+      prefs.remove(key);
+    });
+  }
+
+  static Future clear() {
+    return getInstance().then((prefs) {
+      prefs.clear();
     });
   }
 }
