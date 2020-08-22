@@ -18,10 +18,9 @@ import 'package:xtflutter/UIPages/TestPage/page3.dart';
 Map<String, PageBuilder> routeConfigs = {
   'setting': (pageName, params, _) => SettingPage(),
   'fl-user-info': (pageName, params, _) => UserInfoPage(),
-  'editPage': (pageName, params, _) =>
-      EditNamePage(params: params, name: pageName),
-  'addAddress': (pageName, params, _) =>
-      AddAddressPage(params: params, name: pageName),
+  'editPage': (pageName, params, _) => EditNamePage(params: params, name: pageName),
+  'addAddress': (pageName, params, _) => AddAddressPage(params: params, name: pageName),
+  'addressList': (pageName, params, _) => AddressListPage(),
   'editPhone': (pageName, params, _) => EditPhonePage(),
   'alipayAccount': (pageName, params, _) => AlipayAccountPage(),
   'wechatInfo': (pageName, params, _) => WeChatInfoPage(),
