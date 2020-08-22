@@ -57,14 +57,16 @@ class XTUserInfoRequest {
   // 获取地址列表
   static Future<dynamic> obtainAddressList() {
     const url = "/cweb/memberaddress/getList";
-    return  HttpRequest.request(url,
-        method: "get",).then((res) {
+    return HttpRequest.request(url,
+      method: "get",).then((res) {
       if (res['code'] == '00000' && res['success']) {
         return res['data'];
       } else {
         throw res;
       }
     });
+  }
+  
   // 获取实名列表
   static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";
