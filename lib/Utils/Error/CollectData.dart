@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 
@@ -26,29 +27,28 @@ Future<File> get _localFile async {
 }
 
 // 将数据写入文件
-Future<File> record(List<String> data) async {
+Future<File> record(List<Map<String, dynamic>> xtLogData) async {
   final dir = await _localLogDir;
-  print(dir);
   bool dirExists = await dir.exists();
   if (!dirExists) {
     await dir.create(recursive: true);
   }
   // print(dirExists);
-  String text = data.join('\r\n');
+  String text = xtLogData.map((row) => jsonEncode(row)).join('\r\n');
   File file = new File('${dir.path}/logs.txt');
-  // //, mode: FileMode.append
-  print('record');
-  print(text);
   return file.writeAsString('$text\r\n', mode: FileMode.append);
 }
 
-Future<List<String>> takeData() async {
+Future<List<String>> takeData([num logNum = 5]) async {
   final dir = await _localLogDir;
-  print(dir);
+  // print(dir);
   File file = await dir.list().last;
   String contents = await file.readAsString();
-  print('take data');
-  print(contents);
+  // print('take data');
+  if (contents.trim().length == 0) {
+    return [];
+  }
+  print(file.path);
   List<String> data = (contents.split('\r\n') ?? []).where((record) {
     try {
       jsonDecode(record);
@@ -57,5 +57,10 @@ Future<List<String>> takeData() async {
       return false;
     }
   }).toList();
-  return data;
+  if (data.length == 0) {
+    return [];
+  }
+  logNum = min(logNum, data.length);
+  file.writeAsString(data.sublist(logNum).join('\r\n') + '\r\n');
+  return data.sublist(0, logNum);
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../Global.dart';
 import 'package:xtflutter/Utils/Error/ReportError.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 
 // 错误监控
 void monitor(runApp) {
@@ -14,7 +16,11 @@ void monitor(runApp) {
     // print(details.toString());
     return Material(
         child: Center(
-      child: Text("Flutter 走神了"),
+      child: Listener(
+        onPointerDown: (e) {
+          XTRouter.closePage(context: Global.context);
+        },
+        child: Text("Flutter 走神了")),
     ));
   };
   runZoned(() {

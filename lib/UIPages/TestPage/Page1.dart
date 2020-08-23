@@ -12,6 +12,7 @@ import 'package:xtflutter/Utils/Storage/PathProvider.dart';
 import 'package:xtflutter/Utils/Storage/SharedPreferences.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/Utils/Error/CollectData.dart' as Collection;
+import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 
 class TestPage1 extends StatefulWidget {
   @override
@@ -55,7 +56,6 @@ class _PageState extends State<TestPage1> {
               return res;
             }),
             builder: (ctx, snapshot) {
-              print('builder');
               return Container(
                   child: SingleChildScrollView(
                       child: Padding(
@@ -75,20 +75,24 @@ class _PageState extends State<TestPage1> {
                                   children: <Widget>[
                                     RaisedButton(
                                       onPressed: () {
-                                        // Collection.record(['a', 'b', 'c']);
-                                        Map<String, String> map = {'a': '2'};
-                                        List<String> list = [
-                                          jsonEncode(map),
-                                          'b',
-                                          'c'
-                                        ];
-                                        print(list.map((t) {
-                                          try {
-                                            return jsonDecode(t);
-                                          } catch (e) {
-                                            return 1;
-                                          }
-                                        }).toList());
+                                        // assert(_PageState != Widget);
+                                        // assert(_PageState is Widget);
+                                        // print('xxx');
+                                        XTRouter.pushToPage(routerName: 'setting', context: context);
+                                        // // Collection.record(['a', 'b', 'c']);
+                                        // Map<String, String> map = {'a': '2'};
+                                        // List<String> list = [
+                                        //   jsonEncode(map),
+                                        //   'b',
+                                        //   'c'
+                                        // ];
+                                        // print(list.map((t) {
+                                        //   try {
+                                        //     return jsonDecode(t);
+                                        //   } catch (e) {
+                                        //     return 1;
+                                        //   }
+                                        // }).toList());
                                         // print(list.join('\r\n'));
                                         // Collection.record(list);
                                       },
