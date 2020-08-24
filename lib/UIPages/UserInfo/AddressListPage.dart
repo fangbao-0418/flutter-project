@@ -52,8 +52,11 @@ class _AddressListPageState extends State<AddressListPage> {
                   routerName: "addAddress",
                   context: context,
                 ).then((value) {
-                  refresh();
-                  print("新增/修改地址成功后，地址列表刷新");
+                  Map result = Map<String, dynamic>.from(value);
+                  if (result["isRefresh"] == true) {
+                    refresh();
+                    print("新增地址成功后，地址列表刷新");
+                  }
                 });
               },
               child:Text("新增收货地址",style: TextStyle(fontSize: 15, color: Colors.white),
@@ -125,14 +128,16 @@ class _AddressListPageState extends State<AddressListPage> {
                 Spacer(),
                 FlatButton.icon(
                     onPressed: (){
-                      Toast.showToast(msg: "编辑", context: context);
                       XTRouter.pushToPage(
                         routerName: "addAddress",
                         params: model.toJson(),
                         context: context,
                       ).then((value) {
-                        refresh();
-                        print("新增/修改地址成功后，地址列表刷新");
+                        Map result = Map<String, dynamic>.from(value);
+                        if (result["isRefresh"] == true) {
+                          refresh();
+                          print("修改地址成功后，地址列表刷新");
+                        }
                       });
                     },
                     icon: ImageIcon(AssetImage('images/my_address_list_edit.png'), color: Colors.black,),
