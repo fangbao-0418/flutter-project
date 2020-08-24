@@ -23,9 +23,11 @@ import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 import 'package:xtflutter/UIPages/TestPage/Page1.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'package:flutter/services.dart';
+import 'package:xtflutter/Utils/Task/Task.dart';
 
 void main() {
   monitor(() {
+    Task.init();
     runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AppConfig().userVM),
