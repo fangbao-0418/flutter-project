@@ -11,6 +11,7 @@ Future<String> get _localPath async {
 // 创建对文件位置的引用
 Future<File> get _localFile async {
   final path = await _localPath;
+  print(path);
   return new File('$path/counter.txt');
 }
 

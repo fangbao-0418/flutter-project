@@ -1,6 +1,7 @@
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/local/proxy.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
 
 class AppConfig {
   UserInfoVM userVM = UserInfoVM();
@@ -66,6 +67,7 @@ class AppConfig {
     _instance.softInfo.gid = gid;
     _instance.softInfo.os = os;
     _instance.softInfo.ov = ov;
+    print(gid);
   }
 
   static updateBaseUrl(String baseURL) {
@@ -128,7 +130,7 @@ class AppConfig {
     return _instance.userVM.user;
   }
 
-  static get soft {
+  static AppSoftInfo get soft {
     return _instance.softInfo;
   }
 }
@@ -137,7 +139,6 @@ class AppSoftInfo {
   String av = "";
   String dv = "";
   String md = "";
-  String mid = "";
   String gid = "";
   String os = "";
   String ov = "";

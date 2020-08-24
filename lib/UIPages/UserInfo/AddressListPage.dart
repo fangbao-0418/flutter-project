@@ -6,6 +6,7 @@ import 'package:xtflutter/XTConfig/AppConfig/XTSizeFit.dart';
 import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 
 class AddressListPage extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _AddressListPageState extends State<AddressListPage> {
     Widget buildAddNewAddressButton(){
       return Container(
         color: Colors.white,
-        padding: EdgeInsets.only(top:98),
+        padding: EdgeInsets.only(top:98,bottom: 50),
         margin: EdgeInsets.only(top: 10),
         child: Container(
           padding: EdgeInsets.only(left: 98,right: 98),
@@ -52,8 +53,11 @@ class _AddressListPageState extends State<AddressListPage> {
                   routerName: "addAddress",
                   context: context,
                 ).then((value) {
-                  refresh();
-                  print("新增/修改地址成功后，地址列表刷新");
+                  Map result = Map<String, dynamic>.from(value);
+                  if (result["isRefresh"] == true) {
+                    refresh();
+                    print("新增地址成功后，地址列表刷新");
+                  }
                 });
               },
               child:Text("新增收货地址",style: TextStyle(fontSize: 15, color: Colors.white),
@@ -65,17 +69,21 @@ class _AddressListPageState extends State<AddressListPage> {
 
     ///获取复选框组件
     Widget buildCheckBox(AddressListModel model,bool isSelected){
-      return Checkbox(
-          value: isSelected,
-          onChanged: (isCheck) {
-            if (isCheck) {
-              isSelected = isCheck;
-              XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
+      return IconButton(
+          icon: Icon(
+            model.defaultAddress == 1
+                ? Icons.check_circle
+                : Icons.radio_button_unchecked,
+            color:
+            model.defaultAddress == 1 ? mainRedColor : main99GrayColor,
+            size: 20,
+          ),
+          onPressed: () {
+            XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
                 print("地址ID：" + model.id.toString() + "状态:" + value.toString());
                 //改变_CheckBoxState
                 setState(() {});
               });
-            }
           });
     }
 
@@ -105,13 +113,11 @@ class _AddressListPageState extends State<AddressListPage> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.only(left: 16.0, top: 10, bottom: 15,right: 16),
-                  child: Expanded(
-                    child: Text(
-                      model.address,
-                      style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C)),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  child: Text(
+                    model.address,
+                    style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C)),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Spacer()
@@ -125,14 +131,16 @@ class _AddressListPageState extends State<AddressListPage> {
                 Spacer(),
                 FlatButton.icon(
                     onPressed: (){
-                      Toast.showToast(msg: "编辑", context: context);
                       XTRouter.pushToPage(
                         routerName: "addAddress",
                         params: model.toJson(),
                         context: context,
                       ).then((value) {
-                        refresh();
-                        print("新增/修改地址成功后，地址列表刷新");
+                        Map result = Map<String, dynamic>.from(value);
+                        if (result["isRefresh"] == true) {
+                          refresh();
+                          print("修改地址成功后，地址列表刷新");
+                        }
                       });
                     },
                     icon: ImageIcon(AssetImage('images/my_address_list_edit.png'), color: Colors.black,),

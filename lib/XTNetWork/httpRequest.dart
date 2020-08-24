@@ -43,7 +43,7 @@ class HttpRequest {
     try {
       Response response = await dio.request(url,
           data: params, queryParameters: queryParameters, options: options);
-      print(response);
+      // print(response);
       Map<String, dynamic> map = response.data;
       if (map["success"] == false) {
         // print("1111-------------------------");
