@@ -18,15 +18,16 @@ import 'package:xtflutter/UIPages/TestPage/page3.dart';
 Map<String, PageBuilder> routeConfigs = {
   'setting': (pageName, params, _) => SettingPage(),
   'fl-user-info': (pageName, params, _) => UserInfoPage(),
-  'editPage': (pageName, params, _) =>
-      EditNamePage(params: params, name: pageName),
-  'addAddress': (pageName, params, _) =>
-      AddAddressPage(params: params, name: pageName),
+  'editPage': (pageName, params, _) => EditNamePage(params: params, name: pageName),
+  'addAddress': (pageName, params, _) => AddAddressPage(params: params, name: pageName),
+  'addressList': (pageName, params, _) => AddressListPage(),
   'editPhone': (pageName, params, _) => EditPhonePage(),
   'alipayAccount': (pageName, params, _) => AlipayAccountPage(),
   'wechatInfo': (pageName, params, _) => WeChatInfoPage(),
-  'wechatNameChange': (pageName, params, _) => WeChatInfoNameChangePage(params: params, name: pageName),
-  'wechatQrChange': (pageName, params, _) => WeChatInfoQrChangePage(params: params, name: pageName),
+  'wechatNameChange': (pageName, params, _) =>
+      WeChatInfoNameChangePage(params: params, name: pageName),
+  'wechatQrChange': (pageName, params, _) =>
+      WeChatInfoQrChangePage(params: params, name: pageName),
   'flutterPage': (pageName, params, _) => FlutterRouteWidget(params: params),
   'page1': (pageName, params, _) => TestPage1(),
   'page2': (pageName, params, _) => TestPage2(),

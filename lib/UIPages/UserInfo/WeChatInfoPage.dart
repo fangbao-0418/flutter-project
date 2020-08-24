@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../Utils/Toast.dart';
-import '../../Utils/Toast.dart';
 import '../../XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import '../../XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
@@ -37,12 +36,15 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
   void _getWechatInfo() async {
     try {
       final WechatInfoModel model = await XTUserInfoRequest.getWechatInfoReq();
+      Toast.showToast(msg: model.toJson().toString());
       if (model.wechat.isNotEmpty && model.wxQr.isNotEmpty) {
         setState(() {
-        _wechatAccountCon.text = model.wechat;
-        _wechatQrImgUrl = model.wxQr;
-        _state = WeChatInfoState.have;
-      });
+          _wechatAccountCon.text = model.wechat;
+          _wechatQrImgUrl = model.wxQr;
+          _state = WeChatInfoState.have;
+        });
+      } else {
+        setState(() => _state = WeChatInfoState.none);
       }
     } catch (err) {
     }
@@ -88,6 +90,59 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     }
   }
 
+  /// 前往修改信息页面
+  void _gotoInfoChangePage(bool isQr) {
+    if (isQr) {
+      /// 修改微信二维码
+      XTRouter.pushToPage(
+        routerName: "wechatQrChange", 
+        params: {"qrUrl": _wechatQrImgUrl},
+        context: context,
+      ).then((value) => {
+        setState(() {
+          Map result = Map<String, dynamic>.from(value);
+          _wechatQrImgUrl = result["qrUrl"];
+        })
+      });
+    } else {
+      /// 修改微信号
+      XTRouter.pushToPage(
+        routerName: "wechatNameChange", 
+        params: {"name": _wechatAccountCon.text},
+        context: context,
+      ).then((value) => {
+        setState(() {
+          Map result = Map<String, dynamic>.from(value);
+          _wechatAccountCon.text = result["name"];
+        })
+      });
+    }
+  }
+
+  /// 查看大图
+  void _lookBigPic() {
+    if (_wechatQrImgUrl.isEmpty) { return; }
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return WeChatInfoImgPage(imgUrl: _wechatQrImgUrl);
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: Tween(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animation, 
+                curve: Curves.fastOutSlowIn
+              )
+            ),
+            child: child,
+          );
+        },
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,11 +160,9 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                     SizedBox(height: 1),
                     GestureDetector(
                       onTap: () {
-                        XTRouter.pushToPage(
-                          routerName: "wechatNameChange", 
-                          params: {"name": _wechatAccountCon.text},
-                          context: context,
-                        );
+                        if (_state == WeChatInfoState.have) {
+                          _gotoInfoChangePage(false);
+                        }
                       },
                       child: Container(
                         height: 55,
@@ -144,11 +197,9 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                     SizedBox(height: 1),
                     GestureDetector(
                       onTap: () {
-                        XTRouter.pushToPage(
-                          routerName: "wechatQrChange", 
-                          params: {"qrUrl": _wechatQrImgUrl},
-                          context: context,
-                        );
+                        if (_state == WeChatInfoState.have) {
+                          _gotoInfoChangePage(true);
+                        }
                       },
                       child: Container(
                         height: 120, 
@@ -163,16 +214,19 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (_state == WeChatInfoState.none) {
-                                  _uploadWxCodeImg();
-                                } if (_state == WeChatInfoState.uploaded) {
-                                  Toast.showToast(msg: "查看大图", context: context);
-                                } else {
-                                  XTRouter.pushToPage(
-                                    routerName: "wechatQrChange", 
-                                    params: {"qrUrl": _wechatQrImgUrl},
-                                    context: context,
-                                  );
+                                switch (_state) {
+                                  case WeChatInfoState.none:
+                                    _uploadWxCodeImg(); 
+                                    break;
+                                  case WeChatInfoState.uploaded: 
+                                    // Toast.showToast(msg: "查看大图", context: context);
+                                    _lookBigPic();
+                                    break;
+                                  case WeChatInfoState.have: 
+                                    _gotoInfoChangePage(true);
+                                    break;
+                                  default:
+                                    break;
                                 }
                               },
                               child: Container(
@@ -255,6 +309,27 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class WeChatInfoImgPage extends StatelessWidget {
+
+  WeChatInfoImgPage({this.imgUrl});
+
+  /// 微信二维码照片
+  final String imgUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: Container(
+        color: Color(0x90000000),
+        child: Image.network(imgUrl),
       ),
     );
   }

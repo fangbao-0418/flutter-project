@@ -1,19 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import '../XTModel/UserInfoModel.dart';
 import 'httpRequest.dart';
 
 //用户资料请求
 class XTUserInfoRequest {
   ///获取当前用户信息
-  static Future<UserInfoModel> getUserInfoData() async {
+  static Future<dynamic> getUserInfoData() async {
     // 1.发送网络请求
     final url = "/cweb/member/getMember";
     final result = await HttpRequest.request(url);
-    final userModel = result["data"];
-    UserInfoModel model = UserInfoModel.fromJson(userModel);
-    // print("getMember ----" + model.toJson().toString());
-    return model;
+
+    final resl = result["data"];
+    print("object -------------==== " + resl.toString());
+    return resl;
   }
 
   /// 更新用户信息
@@ -44,25 +45,81 @@ class XTUserInfoRequest {
   // 更换手机号
   static Future<dynamic> changeUserPhone(String phone, String code) {
     const url = "/bweb/member/update/mobile";
-    return HttpRequest.request(url,
-        method: "post", params: {"mobile": phone, "code": code}).then((res) {
-      if (res['code'] == '00000' && res['success']) {
-        return res['data'];
-      } else {
-        throw res;
-      }
-    });
+    final result = HttpRequest.request(url,
+        method: "post", queryParameters: {"mobile": phone, "code": code});
+    return result;
   }
 
-   // 获取实名列表
-  static Future<dynamic> memberAuthentication(String phone, String code)  async {
+  // 获取地址列表
+  static Future<List<AddressListModel>> obtainAddressList() async {
+    const url = "/cweb/memberaddress/getList";
+    List<AddressListModel> addressList = [];
+    final result = await HttpRequest.request(url);
+    List models = result['data'];
+    models.forEach((element) {
+      addressList.add(AddressListModel.fromJson(element));
+    });
+    print("addressListData:${models.toString()}");
+    return addressList;
+  }
+
+  static Future<bool> setDefaultAddress(int addressId) async {
+    const url = "/cweb/memberaddress/default/";
+    bool resetSuccess = false;
+    final result = await HttpRequest.request(url + addressId.toString(),method: "post");
+    resetSuccess = result['data'];
+    print(addressId.toString()+"设置默认地址状态:"+resetSuccess.toString());
+    return resetSuccess;
+  }
+
+  // 获取实名列表
+  static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";
     final result = await HttpRequest.request(url);
     final model = result["data"];
-    return model;
-    
+
+    var list = [];
+    for (var item in model) {
+      RealNameModel m = RealNameModel.fromJson(Map.of(item));
+
+      list.add(m);
+    }
+    print(list.first.toString() + '8888899999992');
+    return list;
   }
 
+  // 添加实名认证
+  static Future<dynamic> addmemberAdd(
+      String name, String idNo, int isDefault) async {
+    const url = "/cweb/memberAuthentication/add";
+    final result = await HttpRequest.request(url,
+        method: "post",
+        params: {"name": name, "idNo": idNo, "isDefault": isDefault});
+
+    return result;
+  }
+
+// 删除实名信息
+  static Future<dynamic> addmemberDelete(int id) async {
+    String url = "/cweb/memberAuthentication/delete/" + id.toString();
+    final result = await HttpRequest.request(
+      url,
+      method: "delete",
+    );
+    return result;
+  }
+
+// 设置默认实名信息
+  static Future<dynamic> addmemberDefault(int id) async {
+    String url = "/cweb/memberAuthentication/setDefault/" + id.toString();
+    final result = await HttpRequest.request(
+      url,
+      method: "put",
+    );
+    return result;
+  }
+
+  // https://testing-myouxuan.hzxituan.com/cweb/memberAuthentication/setDefault/1006
 
   /// 地址信息（新增/修改）
   static Future<Map<String, dynamic>> addressInfoRequest(
@@ -195,7 +252,8 @@ class XTUserInfoRequest {
   /// 获取用户微信信息
   static Future<bool> saveWechatInfoReq(Map<String, String> params) async {
     final url = "/ncweb/user/modify/wx/v1";
-    final result = await HttpRequest.request(url, method: "post", params: params);
+    final result =
+        await HttpRequest.request(url, method: "post", params: params);
     bool isSuccess = result["data"];
     return isSuccess;
   }

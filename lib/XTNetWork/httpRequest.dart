@@ -46,6 +46,8 @@ class HttpRequest {
       // print(response);
       Map<String, dynamic> map = response.data;
       if (map["success"] == false) {
+        // print("1111-------------------------");
+        // print("1111-------------------------" + map["message"]);
         XTNetError xtNetError = XTNetError(
             type: XTNetErrorType.DEFAULT,
             message: map["message"],
@@ -55,6 +57,8 @@ class HttpRequest {
                 request: response.request,
                 response: response));
         // default error
+        // print("1111-------------------------" + xtNetError.message);
+
         return Future.error(xtNetError);
       } else {
         return response.data;

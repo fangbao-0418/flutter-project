@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../Utils/Toast.dart';
+import '../../XTConfig/AppConfig/XTRouter.dart';
 import '../../XTConfig/Extension/StringExtension.dart';
 import '../../XTConfig/AppConfig/XTColorConfig.dart';
 import '../../XTConfig/AppConfig/XTMethodChannelConfig.dart';
-import '../../XTConfig/AppConfig/XTRouter.dart';
 import '../../XTNetWork/UserInfoRequest.dart';
 import '../NormalUI/XTAppBackBar.dart';
 
@@ -23,11 +23,14 @@ class WeChatInfoNameChangePage extends StatefulWidget {
 class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
   /// 微信号
   final TextEditingController _wechatAccountCon = TextEditingController();
+  /// 微信名称
+  FocusNode _nameNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _wechatAccountCon.text = widget.params["name"];
+    
   }
 
   /// 更新微信号
@@ -41,9 +44,8 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
         "wechat": _wechatAccountCon.text,
       });
       if (isSuccess) {
-        Toast.showToast(msg: "更换成功", context: context).then(() {
-          XTRouter.closePage(context: context);
-        });
+        Toast.showToast(msg: "更换成功");
+        XTRouter.closePage(context: context, result: {"name": _wechatAccountCon.text});
       } else {
         Toast.showToast(msg: "更换失败，请重试", context: context);
       }
@@ -56,12 +58,13 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: xtbackAndRightBar(
-              back: () => XTRouter.closePage(context: context),
-              title: "修改微信号",
-              rightTitle: "完成",
-              rightFun: () => _updateName()),
+        back: () => XTRouter.closePage(context: context),
+        title: "修改微信号",
+        rightTitle: "完成",
+        rightFun: () => _updateName()
+      ),
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        onTap: () => _nameNode.unfocus(),
         child: Container(
           color: Colors.white,
           child: CustomScrollView(
@@ -74,6 +77,8 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                       height: 55,
                       child: Expanded(
                         child: TextField(
+                          focusNode: _nameNode,
+                          autofocus: true,
                           controller: _wechatAccountCon,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
@@ -82,6 +87,10 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                             contentPadding: EdgeInsets.only(left: 15, right: 15),
                             border: InputBorder.none,
                           ),
+                          onEditingComplete: () {
+                            _updateName();
+                            _nameNode.unfocus();
+                          },
                         ),
                       ),
                     ),
@@ -139,7 +148,9 @@ class _WeChatInfoQrChangePageState extends State<WeChatInfoQrChangePage> {
         "wxQr": _qrUrl,
       });
       if (isSuccess) {
-        Toast.showToast(msg: "更换成功", context: context);
+        Toast.showToast(msg: "更换成功", context: context).then(() {
+          XTRouter.closePage(context: context, result: {"qrUrl": _qrUrl});
+        });
       } else {
         Toast.showToast(msg: "更换失败，请重试", context: context);
       }

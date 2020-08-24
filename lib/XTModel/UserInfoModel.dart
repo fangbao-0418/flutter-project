@@ -27,21 +27,21 @@ class UserInfoModel {
     this.allEarnings,
   });
 
-  String id; //用户ID
+  int id; //用户ID
   String phone; //手机号
   int memberType; //类型
   int memberTypeLevel;
   int memberTypeTime;
   int parentMemberId; //上层ID
   String headImage = ""; //头像
-  String nickName; //昵称
+  String nickName = ""; //昵称
   String wechat; //微信
   String userName; //用户名
   int money;
   int count;
-  String idCard;
+  String idCard = "";
   bool canAuthen;
-  InviteMemberVo inviteMemberVo;
+  InviteMemberVo inviteMemberVo = InviteMemberVo();
   int fansType;
   int lockFansTime;
   int tradeLockPowderTime;
@@ -49,30 +49,38 @@ class UserInfoModel {
   int limitDay;
   int allEarnings;
 
-  factory UserInfoModel.fromJson(Map<String, dynamic> json) => UserInfoModel(
-        id: json["id"],
-        phone: json["phone"],
-        memberType: int.parse(json["memberType"]),
-        memberTypeLevel: json["memberTypeLevel"],
-        memberTypeTime: json["memberTypeTime"],
-        parentMemberId: json["parentMemberId"],
-        headImage: json["headImage"],
-        nickName: json["nickName"],
-        wechat: json["wechat"],
-        userName: json["userName"],
-        money: json["money"],
-        count: json["count"],
-        idCard: json["idCard"].toString().trim(),
-        canAuthen: json["canAuthen"],
-        inviteMemberVo:
-            InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
-        fansType: json["fansType"],
-        lockFansTime: json["lockFansTime"],
-        tradeLockPowderTime: json["tradeLockPowderTime"],
-        identity: json["identity"],
-        limitDay: json["limitDay"],
-        allEarnings: json["allEarnings"],
-      );
+  factory UserInfoModel.fromJson(Map<String, dynamic> json) {
+    if (json["inviteMemberVO"] == null) {
+      json["inviteMemberVO"] = {};
+    }
+    json["id"] = int.parse(json["id"].toString());
+    json["memberType"] = int.parse(json["memberType"].toString());
+    json["memberTypeLevel"] = int.parse(json["memberTypeLevel"].toString());
+
+    return UserInfoModel(
+      id: json["id"],
+      phone: json["phone"],
+      memberType: json["memberType"],
+      memberTypeLevel: json["memberTypeLevel"],
+      memberTypeTime: json["memberTypeTime"],
+      parentMemberId: json["parentMemberId"],
+      headImage: json["headImage"],
+      nickName: json["nickName"],
+      wechat: json["wechat"],
+      userName: json["userName"],
+      money: json["money"],
+      count: json["count"],
+      idCard: json["idCard"].toString().trim(),
+      canAuthen: json["canAuthen"],
+      inviteMemberVo: InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
+      fansType: json["fansType"],
+      lockFansTime: json["lockFansTime"],
+      tradeLockPowderTime: json["tradeLockPowderTime"],
+      identity: json["identity"],
+      limitDay: json["limitDay"],
+      allEarnings: json["allEarnings"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -124,6 +132,9 @@ class InviteMemberVo {
 
   factory InviteMemberVo.fromJson(Map<String, dynamic> json) {
     if (json == null) {
+      return InviteMemberVo();
+    }
+    if (json["id"] == null) {
       return InviteMemberVo();
     }
     return InviteMemberVo(

@@ -75,35 +75,36 @@ class _UserInfoPageState extends State<UserInfoPage>
   Widget build(BuildContext context) {
     final usermodel = Provider.of<UserInfoVM>(context);
 
-    print("usermodel ----" + usermodel.user.headImage);
+    print("usermodel ----" + usermodel.user.nickName);
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
         body: FutureBuilder(
             future: XTUserInfoRequest.getUserInfoData(),
-            builder: (ctx, snapshot) {
-              print("FutureBuilder --------start");
-              if (!snapshot.hasData) {
+            builder: (context, result) {
+              if (!result.hasData) {
                 return Card(
                   margin: EdgeInsets.all(10),
                   child: userInfoView(usermodel),
                   shadowColor: mainF5GrayColor,
                 );
               }
-              if (snapshot.error != null) {
+              if (result.error != null) {
                 return Center(
                   child: Text("网络错误，请重试"),
                 );
               }
-              return Consumer<UserInfoVM>(builder: (ctx, userInfo, child) {
-                userInfo.updateUser(snapshot.data);
-                print("Consumer Consumer -----------------------------------");
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: userInfoView(userInfo),
-                  shadowColor: mainF5GrayColor,
-                );
-              });
+              print("usermodel ----");
+              print(result.data);
+              print("usermodel ----");
+              UserInfoModel mode =
+                  UserInfoModel.fromJson(Map.from(result.data));
+              usermodel.updateUser(mode);
+              return Card(
+                margin: EdgeInsets.all(10),
+                child: userInfoView(usermodel),
+                shadowColor: mainF5GrayColor,
+              );
             }));
   }
 
@@ -136,7 +137,6 @@ class _UserInfoPageState extends State<UserInfoPage>
   }
 
   Widget userInfoView(UserInfoVM userInfo) {
-    print(" -------111111111------ " + userInfo.user.headImage);
     return ListView.builder(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
       shrinkWrap: true,
@@ -210,7 +210,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                   _updateRealName(userInfo);
                 }
               },
-              style: userInfo.isRealName  ? userTextStyle : userRedTextStyle,
+              style: userInfo.isRealName ? userTextStyle : userRedTextStyle,
               name: userInfo.resRealName,
               hasArrow: false,
             );

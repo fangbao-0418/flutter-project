@@ -36,49 +36,58 @@ class SettingPage extends StatelessWidget {
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
               child: listTab(context)),
+          Expanded(
+            flex: 3,
+            child: Container(color: whiteColor, height: 60),
+          ),
+          Positioned(
+              child: RaisedButton(
+            elevation: 0,
+            padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                side: BorderSide(
+                    width: 0.5,
+                    color: main99GrayColor,
+                    style: BorderStyle.solid)),
+            onPressed: () {
+              loginOut(context);
+            },
+            child: Text("退出登录",
+                style: TextStyle(color: main99GrayColor, fontSize: 14)),
+          )),
+          Expanded(
+            flex: 1,
+            child: Container(color: whiteColor, height: 60),
+          ),
         ],
       ),
     );
   }
 
-  Widget listTab(context) {
-    final usermodel = Provider.of<UserInfoVM>(context);
+  void loginOut(BuildContext context) {
+    XTMTDChannel.invokeMethod("loginOut");
+    XTRouter.closePage(context: context);
+  }
 
+  Widget listTab(context) {
     return ListView(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
         basicContent("个人信息", tapFunc: () {
-          print("1233444");
           // Global.context = context;
           XTRouter.pushToPage(context: context, routerName: "fl-user-info");
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(context: context, routerName: "page1");
+          XTRouter.pushToPage(routerName: "officalname", context: context);
+          // XTRouter.pushToPage(context: context, routerName: "page1");
         }),
         basicContent("收货地址", tapFunc: () {
-          /// 测试数据 待地址列表完成后即可删除
-          Map<String, dynamic> params = {
-            "address": "安徽省 安庆市 太湖县 仓前街道五迪中心A2幢4楼喜团科技",
-            "city": "安庆市",
-            "cityId": 340800,
-            "consignee": "朋学良",
-            "defaultAddress": 1,
-            "district": "太湖县",
-            "districtId": 340825,
-            "freight": 0,
-            "id": 65573,
-            "memberId": 7838383,
-            "phone": "18365295533",
-            "province": "安徽省",
-            "provinceId": 340000,
-            "street": "仓前街道五迪中心A2幢4楼喜团科技"
-          };
-          AddressListModel model = AddressListModel.fromJson(params);
           XTRouter.pushToPage(
-            routerName: "addAddress",
-            params: model.toJson(),
+            routerName: "addressList",
             context: context,
           );
         }),
@@ -96,11 +105,9 @@ class SettingPage extends StatelessWidget {
         basicContent("关于喜团",
             childStr: "v" + AppConfig.getInstance().appVersion,
             haveLine: false, tapFunc: () {
-          XTRouter.pushToPage(routerName: "officalname", context: context);
-
-          // XTRouter.pushToPage(
-          //     context: context,
-          //     routerName: makeRouter(true, null, "aboutXiTuan"));
+          XTRouter.pushToPage(
+              context: context,
+              routerName: makeRouter(true, null, "aboutXiTuan"));
         })
       ],
     );

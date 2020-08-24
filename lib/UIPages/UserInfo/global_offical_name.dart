@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
@@ -11,64 +14,283 @@ class GlobalOfficalName extends StatefulWidget {
   _GlobalOfficalNameState createState() => _GlobalOfficalNameState();
 }
 
+enum PageState { none, showlist, showAdd }
+
 class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   /// 姓名
   final TextEditingController nameC = TextEditingController();
 
   ///身份证
   final TextEditingController idC = TextEditingController();
+  bool isOnFocus1 = false;
+  bool isOnFocus2 = false;
+  FocusNode focusNode1 = new FocusNode();
+  FocusNode focusNode2 = new FocusNode();
+  String _name = "";
+  String _idNo = "";
+  int _selectNormal = 0;
 
-  bool showSave = false;
+  PageState pState = PageState.none;
+
+  List listP = [];
+
   void _xtback(BuildContext context) {
-    XTRouter.closePage(context: context);
+    print("--------------------3333333---------");
+    if (pState == PageState.none) {
+      XTRouter.closePage(context: context);
+    } else if (pState == PageState.showAdd) {
+      if (listP.length > 0) {
+        setState(() {
+          pState = PageState.showlist;
+        });
+      } else {
+        setState(() {
+          pState = PageState.none;
+        });
+      }
+    } else if (pState == PageState.showlist) {
+      XTRouter.closePage(context: context);
+    }
   }
 
-  void _saveInfo(BuildContext context) {
-    XTRouter.closePage(context: context);
+  void _saveInfo(BuildContext context) async {
+    Loading.show(context: context);
+    final result =
+        await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal);
+
+    if (result["success"] == true) {
+      Loading.hide();
+
+      nameC.clear();
+      idC.clear();
+
+      RealNameModel mm = RealNameModel();
+      mm.isDefault = _selectNormal;
+      mm.name = _name;
+      mm.idNo = _idNo;
+      _name = "";
+      _idNo = "";
+      _selectNormal = 0;
+      listP.add(mm);
+      setState(() {
+        pState = PageState.showlist;
+      });
+    } else {
+      Loading.hide();
+
+      print(result["data"]);
+    }
   }
 
-  void showRealname() {}
+  void addRealName(RealNameModel model) {
+    setState(() {
+      listP.add(model);
+    });
+  }
+
+  void _addInfo(BuildContext context) {
+    // XTRouter.closePage(context: context);
+    setState(() {
+      pState = PageState.showAdd;
+    });
+  }
+
+  void showRealname() {
+    setState(() {
+      pState = PageState.showAdd;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    memberAuthList();
+  }
+
+  /// 地址信息（新增/修改）
+  void memberAuthList() async {
+    final result = await XTUserInfoRequest.memberAuthList();
+    for (var item in result) {
+      listP.add(item);
+    }
+    if (listP.length > 0) {
+      setState(() {
+        pState = PageState.showlist;
+      });
+    }
+  }
+
+  /// 地址信息（新增/修改）
+  void setDefeat(int id) async {
+    final result = await XTUserInfoRequest.addmemberDefault(id);
+    if (result["success"] == true) {
+      for (RealNameModel item in listP) {
+        if (item.isDefault == 1 && item.id != id) {
+          item.isDefault = 0;
+        } else if (item.isDefault == 0 && item.id == id) {
+          item.isDefault = 1;
+        }
+      }
+
+      setState(() {
+        print(123);
+      });
+    }
+  }
+
+  /// 地址信息（新增/修改）
+  void addmemberDelete(int id) async {
+    final result = await XTUserInfoRequest.addmemberDelete(id);
+    if (result["success"] == true) {
+      for (RealNameModel item in listP) {
+        if (item.id == id) {
+          listP.remove(item);
+        }
+      }
+
+      setState(() {
+        print(123);
+      });
+    }
+  }
+
+  AppBar showBar(PageState state, BuildContext context) {
+    switch (pState) {
+      case PageState.showlist:
+        return xtbackAndRightBar(
+            back: () => _xtback(context),
+            title: "全球淘付款人实名信息",
+            rightTitle: "添加",
+            rightFun: () => _addInfo(context));
+        break;
+      case PageState.showAdd:
+        return xtbackAndRightBar(
+            back: () => _xtback(context),
+            title: "全球淘付款人实名信息",
+            rightTitle: "保存",
+            rightFun: () => _saveInfo(context));
+        break;
+      case PageState.none:
+        return xtBackBar(back: () => _xtback(context), title: "全球淘付款人实名信息");
+        break;
+      default:
+        return xtBackBar(back: () => _xtback(context), title: "全球淘付款人实名信息");
+    }
+  }
+
+  Widget showBody(PageState state, BuildContext context) {
+    switch (pState) {
+      case PageState.showlist:
+        return listName(listP);
+        break;
+      case PageState.showAdd:
+        return addRealNamePage();
+        break;
+      case PageState.none:
+        return noRealNamePage();
+        break;
+      default:
+        return noRealNamePage();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: (showSave
-            ? xtBackBar(back: () => _xtback, title: "全球淘付款人实名信息")
-            : xtbackAndRightBar(
-                back: () => _xtback(context),
-                title: "全球淘付款人实名信息",
-                rightTitle: "保存",
-                rightFun: () => _saveInfo(context))),
-        body: addRealNamePage()
-
-        // FutureBuilder(
-        //   future: XTUserInfoRequest.getUserInfoData(),
-        //   builder: (ctx, content) {
-        //     if (!content.hasData) {
-        //       return noRealNamePage();
-        //     }
-        //     if (content.error != null) {
-        //       return Center(
-        //         child: Text("网络错误，请重试"),
-        //       );
-        //     }
-        //     return Container();
-        //   },
-        // ),
-        );
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        focusNode1.unfocus();
+        focusNode2.unfocus();
+        setState(() {
+          isOnFocus1 = false;
+          isOnFocus2 = false;
+        });
+      },
+      child: Scaffold(
+          appBar: showBar(pState, context), body: showBody(pState, context)),
+    );
   }
 
   Widget listName(List list) {
-    return ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (ctx, index) {
-          return itemCard(list[index]);
-        });
+    return Container(
+      padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+      child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (ctx, index) {
+            return itemCard(list[index]);
+          }),
+    );
   }
 
-  Widget itemCard(RealNameModel name) {
+  Widget itemCard(RealNameModel model) {
     return Card(
-      child: Text("7777"),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                    child: Text(
+                      model.name,
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.left,
+                    )),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.only(left: 10, top: 5, bottom: 10),
+                    child: Text(
+                      model.idNo,
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.left,
+                    )),
+              ],
+            ),
+            Container(
+              height: 1,
+              color: mainF5GrayColor,
+            ),
+            Row(
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(
+                      model.isDefault == 1
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color:
+                          model.isDefault == 1 ? mainRedColor : main99GrayColor,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      setDefeat(model.id);
+                    }),
+                Text(
+                  "默认",
+                  style: xtstyle(14, "666666"),
+                ),
+                Expanded(child: Container()),
+                FlatButton(
+                    onPressed: () {
+                      print("addmemberDelete ---------------" +
+                          model.id.toString());
+                      addmemberDelete(model.id);
+                    },
+                    child: Text(
+                      "删除",
+                      style: TextStyle(color: mainBlackColor),
+                    ))
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -110,20 +332,26 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     return Column(
       children: <Widget>[
         Card(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))), //设置圆角
             margin: EdgeInsets.all(10),
             child: Column(
               children: <Widget>[
                 Stack(
+                  alignment: Alignment.center,
+                  // fit: StackFit.expand,
                   children: <Widget>[
                     Image.asset(
                       "images/header_realname.png",
-                      fit: BoxFit.fitHeight,
+                      fit: BoxFit.fill,
+                      // alignment: Alignment.center,
+                      width: double.maxFinite,
                     ),
                     Center(
                       child: Text("身份信息",
                           style: TextStyle(
                               color: whiteColor,
-                              fontSize: 14,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold)),
                     )
                   ],
@@ -136,18 +364,57 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text("姓名",
+                      Text("姓名          ",
                           style: TextStyle(color: Colors.black, fontSize: 16)),
                       Expanded(
                         child: TextField(
                           controller: nameC,
+                          focusNode: focusNode1,
+                          onTap: () {
+                            setState(() {
+                              isOnFocus1 = true;
+                              isOnFocus2 = false;
+                            });
+                          },
+                          onChanged: (value) {
+                            _name = value;
+                          },
                           decoration: InputDecoration(
-                            hintText: "请输入付款账户的真实姓名",
-                            hintStyle: TextStyle(
-                                color: Color(0xffb9b5b5), fontSize: 16),
-                            contentPadding:
-                                EdgeInsets.only(left: 30, right: 15),
-                            border: InputBorder.none,
+                            suffixIcon: isOnFocus1
+                                ? Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: EdgeInsets.all(16),
+                                    // color: main99GrayColor,
+                                    decoration: BoxDecoration(
+                                      color: main99GrayColor,
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                    ),
+                                    child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(
+                                          Icons.close,
+                                          size: 10,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          nameC.clear();
+                                          _name = "";
+                                        }),
+                                  )
+                                : Text(""),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: '请输入付款账户的真实姓名',
+                            counterText: '',
+                            hintStyle:
+                                TextStyle(color: main99GrayColor, fontSize: 16),
                           ),
                         ),
                       ),
@@ -162,18 +429,57 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text("证件号码",
+                      Text("证件号码   ",
                           style: TextStyle(color: Colors.black, fontSize: 16)),
                       Expanded(
                         child: TextField(
                           controller: idC,
+                          focusNode: focusNode2,
+                          onTap: () {
+                            setState(() {
+                              isOnFocus1 = false;
+                              isOnFocus2 = true;
+                            });
+                          },
+                          onChanged: (value) {
+                            _idNo = value;
+                          },
                           decoration: InputDecoration(
-                            hintText: "请输入付款账户的身份证号",
-                            hintStyle: TextStyle(
-                                color: Color(0xffb9b5b5), fontSize: 16),
-                            contentPadding:
-                                EdgeInsets.only(left: 30, right: 15),
-                            border: InputBorder.none,
+                            suffixIcon: isOnFocus2
+                                ? Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: EdgeInsets.all(16),
+                                    // color: main99GrayColor,
+                                    decoration: BoxDecoration(
+                                      color: main99GrayColor,
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                    ),
+                                    child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(
+                                          Icons.close,
+                                          size: 10,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          idC.clear();
+                                          _idNo = "";
+                                        }),
+                                  )
+                                : Text(""),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: '请输入付款账户的身份证号',
+                            counterText: '',
+                            hintStyle:
+                                TextStyle(color: main99GrayColor, fontSize: 16),
                           ),
                         ),
                       ),
@@ -184,11 +490,19 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                   children: <Widget>[
                     IconButton(
                         icon: Icon(
-                          Icons.radio_button_unchecked,
-                          color: main99GrayColor,
+                          _selectNormal == 0
+                              ? Icons.check_circle_outline
+                              : Icons.check_circle,
+                          color: _selectNormal == 0
+                              ? main99GrayColor
+                              : mainRedColor,
                           size: 20,
                         ),
-                        onPressed: () {}),
+                        onPressed: () {
+                          setState(() {
+                            _selectNormal = _selectNormal == 0 ? 1 : 0;
+                          });
+                        }),
                     Text(
                       "默认实名人",
                       style: xtstyle(14, "666666"),
@@ -206,6 +520,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                   Text(
                     "添加实名认证",
                     textAlign: TextAlign.left,
+                    style: TextStyle(color: main66GrayColor, fontSize: 14),
                   ),
                 ],
               ),
@@ -217,6 +532,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                 textAlign: TextAlign.left,
                 softWrap: true,
                 maxLines: 3,
+                style: TextStyle(color: main99GrayColor, fontSize: 12),
               ),
             ),
             Container(
@@ -226,6 +542,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                 textAlign: TextAlign.left,
                 softWrap: true,
                 maxLines: 3,
+                style: TextStyle(color: main99GrayColor, fontSize: 12),
               ),
             ),
           ],
