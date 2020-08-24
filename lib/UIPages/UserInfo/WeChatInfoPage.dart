@@ -119,6 +119,30 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     }
   }
 
+  /// 查看大图
+  void _lookBigPic() {
+    if (_wechatQrImgUrl.isEmpty) { return; }
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return WeChatInfoImgPage(imgUrl: _wechatQrImgUrl);
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: Tween(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animation, 
+                curve: Curves.fastOutSlowIn
+              )
+            ),
+            child: child,
+          );
+        },
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -195,7 +219,8 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                     _uploadWxCodeImg(); 
                                     break;
                                   case WeChatInfoState.uploaded: 
-                                    Toast.showToast(msg: "查看大图", context: context);
+                                    // Toast.showToast(msg: "查看大图", context: context);
+                                    _lookBigPic();
                                     break;
                                   case WeChatInfoState.have: 
                                     _gotoInfoChangePage(true);
@@ -284,6 +309,27 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class WeChatInfoImgPage extends StatelessWidget {
+
+  WeChatInfoImgPage({this.imgUrl});
+
+  /// 微信二维码照片
+  final String imgUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: Container(
+        color: Color(0x90000000),
+        child: Image.network(imgUrl),
       ),
     );
   }
