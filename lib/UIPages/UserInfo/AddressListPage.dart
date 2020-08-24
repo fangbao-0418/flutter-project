@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTSizeFit.dart';
 import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddressListPage extends StatefulWidget {
   @override
@@ -153,27 +155,57 @@ class _AddressListPageState extends State<AddressListPage> {
       );
     }
 
+    Widget buildSlideAddressCell(AddressListModel model){
+      return Slidable(
+        child: buildAddressListCell(model),
+        actionPane: SlidableScrollActionPane(),
+        secondaryActions: <Widget>[
+          SlideAction(
+            color: Colors.red,
+            child: Text(
+              "删除",
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () {},
+          )
+        ],
+      );
+    }
+
     ///获取ListView
     Widget buildAddressListView(List<AddressListModel> models){
       return ListView.builder(
           padding: EdgeInsets.only(top: 10),
           itemCount: models.length,
           itemBuilder: (context, index) {
+            final model = models[index];
             if (index == models.length - 1) {
-              return Column(
-                  children: <Widget>[
+              return Column(children: <Widget>[
                     SizedBox(
-                      height: 10, child: Container(color: Color(0xFFF9F9F9),),),
-                    buildAddressListCell(models[index]),
-                    SizedBox(
-                      height: 10, child: Container(color: Color(0xFFF9F9F9),),),
-                    buildAddNewAddressButton()
-                  ]);
+                  height: 10,
+                  child: Container(
+                    color: Color(0xFFF9F9F9),
+                  ),
+                ),
+                buildSlideAddressCell(model),
+                SizedBox(
+                  height: 10,
+                  child: Container(
+                    color: Color(0xFFF9F9F9),
+                  ),
+                ),
+                buildAddNewAddressButton()
+              ]);
             } else {
               return Column(
                 children: <Widget>[
-                  SizedBox(height: 10, child: Container(color: Color(0xFFF9F9F9),),),
-                  buildAddressListCell(models[index]),
+                  SizedBox(
+                    height: 10,
+                    child: Container(
+                      color: Color(0xFFF9F9F9),
+                    ),
+                  ),
+                  buildSlideAddressCell(model)
                 ],
               );
             }
@@ -190,8 +222,10 @@ class _AddressListPageState extends State<AddressListPage> {
             print('data:${snapShot.data}');
             print('connectionState:${snapShot.connectionState}');
             if (snapShot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
+              Loading.show(context: context, showShade: false);
+              return Text('');
             } else {
+              Loading.hide();
               if(snapShot.hasData){
                 addressModels = snapShot.data;
                 return buildAddressListView(addressModels);
