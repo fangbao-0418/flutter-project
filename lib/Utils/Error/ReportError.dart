@@ -39,7 +39,7 @@ final baseUrl = Global.isRelease
 
 // 发送上报请求
 Future _sendRequest(List<Map<String, dynamic>> xtLogdata) {
-  print('_sendRequest num:');
+  // print('_sendRequest num:');
   print(xtLogdata.length);
   // 如果修改固定格式，根据实际情况修改上报数据阙值
   final data = {'env': logEnv, 'xt_logdata': xtLogdata};
@@ -56,16 +56,17 @@ Future _sendRequest(List<Map<String, dynamic>> xtLogdata) {
       connectTimeout: connectTimeout,
       headers: {'referer': 'https://myouxuan.hzxituan.com/'}));
   local.helper(dio);
-  print('send report start');
+  // print('send report start');
   return dio.post(url, data: data).then((v) {
-    print('send report success');
+    // print('send report success');
     // 上报成功监测是否存在未发送日志
     // Future.delayed(Duration(milliseconds: inspectDelay), () {
     //   detectionUnSendLog();
     // });
   }, onError: (e) {
     _collectData(xtLogdata);
-    print('send report failed');
+    // print('send report failed');
+    // print('send report failed num: ${xtLogdata.length}');
     // throw e;
   });
 }
@@ -205,11 +206,14 @@ void _sectionSend(List<Map<String, dynamic>> xtLogData) {
     _collectData(records.sublist(maxSectionNum));
     records = records.sublist(0, maxSectionNum);
   }
-
+  print('result length:');
+  print(result.length);
   loop() {
     if (result.length == 0) {
       return;
     }
+    print('row 1 length:');
+    print(result[0].length);
     _sendRequest(result[0]).whenComplete(() {
       result.removeAt(0);
       if (result.length > 0) {
@@ -224,29 +228,23 @@ void _sectionSend(List<Map<String, dynamic>> xtLogData) {
 
 // 检测未成功的日志
 void detectionUnSendLog() {
-  print('待上报日志数量：');
+  // print('待上报日志数量：');
   Collection.takeData().then((value) {
-    print(value.length);
-    // if ()
-    // print(jsonDecode(value[0])['env']);
+    if (value.length == 0) {
+      return;
+    }
+    List<Map<String, dynamic>> data = value.map<Map<String, dynamic>>((e) {
+      return jsonDecode(e);
+    }).toList();
+    // print('resend request num: ${data.length}');
+    _sendRequest(data);
   });
-  // Prefs.getStringList(XT_LOGDATA_KEY).then((data) {
-  //   print('待上报日志数量：${data.length}');
-  //   if (data.length > 0) {
-  //     if (data[0].length > 1024 * 200) {
-  //       data.removeAt(0);
-  //     }
-  //     final info = jsonDecode(data[0]);
-  //     _sendRequest(info).then((res) {
-  //       data.removeAt(0);
-  //       Prefs.setStringList(XT_LOGDATA_KEY, data);
-  //     });
-  //   }
-  // });
 }
 
 // 收集失败数据
 void _collectData(List<Map<String, dynamic>> xtLogData) async {
+  // print('_collectData');
+  // print(xtLogData);
   Collection.record(xtLogData);
 }
 

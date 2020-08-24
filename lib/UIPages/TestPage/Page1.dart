@@ -44,6 +44,7 @@ class _PageState extends State<TestPage1> {
   String title = 'page1';
   // Future<dynamic> future = XTUserInfoRequest.getUserInfoData();
   // setK() {}
+  num c = 0;
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: xtBackBar(title: title, back: () => _xtback(context)),
@@ -75,10 +76,12 @@ class _PageState extends State<TestPage1> {
                                   children: <Widget>[
                                     RaisedButton(
                                       onPressed: () {
+                                        Collection.record([{'a:': c}]);
+                                        c++;
                                         // assert(_PageState != Widget);
                                         // assert(_PageState is Widget);
                                         // print('xxx');
-                                        XTRouter.pushToPage(routerName: 'setting', context: context);
+                                        // XTRouter.pushToPage(routerName: 'setting', context: context);
                                         // // Collection.record(['a', 'b', 'c']);
                                         // Map<String, String> map = {'a': '2'};
                                         // List<String> list = [
@@ -101,9 +104,7 @@ class _PageState extends State<TestPage1> {
                                     RaisedButton(
                                       onPressed: () {
                                         Collection.takeData().then((res) {
-                                          res.forEach((record) {
-                                            print(jsonDecode(record)['env']);
-                                          });
+                                          print(res);
                                           // print(res);
                                         });
                                       },

@@ -28,30 +28,54 @@ Future<File> get _localFile async {
 
 // 将数据写入文件
 Future<File> record(List<Map<String, dynamic>> xtLogData) async {
+  print('record num: ${xtLogData.length}');
   final dir = await _localLogDir;
   bool dirExists = await dir.exists();
   if (!dirExists) {
     await dir.create(recursive: true);
   }
   // print(dirExists);
-  String text = xtLogData.map((row) => jsonEncode(row)).join('\r\n');
+  String text = xtLogData.where((record) {
+    num fileTime = record['fail_time'] ?? 0;
+    //  return fileTime < 3;
+    return true;
+  }).map((row) {
+    row['fail_time'] = (row['fail_time'] ?? 0) + 1;
+    return jsonEncode(row);
+  }).join('\r\n');
   File file = new File('${dir.path}/logs.txt');
   return file.writeAsString('$text\r\n', mode: FileMode.append);
 }
 
 Future<List<String>> takeData([num logNum = 5]) async {
   final dir = await _localLogDir;
-  // print(dir);
-  File file = await dir.list().last;
+   File file;
+  Stream<FileSystemEntity> fileList =  dir.list();
+  try {
+    file = await fileList.last;
+  } catch (e) {
+    return [];
+  }
+  // if (await fileList.last != null) {
+  //   return [];
+  // }
+  // File file = await fileList.last;
+  // if (await file.exists() == false) {
+  //    return [];
+  // }
   String contents = await file.readAsString();
   // print('take data');
   if (contents.trim().length == 0) {
+    // file.delete();
     return [];
   }
-  print(file.path);
+  // print(file.path);
   List<String> data = (contents.split('\r\n') ?? []).where((record) {
     try {
       jsonDecode(record);
+      if (record.trim().isEmpty) {
+        return false;
+      }
       return true;
     } catch (e) {
       return false;
@@ -61,6 +85,11 @@ Future<List<String>> takeData([num logNum = 5]) async {
     return [];
   }
   logNum = min(logNum, data.length);
+  print('take num: ${logNum.toString()}');
+  // ?????
   file.writeAsString(data.sublist(logNum).join('\r\n') + '\r\n');
-  return data.sublist(0, logNum);
+  // List<Map<String, dynamic>> res = data.sublist(0, logNum).map((e) {
+  //   return jsonDecode(e);
+  // }).toList();
+  return  data.sublist(0, logNum);
 }

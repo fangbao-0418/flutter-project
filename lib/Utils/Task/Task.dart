@@ -22,7 +22,7 @@ class Task {
   }
   static init () {
     Task.cancelAll();
-    ReportLogsTask().exec();
+    // ReportLogsTask().exec();
   }
   Task.registry (dynamic task) {
       _tasks.add(this);
