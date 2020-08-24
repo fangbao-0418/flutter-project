@@ -24,7 +24,7 @@ final logEnv = Global.isRelease ? 'prod' : 'test';
 // 分段上传数据量阙值，文字修饰(__part{n})+固定格式({"env":"prod","xt-logdata":[]})+最大3位数分段量编号合计30左右
 const threshold = 100;
 // 上报数据大小 200kb
-const maxUploadSize = 524;
+const maxUploadSize = 100 * 1024;
 // 最大分段上传个数，超出丢弃
 const maxSectionNum = 5;
 // 上报超时时长单位毫秒
@@ -223,6 +223,7 @@ void _sectionSend(List<Map<String, dynamic>> xtLogData) {
       }
     });
   }
+
   loop();
 }
 
@@ -245,7 +246,7 @@ void detectionUnSendLog() {
 void _collectData(List<Map<String, dynamic>> xtLogData) async {
   // print('_collectData');
   // print(xtLogData);
-  Collection.record(xtLogData);
+  // Collection.record(xtLogData);
 }
 
 // TODO
