@@ -58,10 +58,11 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: xtbackAndRightBar(
-              back: () => XTRouter.closePage(context: context),
-              title: "修改微信号",
-              rightTitle: "完成",
-              rightFun: () => _updateName()),
+        back: () => XTRouter.closePage(context: context),
+        title: "修改微信号",
+        rightTitle: "完成",
+        rightFun: () => _updateName()
+      ),
       body: GestureDetector(
         onTap: () => _nameNode.unfocus(),
         child: Container(
@@ -86,6 +87,10 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                             contentPadding: EdgeInsets.only(left: 15, right: 15),
                             border: InputBorder.none,
                           ),
+                          onEditingComplete: () {
+                            _updateName();
+                            _nameNode.unfocus();
+                          },
                         ),
                       ),
                     ),

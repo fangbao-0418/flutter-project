@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
 import '../NormalUI/XTAppBackBar.dart';
@@ -19,11 +20,6 @@ class AddAddressPage extends StatefulWidget {
 
   @override
   _AddAddressPageState createState() => _AddAddressPageState();
-}
-
-void _xtback(BuildContext context) {
-  final BoostContainerSettings settings = BoostContainer.of(context).settings;
-  FlutterBoost.singleton.close(settings.uniqueId, result: <String, dynamic>{'result': 'data from second'});
 }
 
 class _AddAddressPageState extends State<AddAddressPage> {
@@ -209,7 +205,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: xtBackBar(title: _isAddAddress ? "添加地址" : "编辑地址", back: () => _xtback(context)),
+      appBar: xtBackBar(title: _isAddAddress ? "添加地址" : "编辑地址", back: () => XTRouter.closePage(context: context)),
       body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -320,20 +316,18 @@ class _AddAddressPageState extends State<AddAddressPage> {
   Widget selectAction() {
     return Container(
       height: 50,
-      child: Row(
-        children: <Widget>[
-          Checkbox(
-            activeColor: Colors.red,
-            hoverColor: Colors.red,
-            value: isSelected, 
-            onChanged: (value) {
-              setState(() {
-                isSelected = value;
-              });
-            }
-          ),
-          Text("设置默认地址", style: TextStyle(color: Colors.black, fontSize: 14))
-        ]
+      alignment: Alignment.centerLeft,
+      child: FlatButton.icon(
+        onPressed: () {
+          setState(() {
+            isSelected = !isSelected;
+          });
+        }, 
+        icon: Icon(
+          isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+          color: isSelected ? mainRedColor : main99GrayColor,
+        ), 
+        label: Text("设置默认地址", style: TextStyle(color: Colors.black, fontSize: 14))
       ),
     );
   }
