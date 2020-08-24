@@ -21,13 +21,16 @@ class _AddressListPageState extends State<AddressListPage> {
   @override
   Widget build(BuildContext context) {
     List<AddressListModel> addressModels;
+    Future future = XTUserInfoRequest.obtainAddressList();
 
-    Future refresh() async{
-       return XTUserInfoRequest.obtainAddressList();
+    Future refresh() async {
+      return future;
     }
 
+    @override
     initState(){
       super.initState();
+      future = XTUserInfoRequest.obtainAddressList();
     }
 
     ///获取新增收货地址Button
@@ -62,16 +65,16 @@ class _AddressListPageState extends State<AddressListPage> {
 
     ///获取复选框组件
     Widget buildCheckBox(AddressListModel model,bool isSelected){
-      return  Checkbox(
+      return Checkbox(
           value: isSelected,
-          onChanged: (isCheck){
+          onChanged: (isCheck) {
             if (isCheck) {
               isSelected = isCheck;
-              Future<bool> finish = XTUserInfoRequest.setDefaultAddress(model.id);
-              print("地址ID："+ model.id.toString()+"状态:"+finish.toString());
-              refresh();
-              //改变_CheckBoxState
-              setState(() {});
+              XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
+                print("地址ID：" + model.id.toString() + "状态:" + value.toString());
+                //改变_CheckBoxState
+                setState(() {});
+              });
             }
           });
     }
