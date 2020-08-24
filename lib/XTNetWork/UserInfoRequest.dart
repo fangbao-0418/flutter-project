@@ -66,9 +66,10 @@ class XTUserInfoRequest {
   static Future<bool> setDefaultAddress(int addressId) async {
     const url = "/cweb/memberaddress/default/";
     bool resetSuccess = false;
-    final result = await HttpRequest.request(url + addressId.toString(),method: "post");
+    final result =
+        await HttpRequest.request(url + addressId.toString(), method: "post");
     resetSuccess = result['data'];
-    print(addressId.toString()+"设置默认地址状态:"+resetSuccess.toString());
+    print(addressId.toString() + "设置默认地址状态:" + resetSuccess.toString());
     return resetSuccess;
   }
 
@@ -76,15 +77,16 @@ class XTUserInfoRequest {
   static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";
     final result = await HttpRequest.request(url);
-    final model = result["data"];
+    List model = result["data"];
 
     var list = [];
-    for (var item in model) {
-      RealNameModel m = RealNameModel.fromJson(Map.of(item));
-
-      list.add(m);
+    if (model.length > 0) {
+      for (var item in model) {
+        RealNameModel m = RealNameModel.fromJson(Map.of(item));
+        list.add(m);
+      }
     }
-    print(list.first.toString() + '8888899999992');
+
     return list;
   }
 
@@ -95,7 +97,7 @@ class XTUserInfoRequest {
     final result = await HttpRequest.request(url,
         method: "post",
         params: {"name": name, "idNo": idNo, "isDefault": isDefault});
-
+    print("object2222221" + result.toString());
     return result;
   }
 

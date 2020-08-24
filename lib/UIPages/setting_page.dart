@@ -22,6 +22,7 @@ import '../XTModel/UserInfoModel.dart';
 //   }
 
 class SettingPage extends StatelessWidget {
+  final isReal = AppConfig.getInstance().userVM.isRealName;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,45 +72,56 @@ class SettingPage extends StatelessWidget {
     XTRouter.closePage(context: context);
   }
 
+  List<Widget> childItem(BuildContext context) {
+    print(
+        "childItemchildItemchildItemchildItemchildItemchildItemchildItemchildItem");
+    List<Widget> tp = [
+      basicContent("个人信息", tapFunc: () {
+        // Global.context = context;
+        XTRouter.pushToPage(context: context, routerName: "fl-user-info");
+      }),
+      basicContent("全球淘付款人实名信息", tapFunc: () {
+        XTRouter.pushToPage(routerName: "officalname", context: context);
+        // XTRouter.pushToPage(context: context, routerName: "page1");
+      }),
+      basicContent("收货地址", tapFunc: () {
+        XTRouter.pushToPage(
+          routerName: "addressList",
+          context: context,
+        );
+      })
+    ];
+
+    if (isReal) {
+      tp.add(basicContent("支付宝账号", tapFunc: () {
+        XTRouter.pushToPage(routerName: "alipayAccount", context: context);
+      }));
+    }
+    tp.add(basicContent("消息通知", tapFunc: () {
+      XTRouter.pushToPage(
+          context: context, routerName: makeRouter(true, null, "gotoNotice"));
+    }));
+    if (isReal) {
+      tp.add(basicContent("微信信息", tapFunc: () {
+        XTRouter.pushToPage(routerName: "wechatInfo", context: context);
+      }));
+    }
+    tp.add(basicContent("关于喜团",
+        childStr: "v" + AppConfig.getInstance().appVersion,
+        haveLine: false, tapFunc: () {
+      XTRouter.pushToPage(
+          context: context, routerName: makeRouter(true, null, "aboutXiTuan"));
+    }));
+
+    return tp;
+  }
+
   Widget listTab(context) {
     return ListView(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      children: <Widget>[
-        basicContent("个人信息", tapFunc: () {
-          // Global.context = context;
-          XTRouter.pushToPage(context: context, routerName: "fl-user-info");
-        }),
-        basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "officalname", context: context);
-          // XTRouter.pushToPage(context: context, routerName: "page1");
-        }),
-        basicContent("收货地址", tapFunc: () {
-          XTRouter.pushToPage(
-            routerName: "addressList",
-            context: context,
-          );
-        }),
-        basicContent("支付宝账号", tapFunc: () {
-          XTRouter.pushToPage(routerName: "alipayAccount", context: context);
-        }),
-        basicContent("消息通知", tapFunc: () {
-          XTRouter.pushToPage(
-              context: context,
-              routerName: makeRouter(true, null, "gotoNotice"));
-        }),
-        basicContent("微信信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "wechatInfo", context: context);
-        }),
-        basicContent("关于喜团",
-            childStr: "v" + AppConfig.getInstance().appVersion,
-            haveLine: false, tapFunc: () {
-          XTRouter.pushToPage(
-              context: context,
-              routerName: makeRouter(true, null, "aboutXiTuan"));
-        })
-      ],
+      children: childItem(context),
     );
   }
 
@@ -137,10 +149,31 @@ class SettingPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Text(name,
-                          style:
-                              TextStyle(color: mainBlackColor, fontSize: 16))),
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                    child: (name != "个人信息")
+                        ? Text(name,
+                            style:
+                                TextStyle(color: mainBlackColor, fontSize: 16))
+                        : ((isReal)
+                            ? Text(name,
+                                style: TextStyle(
+                                    color: mainBlackColor, fontSize: 16))
+                            : RichText(
+                                text: TextSpan(
+                                text: name,
+                                style: TextStyle(
+                                    color: mainBlackColor, fontSize: 16),
+                                children: [
+                                  TextSpan(
+                                    text: "（未实名认证）",
+                                    style: TextStyle(
+                                      color: mainRedColor,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ))),
+                  ),
                 ),
                 Expanded(
                   flex: 1,

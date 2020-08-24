@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
@@ -38,14 +39,21 @@ class _EditNamePage extends State<EditNamePage> {
     if (widget.name == _tname) {
       FlutterBoost.singleton.close("editPage");
     }
+    Loading.show(context: context);
     try {
-      final succ = await XTUserInfoRequest.updateUserInfo({"nickName": _tname});
+      final succ = await XTUserInfoRequest.updateUserInfo({"nickName": _tname})
+          .catchError((err) {
+        Loading.hide();
+        Toast.showToast(msg: err.message, context: context);
+      });
       if (succ) {
+        Loading.hide();
         AppConfig.getInstance().userVM.updateNiceName(_tname);
         Toast.showToast(msg: "修改成功", context: context).then(() {
           FlutterBoost.singleton.close("editPage");
         });
       } else {
+        Loading.hide();
         Toast.showToast(msg: "修改失败，请重试", context: context);
       }
       // vm.updateNiceName(_tname);

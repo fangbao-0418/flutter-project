@@ -141,6 +141,7 @@ class _EditPhonePageState extends State<EditPhonePage>
           isOnFocus2 = false;
           showSubmitBtn();
         },
+
         child: Scaffold(
             appBar: xtBackBar(title: "修改手机号", back: () => _xtback(context)),
             body: Container(

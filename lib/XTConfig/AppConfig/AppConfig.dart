@@ -1,4 +1,5 @@
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/local/proxy.dart';
 
 class AppConfig {
@@ -123,7 +124,7 @@ class AppConfig {
     return _instance.appVersion;
   }
 
-  static get user {
+  static UserInfoModel get user {
     return _instance.userVM.user;
   }
 

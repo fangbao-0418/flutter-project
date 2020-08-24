@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
+import 'package:xtflutter/Utils/Error/XtError.dart';
 import 'package:xtflutter/Utils/Loading.dart';
+import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
@@ -35,7 +37,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   List listP = [];
 
   void _xtback(BuildContext context) {
-    print("--------------------3333333---------");
     if (pState == PageState.none) {
       XTRouter.closePage(context: context);
     } else if (pState == PageState.showAdd) {
@@ -56,8 +57,14 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   void _saveInfo(BuildContext context) async {
     Loading.show(context: context);
     final result =
-        await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal);
-
+        await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal)
+            .catchError((err) {
+      Loading.hide();
+      Toast.showToast(msg: err.message, context: context);
+    });
+    if (result == null) {
+      return;
+    }
     if (result["success"] == true) {
       Loading.hide();
 
@@ -75,10 +82,43 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
       setState(() {
         pState = PageState.showlist;
       });
+      memberAuthList();
     } else {
       Loading.hide();
+      Toast.showToast(msg: result["message"], context: context);
+    }
+  }
 
-      print(result["data"]);
+  /// 地址信息（新增/修改）
+  void addmemberDelete(int id) async {
+    Loading.show(context: context);
+    final result =
+        await XTUserInfoRequest.addmemberDelete(id).catchError((err) {
+      Loading.hide();
+      Toast.showToast(msg: err.message);
+    });
+
+    if (result == null) {
+      Loading.hide();
+      return;
+    }
+
+    if (result["success"] == true) {
+      Loading.hide();
+
+      for (RealNameModel item in listP) {
+        if (item.id == id) {
+          listP.remove(item);
+          break;
+        }
+      }
+      setState(() {
+        if (listP.length == 0) {
+          pState = PageState.none;
+        }
+      });
+    } else {
+      Toast.showToast(msg: result["message"]);
     }
   }
 
@@ -109,14 +149,19 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
 
   /// 地址信息（新增/修改）
   void memberAuthList() async {
-    final result = await XTUserInfoRequest.memberAuthList();
-    for (var item in result) {
-      listP.add(item);
-    }
-    if (listP.length > 0) {
-      setState(() {
-        pState = PageState.showlist;
-      });
+    List result = await XTUserInfoRequest.memberAuthList();
+    if (result.length > 0) {
+      listP = [];
+      for (var item in result) {
+        listP.add(item);
+      }
+      if (listP.length > 0) {
+        setState(() {
+          pState = PageState.showlist;
+        });
+      }
+    } else {
+      pState = PageState.none;
     }
   }
 
@@ -129,22 +174,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
           item.isDefault = 0;
         } else if (item.isDefault == 0 && item.id == id) {
           item.isDefault = 1;
-        }
-      }
-
-      setState(() {
-        print(123);
-      });
-    }
-  }
-
-  /// 地址信息（新增/修改）
-  void addmemberDelete(int id) async {
-    final result = await XTUserInfoRequest.addmemberDelete(id);
-    if (result["success"] == true) {
-      for (RealNameModel item in listP) {
-        if (item.id == id) {
-          listP.remove(item);
         }
       }
 
@@ -197,18 +226,19 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        focusNode1.unfocus();
-        focusNode2.unfocus();
-        setState(() {
-          isOnFocus1 = false;
-          isOnFocus2 = false;
-        });
-      },
-      child: Scaffold(
-          appBar: showBar(pState, context), body: showBody(pState, context)),
-    );
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          focusNode1.unfocus();
+          focusNode2.unfocus();
+          setState(() {
+            isOnFocus1 = false;
+            isOnFocus2 = false;
+          });
+        },
+        child: Scaffold(
+          appBar: showBar(pState, context),
+          body: showBody(pState, context),
+        ));
   }
 
   Widget listName(List list) {

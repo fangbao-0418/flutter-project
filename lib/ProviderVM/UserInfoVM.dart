@@ -42,7 +42,10 @@ class UserInfoVM extends ChangeNotifier {
   }
 
   bool get isRealName {
-    return _user.idCard.xtEmpty;
+    return _user.idCard != "null" &&
+        _user.userName != "null" &&
+        !_user.idCard.xtEmpty &&
+        !_user.userName.xtEmpty;
   }
 
   String get resRealName {
@@ -52,6 +55,6 @@ class UserInfoVM extends ChangeNotifier {
   }
 
   String get resIdentity {
-    return isRealName ? (_user.idCard == null ? "未认证" : _user.idCard) : "未认证";
+    return isRealName ? _user.idCard : "未认证";
   }
 }
