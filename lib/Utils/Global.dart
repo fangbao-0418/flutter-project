@@ -8,5 +8,6 @@ class Global {
     _context = c;
   }
 
-  static get isDebugger => kDebugMode;
+  static bool get isDebugger => kDebugMode;
+  static bool get isRelease => kReleaseMode;
 }
