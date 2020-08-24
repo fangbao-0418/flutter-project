@@ -124,7 +124,6 @@ class _EditPhonePageState extends State<EditPhonePage>
       print("00000000000000" + error.message);
       Toast.showToast(msg: error.message, context: context);
     });
-    print("object-----------------------changeUserPhone");
   }
 
   void _xtback(BuildContext context) {

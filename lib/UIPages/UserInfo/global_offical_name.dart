@@ -308,8 +308,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                 Expanded(child: Container()),
                 FlatButton(
                     onPressed: () {
-                      print("addmemberDelete ---------------" +
-                          model.id.toString());
                       addmemberDelete(model.id);
                     },
                     child: Text(

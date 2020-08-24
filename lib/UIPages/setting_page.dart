@@ -26,6 +26,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: mainF5GrayColor,
       appBar: xtBackBar(
           back: () {
             XTRouter.closePage(context: context);
@@ -34,17 +35,19 @@ class _SettingPageState extends State<SettingPage> {
       body: Column(
         children: <Widget>[
           Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
               child: listTab(context)),
           Expanded(
             flex: 3,
-            child: Container(color: whiteColor, height: 60),
+            child: Container(color: mainF5GrayColor, height: 60),
           ),
           Positioned(
               child: Container(
             width: double.infinity,
-            color: Colors.white,
+            color: mainF5GrayColor,
             alignment: Alignment.center,
             child: RaisedButton(
               elevation: 0,
@@ -65,7 +68,7 @@ class _SettingPageState extends State<SettingPage> {
           )),
           Expanded(
             flex: 1,
-            child: Container(color: whiteColor, height: 60),
+            child: Container(color: mainF5GrayColor, height: 60),
           ),
         ],
       ),

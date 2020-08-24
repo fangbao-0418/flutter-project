@@ -43,9 +43,6 @@ class _UserInfoPageState extends State<UserInfoPage>
     try {
       final result = Map<String, dynamic>.from(
           await XTMTDChannel.invokeMethod('updateRealName'));
-      print("result----------------------------------");
-      print(result);
-      print("result==================================");
       vm.updateRealInfo(result["card"], result["name"]);
     } catch (e) {
       print(e);
@@ -68,7 +65,7 @@ class _UserInfoPageState extends State<UserInfoPage>
 
 //返回
   void _xtback(BuildContext context) {
-    XTRouter.closePage(context: context, result: {"1":"111"});
+    XTRouter.closePage(context: context, result: {"1": "111"});
   }
 
   @override
@@ -84,6 +81,8 @@ class _UserInfoPageState extends State<UserInfoPage>
             builder: (context, result) {
               if (!result.hasData) {
                 return Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   margin: EdgeInsets.all(10),
                   child: userInfoView(usermodel),
                   shadowColor: mainF5GrayColor,
@@ -99,6 +98,8 @@ class _UserInfoPageState extends State<UserInfoPage>
                   UserInfoModel.fromJson(Map.from(result.data));
               usermodel.updateUser(mode);
               return Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 margin: EdgeInsets.all(10),
                 child: userInfoView(usermodel),
                 shadowColor: mainF5GrayColor,
@@ -203,7 +204,6 @@ class _UserInfoPageState extends State<UserInfoPage>
               userInfo,
               "真实姓名",
               tapFunc: () {
-                print("object 88888");
                 if (!userInfo.isRealName) {
                   _updateRealName(userInfo);
                 }
