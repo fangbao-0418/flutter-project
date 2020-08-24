@@ -41,22 +41,28 @@ class SettingPage extends StatelessWidget {
             child: Container(color: whiteColor, height: 60),
           ),
           Positioned(
+            child: Container(
+              width: double.infinity,
+              color: Colors.white,
+              alignment: Alignment.center,
               child: RaisedButton(
-            elevation: 0,
-            padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                side: BorderSide(
-                    width: 0.5,
-                    color: main99GrayColor,
-                    style: BorderStyle.solid)),
-            onPressed: () {
-              loginOut(context);
-            },
-            child: Text("退出登录",
-                style: TextStyle(color: main99GrayColor, fontSize: 14)),
-          )),
+                elevation: 0,
+                padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: BorderSide(
+                          width: 0.5,
+                          color: main99GrayColor,
+                          style: BorderStyle.solid)),
+                onPressed: () {
+                    loginOut(context);
+                },
+                child: Text("退出登录",
+                      style: TextStyle(color: main99GrayColor, fontSize: 14)),
+              ),
+            )
+          ),
           Expanded(
             flex: 1,
             child: Container(color: whiteColor, height: 60),
