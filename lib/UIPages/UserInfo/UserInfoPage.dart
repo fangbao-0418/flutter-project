@@ -41,8 +41,11 @@ class _UserInfoPageState extends State<UserInfoPage>
   ///更新身份证
   Future<dynamic> _updateRealName(UserInfoVM vm) async {
     try {
-      final Map<String, dynamic> result = new Map<String, dynamic>.from(
+      final result = Map<String, dynamic>.from(
           await XTMTDChannel.invokeMethod('updateRealName'));
+      print("result----------------------------------");
+      print(result);
+      print("result==================================");
       vm.updateRealInfo(result["card"], result["name"]);
     } catch (e) {
       print(e);
@@ -65,10 +68,7 @@ class _UserInfoPageState extends State<UserInfoPage>
 
 //返回
   void _xtback(BuildContext context) {
-    // final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    XTRouter.closePage(context: context);
-    // FlutterBoost.singleton.close(settings.uniqueId,
-    // result: <String, dynamic>{'result': 'data from second'});
+    XTRouter.closePage(context: context, result: {"1":"111"});
   }
 
   @override
@@ -94,9 +94,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                   child: Text("网络错误，请重试"),
                 );
               }
-              print("usermodel ----");
-              print(result.data);
-              print("usermodel ----");
+
               UserInfoModel mode =
                   UserInfoModel.fromJson(Map.from(result.data));
               usermodel.updateUser(mode);
