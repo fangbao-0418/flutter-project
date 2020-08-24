@@ -70,3 +70,4 @@ app.*.map.json
  
  
 pubspec.lock
+lib/local/proxy.dart
