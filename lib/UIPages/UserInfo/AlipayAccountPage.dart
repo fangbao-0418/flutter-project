@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import '../../Utils/Toast.dart';
 import '../../XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
@@ -52,11 +53,13 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
 
   /// 保存支付宝账户信息
   void saveAlipayAccountInfo() async {
+    Loading.show(context: context);
     bool isSuccess = await XTUserInfoRequest.saveAlipayAccountReq({
         "accountNumber": accountTextCon.text, 
         "accountUserName": nameTextCon.text
       }
     );
+    Loading.hide();
     if (isSuccess) {
       Toast.showToast(msg: "保存成功", context: context);
       setState(() {

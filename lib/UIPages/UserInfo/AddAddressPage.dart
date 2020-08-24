@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
@@ -114,9 +115,12 @@ class _AddAddressPageState extends State<AddAddressPage> {
   /// 地址请求
   void addressInfoRequest(Map<String, String> params, bool isAdd) async {
     try {
+      Loading.show(context: context);
       final result = await XTUserInfoRequest.addressInfoRequest(params, isAdd).catchError((err) {
+        Loading.hide();
         showToast(err.message);
       });
+      Loading.hide();
       bool isSuccess = result["success"];
       String msg = result["message"];
       if (isSuccess) {
