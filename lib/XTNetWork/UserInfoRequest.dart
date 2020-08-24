@@ -50,6 +50,28 @@ class XTUserInfoRequest {
     return result;
   }
 
+  // 获取地址列表
+  static Future<List<AddressListModel>> obtainAddressList() async {
+    const url = "/cweb/memberaddress/getList";
+    List<AddressListModel> addressList = [];
+    final result = await HttpRequest.request(url);
+    List models = result['data'];
+    models.forEach((element) {
+      addressList.add(AddressListModel.fromJson(element));
+    });
+    print("addressListData:${models.toString()}");
+    return addressList;
+  }
+
+  static Future<bool> setDefaultAddress(int addressId) async {
+    const url = "/cweb/memberaddress/default/";
+    bool resetSuccess = false;
+    final result = await HttpRequest.request(url + addressId.toString(),method: "post");
+    resetSuccess = result['data'];
+    print(addressId.toString()+"设置默认地址状态:"+resetSuccess.toString());
+    return resetSuccess;
+  }
+
   // 获取实名列表
   static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";
