@@ -1,5 +1,5 @@
 ///IP 地址
-const String localProxy = "PROXY 192.168.4.117:8888";
+const String localProxy = "PROXY 192.168.4.152:8888";
 
 ///用户token
 const String localToken =

@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/UIPages/UserInfo/global_offical_name.dart';
 // import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
@@ -105,10 +108,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   void getUserInfo() async {
-    var userInfo = await XTMTDChannel.invokeMethod("userInfo");
+    final userInfo = await XTMTDChannel.invokeMethod("userInfo");
 
-    AppConfig().userVM.updateUser(UserInfoModel.fromJson(Map.from(userInfo)));
-    print("userInfo -------2" + userInfo.toString());
+    Map<String, dynamic> tp = Map.from(json.decode(userInfo));
+    // tp["id"] = int.parse(tp["id"]);
+
+
+    AppConfig().userVM.updateUser(UserInfoModel.fromJson(tp));
   }
 
   void getSoftInfo() async {
@@ -167,8 +173,8 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     Global.context = context;
 
-    return Container(child: SettingPage());
-    // return TestPage1();
+    // return Container(child: SettingPage());
+    return GlobalOfficalName();
   }
 }
 

@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
+import 'package:xtflutter/Utils/Toast.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
@@ -29,12 +31,23 @@ class _EditNamePage extends State<EditNamePage> {
   bool isOnFocus = true;
 
   void _updateName() async {
+    if (_tname.isEmpty) {
+      Toast.showToast(msg: "请输入昵称", context: context);
+      return;
+    }
     if (widget.name == _tname) {
       FlutterBoost.singleton.close("editPage");
     }
     try {
-      final _ = await XTUserInfoRequest.updateUserInfo({"nickName": _tname});
-      FlutterBoost.singleton.close("editPage");
+      final succ = await XTUserInfoRequest.updateUserInfo({"nickName": _tname});
+      if (succ) {
+        AppConfig.getInstance().userVM.updateNiceName(_tname);
+        Toast.showToast(msg: "修改成功", context: context).then(() {
+          FlutterBoost.singleton.close("editPage");
+        });
+      } else {
+        Toast.showToast(msg: "修改失败，请重试", context: context);
+      }
       // vm.updateNiceName(_tname);
     } catch (err) {
       print(err);
@@ -43,10 +56,6 @@ class _EditNamePage extends State<EditNamePage> {
 
   void _xtback(BuildContext context) {
     XTRouter.closePage(context: context);
-
-    // final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    // FlutterBoost.singleton.close(settings.uniqueId,
-    //     result: <String, dynamic>{'result': 'data from second'});
   }
 
   @override

@@ -36,26 +36,54 @@ class SettingPage extends StatelessWidget {
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
               child: listTab(context)),
+          Expanded(
+            flex: 3,
+            child: Container(color: whiteColor, height: 60),
+          ),
+          Positioned(
+              child: RaisedButton(
+            elevation: 0,
+            padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                side: BorderSide(
+                    width: 0.5,
+                    color: main99GrayColor,
+                    style: BorderStyle.solid)),
+            onPressed: () {
+              loginOut(context);
+            },
+            child: Text("退出登录",
+                style: TextStyle(color: main99GrayColor, fontSize: 14)),
+          )),
+          Expanded(
+            flex: 1,
+            child: Container(color: whiteColor, height: 60),
+          ),
         ],
       ),
     );
   }
 
-  Widget listTab(context) {
-    final usermodel = Provider.of<UserInfoVM>(context);
+  void loginOut(BuildContext context) {
+    XTMTDChannel.invokeMethod("loginOut");
+    XTRouter.closePage(context: context);
+  }
 
+  Widget listTab(context) {
     return ListView(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
         basicContent("个人信息", tapFunc: () {
-          print("1233444");
           // Global.context = context;
           XTRouter.pushToPage(context: context, routerName: "fl-user-info");
         }),
         basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(context: context, routerName: "page1");
+          XTRouter.pushToPage(routerName: "officalname", context: context);
+          // XTRouter.pushToPage(context: context, routerName: "page1");
         }),
         basicContent("收货地址", tapFunc: () {
           /// 测试数据 待地址列表完成后即可删除
@@ -98,11 +126,9 @@ class SettingPage extends StatelessWidget {
         basicContent("关于喜团",
             childStr: "v" + AppConfig.getInstance().appVersion,
             haveLine: false, tapFunc: () {
-          XTRouter.pushToPage(routerName: "officalname", context: context);
-
-          // XTRouter.pushToPage(
-          //     context: context,
-          //     routerName: makeRouter(true, null, "aboutXiTuan"));
+          XTRouter.pushToPage(
+              context: context,
+              routerName: makeRouter(true, null, "aboutXiTuan"));
         })
       ],
     );
