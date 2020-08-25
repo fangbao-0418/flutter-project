@@ -13,6 +13,8 @@ import 'package:xtflutter/Utils/Storage/SharedPreferences.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/Utils/Error/CollectData.dart' as Collection;
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
+import 'package:xtflutter/Utils/Error/LogsDB.dart';
+import 'package:xtflutter/Utils/Task/Task.dart';
 
 class TestPage1 extends StatefulWidget {
   @override
@@ -76,8 +78,11 @@ class _PageState extends State<TestPage1> {
                                   children: <Widget>[
                                     RaisedButton(
                                       onPressed: () {
-                                        Collection.record([{'a:': c}]);
-                                        c++;
+                                        LogsDB.takeData();
+                                        // Collection.record([
+                                        //   {'a:': c}
+                                        // ]);
+                                        // c++;
                                         // assert(_PageState != Widget);
                                         // assert(_PageState is Widget);
                                         // print('xxx');
@@ -104,22 +109,26 @@ class _PageState extends State<TestPage1> {
                                     RaisedButton(
                                       onPressed: () {
                                         Collection.takeData().then((res) {
-                                          print(res);
+                                          print(res.length);
                                           // print(res);
                                         });
                                       },
-                                      child: Text('get collect data'),
+                                      child: Text('take collect data'),
                                     ),
                                     RaisedButton(
                                       onPressed: () {
-                                        Prefs.remove('xt-logdata')
-                                            .then((prefs) {
-                                          print(prefs);
-                                        });
+                                        LogsDB.dropTable();
+                                        print('drop table');
                                       },
-                                      child: Text('clear prefs data'),
+                                      child: Text('drop logs table'),
                                     ),
                                   ],
+                                ),
+                                RaisedButton(
+                                  onPressed: () {
+                                    Task.cancelAll();
+                                  },
+                                  child: Text('clear tasks'),
                                 ),
                                 RaisedButton(
                                     onPressed: () {
