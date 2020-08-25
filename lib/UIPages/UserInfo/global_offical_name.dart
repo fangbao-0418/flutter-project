@@ -351,226 +351,232 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   }
 
   Widget addRealNamePage() {
-    return Column(
-      children: <Widget>[
-        Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))), //设置圆角
-            margin: EdgeInsets.all(10),
-            child: Column(
-              children: <Widget>[
-                Stack(
-                  alignment: Alignment.center,
-                  // fit: StackFit.expand,
-                  children: <Widget>[
-                    Image.asset(
-                      "images/header_realname.png",
-                      fit: BoxFit.fill,
-                      // alignment: Alignment.center,
-                      width: double.maxFinite,
-                    ),
-                    Center(
-                      child: Text("身份信息",
-                          style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                    )
-                  ],
-                ),
-                Container(
-                  height: 55,
-                  color: Colors.white,
-                  padding: EdgeInsets.only(left: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: Column(
+            children: <Widget>[
+              Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))), //设置圆角
+                  margin: EdgeInsets.all(10),
+                  child: Column(
                     children: <Widget>[
-                      Text("姓名        ",
-                          style:
-                              TextStyle(color: mainBlackColor, fontSize: 16)),
-                      Expanded(
-                        child: TextField(
-                          controller: nameC,
-                          focusNode: focusNode1,
-                          onTap: () {
-                            setState(() {
-                              isOnFocus1 = true;
-                              isOnFocus2 = false;
-                            });
-                          },
-                          onChanged: (value) {
-                            _name = value;
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: isOnFocus1
-                                ? Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.all(16),
-                                    // color: main99GrayColor,
-                                    decoration: BoxDecoration(
-                                      color: main99GrayColor,
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                    ),
-                                    child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        icon: Icon(
-                                          Icons.close,
-                                          size: 10,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          nameC.clear();
-                                          _name = "";
-                                        }),
-                                  )
-                                : Text(""),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: '请输入付款账户的真实姓名',
-                            counterText: '',
-                            hintStyle:
-                                TextStyle(color: main99GrayColor, fontSize: 14),
+                      Stack(
+                        alignment: Alignment.center,
+                        // fit: StackFit.expand,
+                        children: <Widget>[
+                          Image.asset(
+                            "images/header_realname.png",
+                            fit: BoxFit.fill,
+                            // alignment: Alignment.center,
+                            width: double.maxFinite,
                           ),
+                          Center(
+                            child: Text("身份信息",
+                                style: TextStyle(
+                                    color: whiteColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 55,
+                        color: Colors.white,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text("姓名        ",
+                                style:
+                                    TextStyle(color: mainBlackColor, fontSize: 16)),
+                            Expanded(
+                              child: TextField(
+                                controller: nameC,
+                                focusNode: focusNode1,
+                                onTap: () {
+                                  setState(() {
+                                    isOnFocus1 = true;
+                                    isOnFocus2 = false;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  _name = value;
+                                },
+                                decoration: InputDecoration(
+                                  suffixIcon: isOnFocus1
+                                      ? Container(
+                                          width: 10,
+                                          height: 10,
+                                          margin: EdgeInsets.all(16),
+                                          // color: main99GrayColor,
+                                          decoration: BoxDecoration(
+                                            color: main99GrayColor,
+                                            border: Border.all(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(15)),
+                                          ),
+                                          child: IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
+                                                Icons.close,
+                                                size: 10,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                nameC.clear();
+                                                _name = "";
+                                              }),
+                                        )
+                                      : Text(""),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: '请输入付款账户的真实姓名',
+                                  counterText: '',
+                                  hintStyle:
+                                      TextStyle(color: main99GrayColor, fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 55,
-                  color: Colors.white,
-                  padding: EdgeInsets.only(left: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text("证件号码 ",
-                          style:
-                              TextStyle(color: mainBlackColor, fontSize: 16)),
-                      Expanded(
-                        child: TextField(
-                          controller: idC,
-                          focusNode: focusNode2,
-                          onTap: () {
-                            setState(() {
-                              isOnFocus1 = false;
-                              isOnFocus2 = true;
-                            });
-                          },
-                          onChanged: (value) {
-                            _idNo = value;
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: isOnFocus2
-                                ? Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.all(16),
-                                    // color: main99GrayColor,
-                                    decoration: BoxDecoration(
-                                      color: main99GrayColor,
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                    ),
-                                    child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        icon: Icon(
-                                          Icons.close,
-                                          size: 10,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          idC.clear();
-                                          _idNo = "";
-                                        }),
-                                  )
-                                : Text(""),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
+                      Container(
+                        height: 55,
+                        color: Colors.white,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text("证件号码 ",
+                                style:
+                                    TextStyle(color: mainBlackColor, fontSize: 16)),
+                            Expanded(
+                              child: TextField(
+                                controller: idC,
+                                focusNode: focusNode2,
+                                onTap: () {
+                                  setState(() {
+                                    isOnFocus1 = false;
+                                    isOnFocus2 = true;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  _idNo = value;
+                                },
+                                decoration: InputDecoration(
+                                  suffixIcon: isOnFocus2
+                                      ? Container(
+                                          width: 10,
+                                          height: 10,
+                                          margin: EdgeInsets.all(16),
+                                          // color: main99GrayColor,
+                                          decoration: BoxDecoration(
+                                            color: main99GrayColor,
+                                            border: Border.all(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(15)),
+                                          ),
+                                          child: IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
+                                                Icons.close,
+                                                size: 10,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                idC.clear();
+                                                _idNo = "";
+                                              }),
+                                        )
+                                      : Text(""),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: '请输入付款账户的身份证号',
+                                  counterText: '',
+                                  hintStyle:
+                                      TextStyle(color: main99GrayColor, fontSize: 14),
+                                ),
+                              ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: '请输入付款账户的身份证号',
-                            counterText: '',
-                            hintStyle:
-                                TextStyle(color: main99GrayColor, fontSize: 14),
-                          ),
+                          ],
                         ),
                       ),
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                              icon: Icon(
+                                _selectNormal == 0
+                                    ? Icons.check_circle_outline
+                                    : Icons.check_circle,
+                                color: _selectNormal == 0
+                                    ? main99GrayColor
+                                    : mainRedColor,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectNormal = _selectNormal == 0 ? 1 : 0;
+                                });
+                              }),
+                          Text(
+                            "默认实名人",
+                            style: xtstyle(14, "666666"),
+                          )
+                        ],
+                      )
                     ],
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(
-                          _selectNormal == 0
-                              ? Icons.check_circle_outline
-                              : Icons.check_circle,
-                          color: _selectNormal == 0
-                              ? main99GrayColor
-                              : mainRedColor,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _selectNormal = _selectNormal == 0 ? 1 : 0;
-                          });
-                        }),
-                    Text(
-                      "默认实名人",
-                      style: xtstyle(14, "666666"),
-                    )
-                  ],
-                )
-              ],
-            )),
-        Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 10, top: 10),
-              child: Row(
+                  )),
+              Column(
                 children: <Widget>[
-                  Text(
-                    "添加实名认证",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(color: main66GrayColor, fontSize: 14),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, top: 10),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "添加实名认证",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: main66GrayColor, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    child: Text(
+                      "1.根据海关规定，购买跨境商品需要办理清关手续，请您配合进行实名认证。",
+                      textAlign: TextAlign.left,
+                      softWrap: true,
+                      maxLines: 3,
+                      style: TextStyle(color: main99GrayColor, fontSize: 12),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    child: Text(
+                      "2.购买跨境商品需要填写收货人的真实姓名，身份证号码，请如实填写，否则订单将无法正常发货。",
+                      textAlign: TextAlign.left,
+                      softWrap: true,
+                      maxLines: 3,
+                      style: TextStyle(color: main99GrayColor, fontSize: 12),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Text(
-                "1.根据海关规定，购买跨境商品需要办理清关手续，请您配合进行实名认证。",
-                textAlign: TextAlign.left,
-                softWrap: true,
-                maxLines: 3,
-                style: TextStyle(color: main99GrayColor, fontSize: 12),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Text(
-                "2.购买跨境商品需要填写收货人的真实姓名，身份证号码，请如实填写，否则订单将无法正常发货。",
-                textAlign: TextAlign.left,
-                softWrap: true,
-                maxLines: 3,
-                style: TextStyle(color: main99GrayColor, fontSize: 12),
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
       ],
     );
   }
