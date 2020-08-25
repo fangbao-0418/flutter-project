@@ -102,12 +102,11 @@ class SettingPage extends StatelessWidget {
         basicContent("微信信息", tapFunc: () {
           XTRouter.pushToPage(routerName: "wechatInfo", context: context);
         }),
-        basicContent("关于喜团",
-            childStr: "v" + AppConfig.getInstance().appVersion,
-            haveLine: false, tapFunc: () {
+        basicContent("关于喜团", tapFunc: () {
           XTRouter.pushToPage(
-              context: context,
-              routerName: makeRouter(true, null, "aboutXiTuan"));
+            routerName: "aboutXituan",
+            context: context,
+          );
         })
       ],
     );

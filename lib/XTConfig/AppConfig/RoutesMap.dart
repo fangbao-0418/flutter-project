@@ -9,6 +9,7 @@ import 'package:xtflutter/UIPages/UserInfo/UserInfoPage.dart';
 import 'package:xtflutter/UIPages/UserInfo/AddAddressPage.dart';
 import 'package:xtflutter/UIPages/UserInfo/WeChatInfoChangePage.dart';
 import 'package:xtflutter/UIPages/UserInfo/WeChatInfoPage.dart';
+import 'package:xtflutter/UIPages/UserInfo/AboutXituanPage.dart';
 import 'package:xtflutter/UIPages/UserInfo/global_offical_name.dart';
 import 'package:xtflutter/UIPages/setting_page.dart';
 import 'package:xtflutter/UIPages/TestPage/page1.dart';
@@ -18,9 +19,12 @@ import 'package:xtflutter/UIPages/TestPage/page3.dart';
 Map<String, PageBuilder> routeConfigs = {
   'setting': (pageName, params, _) => SettingPage(),
   'fl-user-info': (pageName, params, _) => UserInfoPage(),
-  'editPage': (pageName, params, _) => EditNamePage(params: params, name: pageName),
-  'addAddress': (pageName, params, _) => AddAddressPage(params: params, name: pageName),
+  'editPage': (pageName, params, _) =>
+      EditNamePage(params: params, name: pageName),
+  'addAddress': (pageName, params, _) =>
+      AddAddressPage(params: params, name: pageName),
   'addressList': (pageName, params, _) => AddressListPage(),
+  'aboutXituan': (pageName, params, _) => AboutXituanPage(),
   'editPhone': (pageName, params, _) => EditPhonePage(),
   'alipayAccount': (pageName, params, _) => AlipayAccountPage(),
   'wechatInfo': (pageName, params, _) => WeChatInfoPage(),
