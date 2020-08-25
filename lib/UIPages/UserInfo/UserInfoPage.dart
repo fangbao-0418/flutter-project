@@ -51,7 +51,7 @@ class _UserInfoPageState extends State<UserInfoPage>
 
   final userTextStyle = TextStyle(color: main66GrayColor, fontSize: 14);
   final userRedTextStyle = TextStyle(color: mainRedColor, fontSize: 14);
-  final userEdage = EdgeInsets.fromLTRB(10, 5, 10, 5);
+  final userEdage = EdgeInsets.fromLTRB(10, 0, 10, 0);
 
   @override
   void initState() {
@@ -239,7 +239,7 @@ class _UserInfoPageState extends State<UserInfoPage>
       bool hasChild = false,
       bool hasArrow = true,
       bool hasLine = true,
-      double height = 50,
+      double height = 45,
       Widget child}) {
     return GestureDetector(
         onTap: tapFunc,
@@ -270,11 +270,11 @@ class _UserInfoPageState extends State<UserInfoPage>
           child: Container(
               padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
               child: Text(name,
-                  style: TextStyle(color: mainBlackColor, fontSize: 18))),
+                  style: TextStyle(color: mainBlackColor, fontSize: 16))),
         ),
         Expanded(
           flex: 1,
-          child: Container(color: Colors.white, height: 60),
+          child: Container(color: Colors.white, height: 45),
         ),
         Align(
           alignment: Alignment.centerRight,

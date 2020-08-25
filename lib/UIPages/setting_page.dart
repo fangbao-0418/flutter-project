@@ -21,7 +21,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   bool isReal = AppConfig.getInstance().userVM.isRealName;
 
-  final leftStyle = TextStyle(color: mainBlackColor, fontSize: 18);
+  final leftStyle = TextStyle(color: mainBlackColor, fontSize: 16);
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +163,7 @@ class _SettingPageState extends State<SettingPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    padding: EdgeInsets.fromLTRB(5, 8, 0, 8),
+                    padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
                     child: (name != "个人信息")
                         ? Text(name, style: leftStyle)
                         : ((isReal)
@@ -177,7 +177,7 @@ class _SettingPageState extends State<SettingPage> {
                                     text: "（未实名认证）",
                                     style: TextStyle(
                                       color: mainRedColor,
-                                      fontSize: 16,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ],

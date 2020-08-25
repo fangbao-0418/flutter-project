@@ -54,6 +54,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     }
   }
 
+  ///保存实名
   void _saveInfo(BuildContext context) async {
     Loading.show(context: context);
     final result =
@@ -89,7 +90,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     }
   }
 
-  /// 地址信息（新增/修改）
+  /// 删除实名
   void addmemberDelete(int id) async {
     Loading.show(context: context);
     final result =
@@ -128,13 +129,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     });
   }
 
-  void _addInfo(BuildContext context) {
-    // XTRouter.closePage(context: context);
-    setState(() {
-      pState = PageState.showAdd;
-    });
-  }
-
   void showRealname() {
     setState(() {
       pState = PageState.showAdd;
@@ -147,7 +141,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     memberAuthList();
   }
 
-  /// 地址信息（新增/修改）
+  /// 实名列表
   void memberAuthList() async {
     List result = await XTUserInfoRequest.memberAuthList();
     if (result.length > 0) {
@@ -165,7 +159,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     }
   }
 
-  /// 地址信息（新增/修改）
+  /// 设置默认实名信息
   void setDefeat(int id) async {
     final result = await XTUserInfoRequest.addmemberDefault(id);
     if (result["success"] == true) {
@@ -190,7 +184,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             back: () => _xtback(context),
             title: "全球淘付款人实名信息",
             rightTitle: "添加",
-            rightFun: () => _addInfo(context));
+            rightFun: () => showRealname());
         break;
       case PageState.showAdd:
         return xtbackAndRightBar(
@@ -327,7 +321,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
       child: Column(
         children: <Widget>[
           Container(
-              padding: EdgeInsets.only(top: 80, bottom: 40),
+              padding: EdgeInsets.only(top: 60, bottom: 20),
               child: Image.asset("images/empty_name.png")),
           Container(
             padding: EdgeInsets.only(bottom: 10),
@@ -379,7 +373,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                       child: Text("身份信息",
                           style: TextStyle(
                               color: whiteColor,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold)),
                     )
                   ],
@@ -392,8 +386,9 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text("姓名          ",
-                          style: TextStyle(color: Colors.black, fontSize: 16)),
+                      Text("姓名        ",
+                          style:
+                              TextStyle(color: mainBlackColor, fontSize: 16)),
                       Expanded(
                         child: TextField(
                           controller: nameC,
@@ -442,7 +437,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                             hintText: '请输入付款账户的真实姓名',
                             counterText: '',
                             hintStyle:
-                                TextStyle(color: main99GrayColor, fontSize: 16),
+                                TextStyle(color: main99GrayColor, fontSize: 14),
                           ),
                         ),
                       ),
@@ -457,8 +452,9 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text("证件号码   ",
-                          style: TextStyle(color: Colors.black, fontSize: 16)),
+                      Text("证件号码 ",
+                          style:
+                              TextStyle(color: mainBlackColor, fontSize: 16)),
                       Expanded(
                         child: TextField(
                           controller: idC,
@@ -507,7 +503,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                             hintText: '请输入付款账户的身份证号',
                             counterText: '',
                             hintStyle:
-                                TextStyle(color: main99GrayColor, fontSize: 16),
+                                TextStyle(color: main99GrayColor, fontSize: 14),
                           ),
                         ),
                       ),
