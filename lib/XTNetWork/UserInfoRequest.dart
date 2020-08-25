@@ -73,6 +73,16 @@ class XTUserInfoRequest {
     return resetSuccess;
   }
 
+  static Future<bool> deleteAddress(int addressId) async {
+    const url = "/cweb/memberaddress/delete/";
+    bool resetSuccess = false;
+    final result =
+    await HttpRequest.request(url + addressId.toString(), method: "post");
+    resetSuccess = result['data'];
+    print(addressId.toString() + "删除地址状态:" + resetSuccess.toString());
+    return resetSuccess;
+  }
+
   // 获取实名列表
   static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";

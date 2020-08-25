@@ -47,6 +47,7 @@ class _AddressListPageState extends State<AddressListPage> {
           padding: EdgeInsets.only(left: 98, right: 98),
           height: 40,
           child: FlatButton(
+            padding: EdgeInsets.only(left: 45,right: 45),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               color: Colors.red,
@@ -186,7 +187,11 @@ class _AddressListPageState extends State<AddressListPage> {
               "删除",
               style: TextStyle(color: Colors.white),
             ),
-            onTap: () {},
+            onTap: () {
+              XTUserInfoRequest.deleteAddress(model.id).then((value){
+                  setState(() {});
+              });
+            },
           )
         ],
       );
@@ -235,10 +240,16 @@ class _AddressListPageState extends State<AddressListPage> {
     Widget emptyViewAdd() {
       return Column(
         children: <Widget>[
+          SizedBox(
+            height: 10,
+            child: Container(
+              color: Color(0xFFF9F9F9),
+            ),
+          ),
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 100),
-              child: Text("暂无地址")),
+              margin: EdgeInsets.only(top: 200),
+              child: Text("还没有收货地址，快去添加收货地址吧～",style: TextStyle(color: Color(0xFF666666)),)),
           ),
           Expanded(
             flex: 1,
@@ -246,8 +257,8 @@ class _AddressListPageState extends State<AddressListPage> {
           ),
           RaisedButton(
             elevation: 0,
-            padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
-            color: Colors.white,
+            padding: EdgeInsets.fromLTRB(100, 10, 100, 10),
+            color: mainRedColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 side: BorderSide(
@@ -264,8 +275,8 @@ class _AddressListPageState extends State<AddressListPage> {
                 }
               });
             },
-            child: Text("新增地址",
-                style: TextStyle(color: mainRedColor, fontSize: 14)),
+            child: Text("新增收货地址",
+                style: TextStyle(color: Colors.white, fontSize: 15)),
           ),
           Expanded(
             flex: 1,
