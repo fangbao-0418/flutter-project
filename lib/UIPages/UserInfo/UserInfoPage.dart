@@ -72,7 +72,6 @@ class _UserInfoPageState extends State<UserInfoPage>
   Widget build(BuildContext context) {
     final usermodel = Provider.of<UserInfoVM>(context);
 
-    print("usermodel ----" + usermodel.user.nickName);
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
