@@ -41,7 +41,7 @@ class _UserInfoPageState extends State<UserInfoPage>
   ///更新身份证
   Future<dynamic> _updateRealName(UserInfoVM vm) async {
     try {
-      final Map<String, dynamic> result = new Map<String, dynamic>.from(
+      final result = Map<String, dynamic>.from(
           await XTMTDChannel.invokeMethod('updateRealName'));
       vm.updateRealInfo(result["card"], result["name"]);
     } catch (e) {
@@ -51,7 +51,7 @@ class _UserInfoPageState extends State<UserInfoPage>
 
   final userTextStyle = TextStyle(color: main66GrayColor, fontSize: 14);
   final userRedTextStyle = TextStyle(color: mainRedColor, fontSize: 14);
-  final userEdage = EdgeInsets.fromLTRB(10, 5, 10, 5);
+  final userEdage = EdgeInsets.fromLTRB(10, 0, 10, 0);
 
   @override
   void initState() {
@@ -65,17 +65,13 @@ class _UserInfoPageState extends State<UserInfoPage>
 
 //返回
   void _xtback(BuildContext context) {
-    // final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    XTRouter.closePage(context: context);
-    // FlutterBoost.singleton.close(settings.uniqueId,
-    // result: <String, dynamic>{'result': 'data from second'});
+    XTRouter.closePage(context: context, result: {"1": "111"});
   }
 
   @override
   Widget build(BuildContext context) {
     final usermodel = Provider.of<UserInfoVM>(context);
 
-    print("usermodel ----" + usermodel.user.nickName);
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
@@ -84,6 +80,8 @@ class _UserInfoPageState extends State<UserInfoPage>
             builder: (context, result) {
               if (!result.hasData) {
                 return Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   margin: EdgeInsets.all(10),
                   child: userInfoView(usermodel),
                   shadowColor: mainF5GrayColor,
@@ -94,13 +92,13 @@ class _UserInfoPageState extends State<UserInfoPage>
                   child: Text("网络错误，请重试"),
                 );
               }
-              print("usermodel ----");
-              print(result.data);
-              print("usermodel ----");
+
               UserInfoModel mode =
                   UserInfoModel.fromJson(Map.from(result.data));
               usermodel.updateUser(mode);
               return Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 margin: EdgeInsets.all(10),
                 child: userInfoView(usermodel),
                 shadowColor: mainF5GrayColor,
@@ -205,7 +203,6 @@ class _UserInfoPageState extends State<UserInfoPage>
               userInfo,
               "真实姓名",
               tapFunc: () {
-                print("object 88888");
                 if (!userInfo.isRealName) {
                   _updateRealName(userInfo);
                 }
@@ -241,7 +238,7 @@ class _UserInfoPageState extends State<UserInfoPage>
       bool hasChild = false,
       bool hasArrow = true,
       bool hasLine = true,
-      double height = 50,
+      double height = 45,
       Widget child}) {
     return GestureDetector(
         onTap: tapFunc,
@@ -272,11 +269,11 @@ class _UserInfoPageState extends State<UserInfoPage>
           child: Container(
               padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
               child: Text(name,
-                  style: TextStyle(color: mainBlackColor, fontSize: 18))),
+                  style: TextStyle(color: mainBlackColor, fontSize: 16))),
         ),
         Expanded(
           flex: 1,
-          child: Container(color: Colors.white, height: 60),
+          child: Container(color: Colors.white, height: 45),
         ),
         Align(
           alignment: Alignment.centerRight,

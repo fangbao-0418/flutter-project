@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTSizeFit.dart';
 import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddressListPage extends StatefulWidget {
   @override
@@ -16,7 +18,8 @@ class AddressListPage extends StatefulWidget {
 class _AddressListPageState extends State<AddressListPage> {
   void _xtback(BuildContext context) {
     final BoostContainerSettings settings = BoostContainer.of(context).settings;
-    FlutterBoost.singleton.close(settings.uniqueId, result: <String, dynamic>{'result': 'data from second'});
+    FlutterBoost.singleton.close(settings.uniqueId,
+        result: <String, dynamic>{'result': 'data from second'});
   }
 
   @override
@@ -29,26 +32,26 @@ class _AddressListPageState extends State<AddressListPage> {
     }
 
     @override
-    initState(){
+    initState() {
       super.initState();
       future = XTUserInfoRequest.obtainAddressList();
     }
 
     ///获取新增收货地址Button
-    Widget buildAddNewAddressButton(){
+    Widget buildAddNewAddressButton() {
       return Container(
         color: Colors.white,
-        padding: EdgeInsets.only(top:98,bottom: 50),
+        padding: EdgeInsets.only(top: 98, bottom: 50),
         margin: EdgeInsets.only(top: 10),
         child: Container(
-          padding: EdgeInsets.only(left: 98,right: 98),
+          padding: EdgeInsets.only(left: 98, right: 98),
           height: 40,
           child: FlatButton(
+            padding: EdgeInsets.only(left: 45,right: 45),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
-              ),
+                  borderRadius: BorderRadius.circular(20)),
               color: Colors.red,
-              onPressed: (){
+              onPressed: () {
                 XTRouter.pushToPage(
                   routerName: "addAddress",
                   context: context,
@@ -60,35 +63,35 @@ class _AddressListPageState extends State<AddressListPage> {
                   }
                 });
               },
-              child:Text("新增收货地址",style: TextStyle(fontSize: 15, color: Colors.white),
-              )
-          ),)
-        ,
+              child: Text(
+                "新增收货地址",
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              )),
+        ),
       );
     }
 
     ///获取复选框组件
-    Widget buildCheckBox(AddressListModel model,bool isSelected){
+    Widget buildCheckBox(AddressListModel model, bool isSelected) {
       return IconButton(
           icon: Icon(
             model.defaultAddress == 1
                 ? Icons.check_circle
                 : Icons.radio_button_unchecked,
-            color:
-            model.defaultAddress == 1 ? mainRedColor : main99GrayColor,
+            color: model.defaultAddress == 1 ? mainRedColor : main99GrayColor,
             size: 20,
           ),
           onPressed: () {
             XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
-                print("地址ID：" + model.id.toString() + "状态:" + value.toString());
-                //改变_CheckBoxState
-                setState(() {});
-              });
+              print("地址ID：" + model.id.toString() + "状态:" + value.toString());
+              //改变_CheckBoxState
+              setState(() {});
+            });
           });
     }
 
     /// 获取ListViewCell
-    Widget buildAddressListCell(AddressListModel model){
+    Widget buildAddressListCell(AddressListModel model) {
       return Container(
         color: Colors.white,
         padding: EdgeInsets.only(top: 15),
@@ -98,12 +101,18 @@ class _AddressListPageState extends State<AddressListPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
-                  child: Text(model.consignee,style: TextStyle(fontSize: 14, color: Colors.black),),
+                  child: Text(
+                    model.consignee,
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                  ),
                 ),
                 Spacer(),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: Text(model.phone,style: TextStyle(fontSize: 14, color: Colors.black),),
+                  child: Text(
+                    model.phone,
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                  ),
                 ),
               ],
             ),
@@ -112,7 +121,8 @@ class _AddressListPageState extends State<AddressListPage> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.only(left: 16.0, top: 10, bottom: 15,right: 16),
+                  padding: const EdgeInsets.only(
+                      left: 16.0, top: 10, bottom: 15, right: 16),
                   child: Text(
                     model.address,
                     style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C)),
@@ -123,14 +133,22 @@ class _AddressListPageState extends State<AddressListPage> {
                 Spacer()
               ],
             ),
-            Divider(height: 1,indent: 16,endIndent: 16,color: Color(0xFFEEEEEE),),
+            Divider(
+              height: 1,
+              indent: 16,
+              endIndent: 16,
+              color: Color(0xFFEEEEEE),
+            ),
             Row(
               children: <Widget>[
-                buildCheckBox(model,model.defaultAddress == 1),
-                Text("默认地址",style: TextStyle(fontSize: 14, color: Colors.black),),
+                buildCheckBox(model, model.defaultAddress == 1),
+                Text(
+                  "默认地址",
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
                 Spacer(),
                 FlatButton.icon(
-                    onPressed: (){
+                    onPressed: () {
                       XTRouter.pushToPage(
                         routerName: "addAddress",
                         params: model.toJson(),
@@ -143,9 +161,14 @@ class _AddressListPageState extends State<AddressListPage> {
                         }
                       });
                     },
-                    icon: ImageIcon(AssetImage('images/my_address_list_edit.png'), color: Colors.black,),
-                    label:  Text("编辑",style: TextStyle(fontSize: 14, color: Colors.black),)
-                )
+                    icon: ImageIcon(
+                      AssetImage('images/my_address_list_edit.png'),
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      "编辑",
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ))
               ],
             ),
           ],
@@ -153,31 +176,114 @@ class _AddressListPageState extends State<AddressListPage> {
       );
     }
 
+    Widget buildSlideAddressCell(AddressListModel model) {
+      return Slidable(
+        child: buildAddressListCell(model),
+        actionPane: SlidableScrollActionPane(),
+        secondaryActions: <Widget>[
+          SlideAction(
+            color: Colors.red,
+            child: Text(
+              "删除",
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () {
+              XTUserInfoRequest.deleteAddress(model.id).then((value){
+                  setState(() {});
+              });
+            },
+          )
+        ],
+      );
+    }
+
     ///获取ListView
-    Widget buildAddressListView(List<AddressListModel> models){
+    Widget buildAddressListView(List<AddressListModel> models) {
       return ListView.builder(
           padding: EdgeInsets.only(top: 10),
           itemCount: models.length,
           itemBuilder: (context, index) {
+            final model = models[index];
             if (index == models.length - 1) {
-              return Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10, child: Container(color: Color(0xFFF9F9F9),),),
-                    buildAddressListCell(models[index]),
-                    SizedBox(
-                      height: 10, child: Container(color: Color(0xFFF9F9F9),),),
-                    buildAddNewAddressButton()
-                  ]);
+              return Column(children: <Widget>[
+                SizedBox(
+                  height: 10,
+                  child: Container(
+                    color: Color(0xFFF9F9F9),
+                  ),
+                ),
+                buildSlideAddressCell(model),
+                SizedBox(
+                  height: 10,
+                  child: Container(
+                    color: Color(0xFFF9F9F9),
+                  ),
+                ),
+                buildAddNewAddressButton()
+              ]);
             } else {
               return Column(
                 children: <Widget>[
-                  SizedBox(height: 10, child: Container(color: Color(0xFFF9F9F9),),),
-                  buildAddressListCell(models[index]),
+                  SizedBox(
+                    height: 10,
+                    child: Container(
+                      color: Color(0xFFF9F9F9),
+                    ),
+                  ),
+                  buildSlideAddressCell(model)
                 ],
               );
             }
           });
+    }
+
+    Widget emptyViewAdd() {
+      return Column(
+        children: <Widget>[
+          SizedBox(
+            height: 10,
+            child: Container(
+              color: Color(0xFFF9F9F9),
+            ),
+          ),
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 200),
+              child: Text("还没有收货地址，快去添加收货地址吧～",style: TextStyle(color: Color(0xFF666666)),)),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(color: Colors.white, height: 300),
+          ),
+          RaisedButton(
+            elevation: 0,
+            padding: EdgeInsets.fromLTRB(100, 10, 100, 10),
+            color: mainRedColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                side: BorderSide(
+                    width: 0.5, color: mainRedColor, style: BorderStyle.solid)),
+            onPressed: () {
+              XTRouter.pushToPage(
+                routerName: "addAddress",
+                context: context,
+              ).then((value) {
+                Map result = Map<String, dynamic>.from(value);
+                if (result["isRefresh"] == true) {
+                  refresh();
+                  print("新增地址成功后，地址列表刷新");
+                }
+              });
+            },
+            child: Text("新增收货地址",
+                style: TextStyle(color: Colors.white, fontSize: 15)),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(color: Colors.white, height: 60),
+          ),
+        ],
+      );
     }
 
     return Scaffold(
@@ -190,20 +296,22 @@ class _AddressListPageState extends State<AddressListPage> {
             print('data:${snapShot.data}');
             print('connectionState:${snapShot.connectionState}');
             if (snapShot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
+              Loading.show(context: context, showShade: false);
+              return Text('');
             } else {
-              if(snapShot.hasData){
+              Loading.hide();
+              if (snapShot.hasData) {
                 addressModels = snapShot.data;
+                if (addressModels.length == 0) {
+                  return emptyViewAdd();
+                }
                 return buildAddressListView(addressModels);
 //                return Text(snapShot.data.toString());
-              }else{
-                return Text('NoData...');
+              } else {
+                return emptyViewAdd();
               }
             }
           }),
     );
   }
 }
-
-
-

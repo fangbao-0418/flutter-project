@@ -13,18 +13,20 @@ import 'package:provider/provider.dart';
 import '../Utils/Toast.dart';
 import '../XTModel/UserInfoModel.dart';
 
-// //返回
-//   void _xtback(BuildContext context) {
-//     // final BoostContainerSettings settings = BoostContainer.of(context).settings;
+class SettingPage extends StatefulWidget {
+  @override
+  _SettingPageState createState() => _SettingPageState();
+}
 
-//     // FlutterBoost.singleton.close(settings.uniqueId,
-//     // result: <String, dynamic>{'result': 'data from second'});
-//   }
+class _SettingPageState extends State<SettingPage> {
+  bool isReal = AppConfig.getInstance().userVM.isRealName;
 
-class SettingPage extends StatelessWidget {
+  final leftStyle = TextStyle(color: mainBlackColor, fontSize: 16);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: mainF5GrayColor,
       appBar: xtBackBar(
           back: () {
             XTRouter.closePage(context: context);
@@ -33,33 +35,40 @@ class SettingPage extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
               child: listTab(context)),
           Expanded(
             flex: 3,
-            child: Container(color: whiteColor, height: 60),
+            child: Container(color: mainF5GrayColor, height: 60),
           ),
           Positioned(
-              child: RaisedButton(
-            elevation: 0,
-            padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                side: BorderSide(
-                    width: 0.5,
-                    color: main99GrayColor,
-                    style: BorderStyle.solid)),
-            onPressed: () {
-              loginOut(context);
-            },
-            child: Text("退出登录",
-                style: TextStyle(color: main99GrayColor, fontSize: 14)),
+              child: Container(
+            width: double.infinity,
+            color: mainF5GrayColor,
+            alignment: Alignment.center,
+            child: RaisedButton(
+              elevation: 0,
+              padding: EdgeInsets.fromLTRB(45, 10, 45, 10),
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  side: BorderSide(
+                      width: 0.5,
+                      color: main99GrayColor,
+                      style: BorderStyle.solid)),
+              onPressed: () {
+                loginOut(context);
+              },
+              child: Text("退出登录",
+                  style: TextStyle(color: main99GrayColor, fontSize: 14)),
+            ),
           )),
           Expanded(
             flex: 1,
-            child: Container(color: whiteColor, height: 60),
+            child: Container(color: mainF5GrayColor, height: 60),
           ),
         ],
       ),
@@ -67,8 +76,58 @@ class SettingPage extends StatelessWidget {
   }
 
   void loginOut(BuildContext context) {
+    AppConfig.getInstance().userVM.updateUser(UserInfoModel());
     XTMTDChannel.invokeMethod("loginOut");
     XTRouter.closePage(context: context);
+  }
+
+  List<Widget> childItem(BuildContext context) {
+    List<Widget> tp = [
+      basicContent("个人信息", tapFunc: () {
+        // Global.context = context;
+        XTRouter.pushToPage(context: context, routerName: "fl-user-info")
+            .then((value) {
+          if (isReal != AppConfig.getInstance().userVM.isRealName) {
+            setState(() {
+              isReal = AppConfig.getInstance().userVM.isRealName;
+            });
+          }
+        });
+      }),
+      basicContent("全球淘付款人实名信息", tapFunc: () {
+        XTRouter.pushToPage(routerName: "officalname", context: context);
+        // XTRouter.pushToPage(context: context, routerName: "page1");
+      }),
+      basicContent("收货地址", tapFunc: () {
+        XTRouter.pushToPage(
+          routerName: "addressList",
+          context: context,
+        );
+      })
+    ];
+
+    if (isReal) {
+      tp.add(basicContent("支付宝账号", tapFunc: () {
+        XTRouter.pushToPage(routerName: "alipayAccount", context: context);
+      }));
+    }
+    tp.add(basicContent("消息通知", tapFunc: () {
+      XTRouter.pushToPage(
+          context: context, routerName: makeRouter(true, null, "gotoNotice"));
+    }));
+    if (isReal) {
+      tp.add(basicContent("微信信息", tapFunc: () {
+        XTRouter.pushToPage(routerName: "wechatInfo", context: context);
+      }));
+    }
+    tp.add(basicContent("关于喜团",
+        childStr: "v" + AppConfig.getInstance().appVersion,
+        haveLine: false, tapFunc: () {
+      XTRouter.pushToPage(
+          context: context, routerName: makeRouter(true, null, "aboutXiTuan"));
+    }));
+
+    return tp;
   }
 
   Widget listTab(context) {
@@ -76,40 +135,7 @@ class SettingPage extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      children: <Widget>[
-        basicContent("个人信息", tapFunc: () {
-          // Global.context = context;
-          XTRouter.pushToPage(context: context, routerName: "fl-user-info");
-        }),
-        basicContent("全球淘付款人实名信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "officalname", context: context);
-          // XTRouter.pushToPage(context: context, routerName: "page1");
-        }),
-        basicContent("收货地址", tapFunc: () {
-          XTRouter.pushToPage(
-            routerName: "addressList",
-            context: context,
-          );
-        }),
-        basicContent("支付宝账号", tapFunc: () {
-          XTRouter.pushToPage(routerName: "alipayAccount", context: context);
-        }),
-        basicContent("消息通知", tapFunc: () {
-          XTRouter.pushToPage(
-              context: context,
-              routerName: makeRouter(true, null, "gotoNotice"));
-        }),
-        basicContent("微信信息", tapFunc: () {
-          XTRouter.pushToPage(routerName: "wechatInfo", context: context);
-        }),
-        basicContent("关于喜团",
-            childStr: "v" + AppConfig.getInstance().appVersion,
-            haveLine: false, tapFunc: () {
-          XTRouter.pushToPage(
-              context: context,
-              routerName: makeRouter(true, null, "aboutXiTuan"));
-        })
-      ],
+      children: childItem(context),
     );
   }
 
@@ -137,10 +163,26 @@ class SettingPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Text(name,
-                          style:
-                              TextStyle(color: mainBlackColor, fontSize: 16))),
+                    padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                    child: (name != "个人信息")
+                        ? Text(name, style: leftStyle)
+                        : ((isReal)
+                            ? Text(name, style: leftStyle)
+                            : RichText(
+                                text: TextSpan(
+                                text: name,
+                                style: leftStyle,
+                                children: [
+                                  TextSpan(
+                                    text: "（未实名认证）",
+                                    style: TextStyle(
+                                      color: mainRedColor,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ))),
+                  ),
                 ),
                 Expanded(
                   flex: 1,

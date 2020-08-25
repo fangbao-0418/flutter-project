@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
+import 'package:xtflutter/Utils/Error/XtError.dart';
 import 'package:xtflutter/Utils/Loading.dart';
+import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
@@ -35,7 +37,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   List listP = [];
 
   void _xtback(BuildContext context) {
-    print("--------------------3333333---------");
     if (pState == PageState.none) {
       XTRouter.closePage(context: context);
     } else if (pState == PageState.showAdd) {
@@ -53,11 +54,18 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     }
   }
 
+  ///保存实名
   void _saveInfo(BuildContext context) async {
     Loading.show(context: context);
     final result =
-        await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal);
-
+        await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal)
+            .catchError((err) {
+      Loading.hide();
+      Toast.showToast(msg: err.message, context: context);
+    });
+    if (result == null) {
+      return;
+    }
     if (result["success"] == true) {
       Loading.hide();
 
@@ -75,23 +83,49 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
       setState(() {
         pState = PageState.showlist;
       });
+      memberAuthList();
     } else {
       Loading.hide();
+      Toast.showToast(msg: result["message"], context: context);
+    }
+  }
 
-      print(result["data"]);
+  /// 删除实名
+  void addmemberDelete(int id) async {
+    Loading.show(context: context);
+    final result =
+        await XTUserInfoRequest.addmemberDelete(id).catchError((err) {
+      Loading.hide();
+      Toast.showToast(msg: err.message);
+    });
+
+    if (result == null) {
+      Loading.hide();
+      return;
+    }
+
+    if (result["success"] == true) {
+      Loading.hide();
+
+      for (RealNameModel item in listP) {
+        if (item.id == id) {
+          listP.remove(item);
+          break;
+        }
+      }
+      setState(() {
+        if (listP.length == 0) {
+          pState = PageState.none;
+        }
+      });
+    } else {
+      Toast.showToast(msg: result["message"]);
     }
   }
 
   void addRealName(RealNameModel model) {
     setState(() {
       listP.add(model);
-    });
-  }
-
-  void _addInfo(BuildContext context) {
-    // XTRouter.closePage(context: context);
-    setState(() {
-      pState = PageState.showAdd;
     });
   }
 
@@ -107,20 +141,25 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     memberAuthList();
   }
 
-  /// 地址信息（新增/修改）
+  /// 实名列表
   void memberAuthList() async {
-    final result = await XTUserInfoRequest.memberAuthList();
-    for (var item in result) {
-      listP.add(item);
-    }
-    if (listP.length > 0) {
-      setState(() {
-        pState = PageState.showlist;
-      });
+    List result = await XTUserInfoRequest.memberAuthList();
+    if (result.length > 0) {
+      listP = [];
+      for (var item in result) {
+        listP.add(item);
+      }
+      if (listP.length > 0) {
+        setState(() {
+          pState = PageState.showlist;
+        });
+      }
+    } else {
+      pState = PageState.none;
     }
   }
 
-  /// 地址信息（新增/修改）
+  /// 设置默认实名信息
   void setDefeat(int id) async {
     final result = await XTUserInfoRequest.addmemberDefault(id);
     if (result["success"] == true) {
@@ -138,22 +177,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     }
   }
 
-  /// 地址信息（新增/修改）
-  void addmemberDelete(int id) async {
-    final result = await XTUserInfoRequest.addmemberDelete(id);
-    if (result["success"] == true) {
-      for (RealNameModel item in listP) {
-        if (item.id == id) {
-          listP.remove(item);
-        }
-      }
-
-      setState(() {
-        print(123);
-      });
-    }
-  }
-
   AppBar showBar(PageState state, BuildContext context) {
     switch (pState) {
       case PageState.showlist:
@@ -161,7 +184,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             back: () => _xtback(context),
             title: "全球淘付款人实名信息",
             rightTitle: "添加",
-            rightFun: () => _addInfo(context));
+            rightFun: () => showRealname());
         break;
       case PageState.showAdd:
         return xtbackAndRightBar(
@@ -197,18 +220,19 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        focusNode1.unfocus();
-        focusNode2.unfocus();
-        setState(() {
-          isOnFocus1 = false;
-          isOnFocus2 = false;
-        });
-      },
-      child: Scaffold(
-          appBar: showBar(pState, context), body: showBody(pState, context)),
-    );
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          focusNode1.unfocus();
+          focusNode2.unfocus();
+          setState(() {
+            isOnFocus1 = false;
+            isOnFocus2 = false;
+          });
+        },
+        child: Scaffold(
+          appBar: showBar(pState, context),
+          body: showBody(pState, context),
+        ));
   }
 
   Widget listName(List list) {
@@ -278,8 +302,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                 Expanded(child: Container()),
                 FlatButton(
                     onPressed: () {
-                      print("addmemberDelete ---------------" +
-                          model.id.toString());
                       addmemberDelete(model.id);
                     },
                     child: Text(
@@ -299,7 +321,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
       child: Column(
         children: <Widget>[
           Container(
-              padding: EdgeInsets.only(top: 80, bottom: 40),
+              padding: EdgeInsets.only(top: 60, bottom: 20),
               child: Image.asset("images/empty_name.png")),
           Container(
             padding: EdgeInsets.only(bottom: 10),
@@ -329,224 +351,232 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   }
 
   Widget addRealNamePage() {
-    return Column(
-      children: <Widget>[
-        Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))), //设置圆角
-            margin: EdgeInsets.all(10),
-            child: Column(
-              children: <Widget>[
-                Stack(
-                  alignment: Alignment.center,
-                  // fit: StackFit.expand,
-                  children: <Widget>[
-                    Image.asset(
-                      "images/header_realname.png",
-                      fit: BoxFit.fill,
-                      // alignment: Alignment.center,
-                      width: double.maxFinite,
-                    ),
-                    Center(
-                      child: Text("身份信息",
-                          style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold)),
-                    )
-                  ],
-                ),
-                Container(
-                  height: 55,
-                  color: Colors.white,
-                  padding: EdgeInsets.only(left: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: Column(
+            children: <Widget>[
+              Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))), //设置圆角
+                  margin: EdgeInsets.all(10),
+                  child: Column(
                     children: <Widget>[
-                      Text("姓名          ",
-                          style: TextStyle(color: Colors.black, fontSize: 16)),
-                      Expanded(
-                        child: TextField(
-                          controller: nameC,
-                          focusNode: focusNode1,
-                          onTap: () {
-                            setState(() {
-                              isOnFocus1 = true;
-                              isOnFocus2 = false;
-                            });
-                          },
-                          onChanged: (value) {
-                            _name = value;
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: isOnFocus1
-                                ? Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.all(16),
-                                    // color: main99GrayColor,
-                                    decoration: BoxDecoration(
-                                      color: main99GrayColor,
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                    ),
-                                    child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        icon: Icon(
-                                          Icons.close,
-                                          size: 10,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          nameC.clear();
-                                          _name = "";
-                                        }),
-                                  )
-                                : Text(""),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: '请输入付款账户的真实姓名',
-                            counterText: '',
-                            hintStyle:
-                                TextStyle(color: main99GrayColor, fontSize: 16),
+                      Stack(
+                        alignment: Alignment.center,
+                        // fit: StackFit.expand,
+                        children: <Widget>[
+                          Image.asset(
+                            "images/header_realname.png",
+                            fit: BoxFit.fill,
+                            // alignment: Alignment.center,
+                            width: double.maxFinite,
                           ),
+                          Center(
+                            child: Text("身份信息",
+                                style: TextStyle(
+                                    color: whiteColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 55,
+                        color: Colors.white,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text("姓名        ",
+                                style:
+                                    TextStyle(color: mainBlackColor, fontSize: 16)),
+                            Expanded(
+                              child: TextField(
+                                controller: nameC,
+                                focusNode: focusNode1,
+                                onTap: () {
+                                  setState(() {
+                                    isOnFocus1 = true;
+                                    isOnFocus2 = false;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  _name = value;
+                                },
+                                decoration: InputDecoration(
+                                  suffixIcon: isOnFocus1
+                                      ? Container(
+                                          width: 10,
+                                          height: 10,
+                                          margin: EdgeInsets.all(16),
+                                          // color: main99GrayColor,
+                                          decoration: BoxDecoration(
+                                            color: main99GrayColor,
+                                            border: Border.all(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(15)),
+                                          ),
+                                          child: IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
+                                                Icons.close,
+                                                size: 10,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                nameC.clear();
+                                                _name = "";
+                                              }),
+                                        )
+                                      : Text(""),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: '请输入付款账户的真实姓名',
+                                  counterText: '',
+                                  hintStyle:
+                                      TextStyle(color: main99GrayColor, fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 55,
-                  color: Colors.white,
-                  padding: EdgeInsets.only(left: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text("证件号码   ",
-                          style: TextStyle(color: Colors.black, fontSize: 16)),
-                      Expanded(
-                        child: TextField(
-                          controller: idC,
-                          focusNode: focusNode2,
-                          onTap: () {
-                            setState(() {
-                              isOnFocus1 = false;
-                              isOnFocus2 = true;
-                            });
-                          },
-                          onChanged: (value) {
-                            _idNo = value;
-                          },
-                          decoration: InputDecoration(
-                            suffixIcon: isOnFocus2
-                                ? Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.all(16),
-                                    // color: main99GrayColor,
-                                    decoration: BoxDecoration(
-                                      color: main99GrayColor,
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                    ),
-                                    child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        icon: Icon(
-                                          Icons.close,
-                                          size: 10,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          idC.clear();
-                                          _idNo = "";
-                                        }),
-                                  )
-                                : Text(""),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
+                      Container(
+                        height: 55,
+                        color: Colors.white,
+                        padding: EdgeInsets.only(left: 15),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text("证件号码 ",
+                                style:
+                                    TextStyle(color: mainBlackColor, fontSize: 16)),
+                            Expanded(
+                              child: TextField(
+                                controller: idC,
+                                focusNode: focusNode2,
+                                onTap: () {
+                                  setState(() {
+                                    isOnFocus1 = false;
+                                    isOnFocus2 = true;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  _idNo = value;
+                                },
+                                decoration: InputDecoration(
+                                  suffixIcon: isOnFocus2
+                                      ? Container(
+                                          width: 10,
+                                          height: 10,
+                                          margin: EdgeInsets.all(16),
+                                          // color: main99GrayColor,
+                                          decoration: BoxDecoration(
+                                            color: main99GrayColor,
+                                            border: Border.all(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(15)),
+                                          ),
+                                          child: IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
+                                                Icons.close,
+                                                size: 10,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                idC.clear();
+                                                _idNo = "";
+                                              }),
+                                        )
+                                      : Text(""),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: '请输入付款账户的身份证号',
+                                  counterText: '',
+                                  hintStyle:
+                                      TextStyle(color: main99GrayColor, fontSize: 14),
+                                ),
+                              ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: '请输入付款账户的身份证号',
-                            counterText: '',
-                            hintStyle:
-                                TextStyle(color: main99GrayColor, fontSize: 16),
-                          ),
+                          ],
                         ),
                       ),
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                              icon: Icon(
+                                _selectNormal == 0
+                                    ? Icons.check_circle_outline
+                                    : Icons.check_circle,
+                                color: _selectNormal == 0
+                                    ? main99GrayColor
+                                    : mainRedColor,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectNormal = _selectNormal == 0 ? 1 : 0;
+                                });
+                              }),
+                          Text(
+                            "默认实名人",
+                            style: xtstyle(14, "666666"),
+                          )
+                        ],
+                      )
                     ],
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(
-                          _selectNormal == 0
-                              ? Icons.check_circle_outline
-                              : Icons.check_circle,
-                          color: _selectNormal == 0
-                              ? main99GrayColor
-                              : mainRedColor,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _selectNormal = _selectNormal == 0 ? 1 : 0;
-                          });
-                        }),
-                    Text(
-                      "默认实名人",
-                      style: xtstyle(14, "666666"),
-                    )
-                  ],
-                )
-              ],
-            )),
-        Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 10, top: 10),
-              child: Row(
+                  )),
+              Column(
                 children: <Widget>[
-                  Text(
-                    "添加实名认证",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(color: main66GrayColor, fontSize: 14),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, top: 10),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "添加实名认证",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: main66GrayColor, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    child: Text(
+                      "1.根据海关规定，购买跨境商品需要办理清关手续，请您配合进行实名认证。",
+                      textAlign: TextAlign.left,
+                      softWrap: true,
+                      maxLines: 3,
+                      style: TextStyle(color: main99GrayColor, fontSize: 12),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    child: Text(
+                      "2.购买跨境商品需要填写收货人的真实姓名，身份证号码，请如实填写，否则订单将无法正常发货。",
+                      textAlign: TextAlign.left,
+                      softWrap: true,
+                      maxLines: 3,
+                      style: TextStyle(color: main99GrayColor, fontSize: 12),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Text(
-                "1.根据海关规定，购买跨境商品需要办理清关手续，请您配合进行实名认证。",
-                textAlign: TextAlign.left,
-                softWrap: true,
-                maxLines: 3,
-                style: TextStyle(color: main99GrayColor, fontSize: 12),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Text(
-                "2.购买跨境商品需要填写收货人的真实姓名，身份证号码，请如实填写，否则订单将无法正常发货。",
-                textAlign: TextAlign.left,
-                softWrap: true,
-                maxLines: 3,
-                style: TextStyle(color: main99GrayColor, fontSize: 12),
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
       ],
     );
   }

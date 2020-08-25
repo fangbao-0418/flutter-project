@@ -124,7 +124,6 @@ class _EditPhonePageState extends State<EditPhonePage>
       print("00000000000000" + error.message);
       Toast.showToast(msg: error.message, context: context);
     });
-    print("object-----------------------changeUserPhone");
   }
 
   void _xtback(BuildContext context) {
@@ -141,6 +140,7 @@ class _EditPhonePageState extends State<EditPhonePage>
           isOnFocus2 = false;
           showSubmitBtn();
         },
+
         child: Scaffold(
             appBar: xtBackBar(title: "修改手机号", back: () => _xtback(context)),
             body: Container(
