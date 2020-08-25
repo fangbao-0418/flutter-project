@@ -127,7 +127,7 @@ class InviteMemberVo {
   String joinTime;
   int memberType;
   int memberTypeLevel;
-  bool isUpdateInvite;
+  int isUpdateInvite;
   int updateInviteTime;
 
   factory InviteMemberVo.fromJson(Map<String, dynamic> json) {
@@ -137,8 +137,10 @@ class InviteMemberVo {
     if (json["id"] == null) {
       return InviteMemberVo();
     }
+    json["id"] = int.parse(json["id"].toString());
+
     return InviteMemberVo(
-      id: int.parse(json["id"]),
+      id: json["id"],
       name: json["name"],
       headImage: json["headImage"],
       inviteCount: json["inviteCount"],

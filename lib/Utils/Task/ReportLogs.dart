@@ -4,9 +4,9 @@ import 'package:xtflutter/Utils/Error/ReportError.dart';
 class ReportLogsTask extends Task {
   // ReportLogsTask(): super();
   // @override
-  exec () {
+  exec() {
     super.exec();
-    setIntival(Duration(seconds: 5), () {
+    setIntival(Duration(seconds: 60), () {
       detectionUnSendLog();
     });
   }

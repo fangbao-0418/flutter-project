@@ -9,10 +9,11 @@ class Task {
   Task() {
     print('constructor');
   }
-  void cancel () {
+  void cancel() {
     t?.cancel();
   }
-  Function setIntival (Duration duration, cb) {
+
+  Function setIntival(Duration duration, cb) {
     t = new Timer.periodic(duration, (timer) {
       cb();
     });
@@ -20,21 +21,21 @@ class Task {
       t.cancel();
     };
   }
-  static init () {
+
+  static init() {
     Task.cancelAll();
-    // ReportLogsTask().exec();
+    ReportLogsTask().exec();
   }
-  Task.registry (dynamic task) {
-      _tasks.add(this);
-  }
-  static void cancelAll () {
-    _tasks.forEach((task) { 
+
+  static void cancelAll() {
+    _tasks.forEach((task) {
       task.cancel();
     });
     _tasks = [];
   }
+
   @protected
-  exec () {
+  exec() {
     _tasks.add(this);
   }
 }

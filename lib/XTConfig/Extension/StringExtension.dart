@@ -11,6 +11,15 @@ extension XtString on String {
   }
 
   bool get xtEmpty {
-    return (this == null || this.trim().isEmpty);
+    if (null == this) {
+      return true;
+    } else {
+      var tp = this.trim();
+      if ("" == tp) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 }

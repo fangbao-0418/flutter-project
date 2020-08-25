@@ -115,7 +115,6 @@ class _MyAppState extends State<MyApp> {
     Map<String, dynamic> tp = Map.from(json.decode(userInfo));
     // tp["id"] = int.parse(tp["id"]);
 
-
     AppConfig().userVM.updateUser(UserInfoModel.fromJson(tp));
   }
 
@@ -176,7 +175,8 @@ class _Home extends State<Home> {
     Global.context = context;
 
     // return Container(child: SettingPage());
-    return GlobalOfficalName();
+    // return GlobalOfficalName();
+    return TestPage1();
   }
 }
 

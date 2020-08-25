@@ -1,4 +1,5 @@
 import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
+import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/local/proxy.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 
