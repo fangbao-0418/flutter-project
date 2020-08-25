@@ -21,14 +21,14 @@ const TO_REPORT = true;
 const moonid = 'ijmtxxg4t';
 const XT_LOGDATA_KEY = 'xt-logdata';
 final logEnv = Global.isRelease ? 'prod' : 'test';
-// 分段上传数据量阙值，文字修饰(__part{n})+固定格式({"env":"prod","xt-logdata":[]})+最大3位数分段量编号合计30左右
-const threshold = 100;
-// 上报数据大小 200kb
-const maxUploadSize = 100 * 1024;
-// 最大分段上传个数，超出丢弃
+// 分段上传数据量阙值，文字修饰(__part{n})+固定格式({"env":"prod","xt-logdata":[]})+最大3位数分段量编号合计50左右
+const threshold = 80;
+// 上报数据大小 150kb
+const maxUploadSize = 150 * 1024;
+// 最大分段上传个数，丢入任务进行上报
 const maxSectionNum = 5;
 // 上报超时时长单位毫秒
-const connectTimeout = 10000;
+const connectTimeout = 5000;
 // 上报成功后延时监测未发送日志时长，单位毫秒
 const inspectDelay = 1000;
 final baseUrl = Global.isRelease
@@ -39,14 +39,12 @@ final baseUrl = Global.isRelease
 
 // 发送上报请求
 Future _sendRequest(List<Map<String, dynamic>> xtLogdata) {
-  // print('_sendRequest num:');
-  print(xtLogdata.length);
   // 如果修改固定格式，根据实际情况修改上报数据阙值
   final data = {'env': logEnv, 'xt_logdata': xtLogdata};
-
   String dataStr = jsonEncode(data);
-  if (dataStr.length > maxUploadSize) {
+  if (dataStr.length > maxUploadSize + threshold) {
     // 数据大的情况下拆解数据上传
+    print('上报数据长度：${dataStr.length.toString()}');
     _sectionSend(xtLogdata);
     return Future.error('send report failed, The data is too large');
   }
@@ -58,14 +56,10 @@ Future _sendRequest(List<Map<String, dynamic>> xtLogdata) {
   local.helper(dio);
   // print('send report start');
   return dio.post(url, data: data).then((v) {
-    // print('send report success');
-    // 上报成功监测是否存在未发送日志
-    // Future.delayed(Duration(milliseconds: inspectDelay), () {
-    //   detectionUnSendLog();
-    // });
+    print('send report success');
   }, onError: (e) {
     _collectData(xtLogdata);
-    // print('send report failed');
+    print('send report failed');
     // print('send report failed num: ${xtLogdata.length}');
     // throw e;
   });
@@ -134,29 +128,28 @@ String _generateMd5(String data) {
 
 // 分割单条超限数据的日志
 List<Map<String, dynamic>> divisionRecord(Map<String, dynamic> record) {
-  String text = jsonEncode(record);
   List<Map<String, dynamic>> rows = [];
   Map<String, dynamic> baseInfo = _getBaseInfo();
-  Map<String, dynamic> info = jsonDecode(text);
-  String id = _generateMd5(info.toString());
-  // 每部分可上传数据量，20是阙值
-  int partialSize =
-      maxUploadSize - baseInfo.toString().length - id.length - threshold;
-  // print('partialSize: $partialSize');
+
+  String id = _generateMd5(record.toString());
+  // 每部分可上传数据量，threshold是阙值
+  int partialSize = maxUploadSize - baseInfo.toString().length - threshold;
   if (partialSize <= 0) {
     return [];
   }
   // 拆分有效数据字符串，分到每段数报message字段上
   String ds = jsonEncode({
-    'message': info['message'],
-    'stack': info['stack'],
-    '_res': info['_res'],
-    '_req': info['_req']
+    'message': record['message'],
+    'stack': record['stack'],
+    '_res': record['_res'],
+    '_req': record['_req']
   });
+
   int totalSize = ds.length;
   // 分割长度
-  int len = min((ds.length / partialSize).ceil(), maxSectionNum);
-  // print('len: $len, totalSize: $totalSize');
+  int len = (totalSize / partialSize).ceil();
+  print(
+      'len: $len, totalSize: $totalSize, partialSize: $partialSize, base len: ${baseInfo.toString().length + id.length}');
   List.generate(len, (i) {
     int start = i * partialSize;
     int end = min((i + 1) * partialSize, ds.length);
@@ -166,13 +159,16 @@ List<Map<String, dynamic>> divisionRecord(Map<String, dynamic> record) {
       Map<String, dynamic> info = {};
       info.addAll({
         ...baseInfo,
-        'g': id + '_' + i.toString() + "_" + len.toString(),
+        'g': id + '_' + (i + 1).toString() + "_" + len.toString(),
         'message': content,
       });
       rows.add(info);
     }
   });
-  print('row length: ${rows.length}');
+
+  print('段数: ');
+  print(record.toString().length);
+  print(rows.length);
   return rows;
 }
 
@@ -187,9 +183,10 @@ void _sectionSend(List<Map<String, dynamic>> xtLogData) {
   xtLogData.forEach((record) {
     // 单次数据集合先填充，填充超限即完成
     records.add(record);
-    if (records.toString().length > maxUploadSize) {
+    if (records.toString().length > maxUploadSize + threshold) {
       // 超出回退添加项
       records.removeLast();
+      //
       if (records.length > 0) {
         result.add(records);
         // 置空单词上报，重新填充单次上报数据
@@ -202,21 +199,35 @@ void _sectionSend(List<Map<String, dynamic>> xtLogData) {
   });
   // print(result);
   // 分段发送请求，第一个请求发送完成后，再发送下一个
-  if (records.length > maxSectionNum) {
-    _collectData(records.sublist(maxSectionNum));
-    records = records.sublist(0, maxSectionNum);
+  //
+  result.forEach((records) {
+    print('分割后每段大小');
+    print(records.toString().length);
+  });
+  print('数据超限分块数: ${result.length.toString()}');
+  if (result.length > maxSectionNum) {
+    // 收集超出分块上报上限数据
+    records = [];
+    result.sublist(maxSectionNum).forEach((item) {
+      records.addAll(item);
+    });
+    _collectData(records);
+    records = [];
+
+    result = result.sublist(0, maxSectionNum);
   }
-  print('result length:');
-  print(result.length);
+  sequenceRequest(result);
+}
+
+// 多个请求顺序上传
+void sequenceRequest(List<List<Map<String, dynamic>>> data) {
   loop() {
-    if (result.length == 0) {
+    if (data.length == 0) {
       return;
     }
-    print('row 1 length:');
-    print(result[0].length);
-    _sendRequest(result[0]).whenComplete(() {
-      result.removeAt(0);
-      if (result.length > 0) {
+    _sendRequest(data[0]).whenComplete(() {
+      data.removeAt(0);
+      if (data.length > 0) {
         Future.delayed(new Duration(milliseconds: 500), () {
           loop();
         });
@@ -229,24 +240,23 @@ void _sectionSend(List<Map<String, dynamic>> xtLogData) {
 
 // 检测未成功的日志
 void detectionUnSendLog() {
-  // print('待上报日志数量：');
   Collection.takeData().then((value) {
     if (value.length == 0) {
       return;
     }
-    List<Map<String, dynamic>> data = value.map<Map<String, dynamic>>((e) {
-      return jsonDecode(e);
+    List<List<Map<String, dynamic>>> data =
+        value.map<List<Map<String, dynamic>>>((e) {
+      return [jsonDecode(e)];
     }).toList();
-    // print('resend request num: ${data.length}');
-    _sendRequest(data);
+    sequenceRequest(data);
   });
 }
 
 // 收集失败数据
 void _collectData(List<Map<String, dynamic>> xtLogData) async {
-  // print('_collectData');
-  // print(xtLogData);
-  // Collection.record(xtLogData);
+  print('________日志收集________');
+  print('日志数：${xtLogData.length.toString()}');
+  Collection.record(xtLogData);
 }
 
 // TODO
