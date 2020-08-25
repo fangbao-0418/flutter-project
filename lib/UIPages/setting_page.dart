@@ -51,7 +51,7 @@ class _SettingPageState extends State<SettingPage> {
             alignment: Alignment.center,
             child: RaisedButton(
               elevation: 0,
-              padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+              padding: EdgeInsets.fromLTRB(45, 10, 45, 10),
               color: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
