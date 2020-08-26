@@ -102,6 +102,7 @@ flutter:
   assets:
     - images/SettingImg/
     - images/empty_name.png
+    - images/empty.png
     - images/header_realname.png
     - images/my_address_list_edit.png
     - images/edit-phone-icon.png

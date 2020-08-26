@@ -33,8 +33,8 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top: 40),
-            width: 50.0,
-            height: 50.0,
+            width: 80.0,
+            height: 80.0,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("images/xituan_logo.png"),
@@ -112,7 +112,6 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
             flex: 1,
             child: Container(color: mainF5GrayColor, height: 60),
           ),
-          // bottomView(),
         ],
       ),
     );

@@ -46,5 +46,5 @@ AppBar xtBackBar({
         ),
         onPressed: back,
       ),
-      title: Text("fl" + title, style: navStyle));
+      title: Text(title, style: navStyle));
 }
