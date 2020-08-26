@@ -5,6 +5,7 @@ import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/Widgets/Wrapper.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import './RoutesMap.dart';
+import 'package:xtflutter/Utils/Report.dart';
 
 Map<String, PageBuilder> getPageBuilder() {
   Map<String, PageBuilder> pageBuilder = {};
@@ -40,6 +41,7 @@ class XTRouter {
     Map<String, dynamic> params, //路由参数
     @required BuildContext context, //上下文
   }) {
+    tracePage(routerName, params);
     if (AppConfig.getInstance().isAppSubModule) {
       if (params != null) {
         return FlutterBoost.singleton
@@ -54,7 +56,8 @@ class XTRouter {
         });
       }
     } else {
-      return Navigator.of(context ?? Global.context).pushNamed(routerName, arguments: params);
+      return Navigator.of(context ?? Global.context)
+          .pushNamed(routerName, arguments: params);
     }
   }
 
@@ -64,6 +67,7 @@ class XTRouter {
     Map<String, dynamic> params, //路由参数
     @required BuildContext context,
   }) {
+    tracePage(routerName, params);
     if (AppConfig.getInstance().isAppSubModule) {
       Map tp = params == null
           ? new Map.from({"present": true})
