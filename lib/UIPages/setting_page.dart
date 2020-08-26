@@ -120,7 +120,9 @@ class _SettingPageState extends State<SettingPage> {
         XTRouter.pushToPage(routerName: "wechatInfo", context: context);
       }));
     }
-    tp.add(basicContent("关于喜团", tapFunc: () {
+    tp.add(basicContent("关于喜团",
+        childStr: "v" + AppConfig.getInstance().appVersion,
+        haveLine: false, tapFunc: () {
       XTRouter.pushToPage(
         routerName: "aboutXituan",
         context: context,
