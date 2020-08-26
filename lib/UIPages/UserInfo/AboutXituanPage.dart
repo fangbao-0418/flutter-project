@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodConfig.dart';
 import '../../XTConfig/AppConfig/XTColorConfig.dart';
 
@@ -48,7 +49,7 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
           Container(
             margin: EdgeInsets.only(top: 10),
             child: Text(
-              "版本号：V2.1.4",
+              "版本号：v" + AppConfig.getInstance().appVersion,
               style: TextStyle(fontSize: 14, color: main99GrayColor),
               textAlign: TextAlign.center,
             ),
