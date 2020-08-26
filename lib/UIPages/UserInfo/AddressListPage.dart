@@ -40,33 +40,28 @@ class _AddressListPageState extends State<AddressListPage> {
     ///获取新增收货地址Button
     Widget buildAddNewAddressButton() {
       return Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(top: 98, bottom: 50),
-        margin: EdgeInsets.only(top: 10),
-        child: Container(
-          padding: EdgeInsets.only(left: 98, right: 98),
-          height: 40,
-          child: FlatButton(
-            padding: EdgeInsets.only(left: 45,right: 45),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              color: Colors.red,
-              onPressed: () {
-                XTRouter.pushToPage(
-                  routerName: "addAddress",
-                  context: context,
-                ).then((value) {
-                  Map result = Map<String, dynamic>.from(value);
-                  if (result["isRefresh"] == true) {
-                    refresh();
-                    print("新增地址成功后，地址列表刷新");
-                  }
-                });
-              },
-              child: Text(
-                "新增收货地址",
-                style: TextStyle(fontSize: 15, color: Colors.white),
-              )),
+        margin: EdgeInsets.only(top: 50, bottom: 50),
+        child: FlatButton(
+          padding: EdgeInsets.only(left: 45,right: 45, top: 10, bottom: 10),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+          color: Colors.red,
+          onPressed: () {
+            XTRouter.pushToPage(
+              routerName: "addAddress",
+              context: context,
+            ).then((value) {
+              Map result = Map<String, dynamic>.from(value);
+              if (result["isRefresh"] == true) {
+                refresh();
+                print("新增地址成功后，地址列表刷新");
+              }
+            });
+          },
+          child: Text(
+            "新增收货地址",
+            style: TextStyle(fontSize: 15, color: Colors.white),
+          )
         ),
       );
     }
@@ -200,7 +195,6 @@ class _AddressListPageState extends State<AddressListPage> {
     ///获取ListView
     Widget buildAddressListView(List<AddressListModel> models) {
       return ListView.builder(
-          padding: EdgeInsets.only(top: 10),
           itemCount: models.length,
           itemBuilder: (context, index) {
             final model = models[index];
