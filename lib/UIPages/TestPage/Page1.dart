@@ -48,10 +48,11 @@ class _PageState extends State<TestPage1> {
   // setK() {}
   num c = 0;
   Widget build(BuildContext context) {
+    dynamic a = '';
     return Scaffold(
         appBar: xtBackBar(title: title, back: () => _xtback(context)),
         body: FutureBuilder(
-            future: Future.value('ssss').then((res) {
+            future: Future.value().then((res) {
               // print('-------------------');
               // setState(() {
               //   title = 'page2';
