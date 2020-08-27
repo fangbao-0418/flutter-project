@@ -8,7 +8,7 @@ class ReportLogsTask extends Task {
     super.exec();
     setIntival(Duration(seconds: 60), () {
       ///日志上传
-      // detectionUnSendLog();
+      detectionUnSendLog();
     });
   }
 }

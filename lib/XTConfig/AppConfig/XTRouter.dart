@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/Widgets/Wrapper.dart';
 import 'package:xtflutter/Utils/Global.dart';
-import './RoutesMap.dart';
+import 'package:xtflutter/XTRouter/RoutesMap.dart';
 import 'package:xtflutter/Utils/Report.dart';
 
 Map<String, PageBuilder> getPageBuilder() {
@@ -18,7 +18,7 @@ Map<String, PageBuilder> getPageBuilder() {
   return pageBuilder;
 }
 
-Map<String, dynamic> getRoutes() {
+Map<String, Widget Function(BuildContext)> getRoutes() {
   final Map<String, Widget Function(BuildContext)> routes = {};
   routeConfigs.forEach((key, value) {
     routes.addAll({
@@ -29,10 +29,9 @@ Map<String, dynamic> getRoutes() {
 }
 
 class XTRouter {
-  ///配置整体路由
-  static routerCongfig() {
+  ///flutter_boost 注册路由
+  static registerPageBuilders() {
     FlutterBoost.singleton.registerPageBuilders(getPageBuilder());
-    print('registerPageBuilders end');
   }
 
   ///push到新页面

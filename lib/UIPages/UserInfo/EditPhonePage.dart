@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:xtflutter/UIPages/NormalUI/XTAppBackBar.dart';
-import 'package:xtflutter/Utils/Error/XtError.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTNetWork/UserInfoRequest.dart';
@@ -104,25 +102,21 @@ class _EditPhonePageState extends State<EditPhonePage>
       Toast.showToast(context: context, msg: '手机验证码不能为空');
       return;
     } else if (!RegExp('^\\d{6}\$').hasMatch(code)) {
-      Toast.showToast(context: context, msg: '手机验证码格式错误');
+      Toast.showToast(msg: '手机验证码格式错误');
       return;
     }
-    phoneController.text = '';
-    codeController.text = '';
-    XTUserInfoRequest.changeUserPhone(phone, code)
-        .then((result) => {
-              if (result["success"])
-                {
-                  Toast.showToast(msg: '修改成功', context: context).then(() {
-                    XTRouter.closePage(context: context);
-                  })
-                }
-              else
-                {Toast.showToast(msg: result['message'], context: context)}
-            })
-        .catchError((error) {
-      print("00000000000000" + error.message);
-      Toast.showToast(msg: error.message, context: context);
+    XTUserInfoRequest.changeUserPhone(phone, code).then((result) {
+      if (result["success"]) {
+        phoneController.text = '';
+        codeController.text = '';
+        Toast.showToast(msg: '修改成功', context: context).then(() {
+          XTRouter.closePage(context: context);
+        });
+      } else {
+        Toast.showToast(msg: result['message'], context: context);
+      }
+    }).catchError((error) {
+      // Toast.showToast(msg: error?.message, context: context);
     });
   }
 
@@ -140,7 +134,6 @@ class _EditPhonePageState extends State<EditPhonePage>
           isOnFocus2 = false;
           showSubmitBtn();
         },
-
         child: Scaffold(
             appBar: xtBackBar(title: "修改手机号", back: () => _xtback(context)),
             body: Container(
