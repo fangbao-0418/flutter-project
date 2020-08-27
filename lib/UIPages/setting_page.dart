@@ -44,28 +44,30 @@ class _SettingPageState extends State<SettingPage> {
             flex: 3,
             child: Container(color: mainF5GrayColor, height: 60),
           ),
-          Positioned(
-              child: Container(
-            width: double.infinity,
-            color: mainF5GrayColor,
-            alignment: Alignment.center,
-            child: RaisedButton(
-              elevation: 0,
-              padding: EdgeInsets.fromLTRB(45, 10, 45, 10),
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: BorderSide(
-                      width: 0.5,
-                      color: main99GrayColor,
-                      style: BorderStyle.solid)),
-              onPressed: () {
-                loginOut(context);
-              },
-              child: Text("退出登录",
-                  style: TextStyle(color: main99GrayColor, fontSize: 14)),
-            ),
-          )),
+          Stack(children: [
+            Positioned(
+                child: Container(
+              width: double.infinity,
+              color: mainF5GrayColor,
+              alignment: Alignment.center,
+              child: RaisedButton(
+                elevation: 0,
+                padding: EdgeInsets.fromLTRB(45, 10, 45, 10),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                        width: 0.5,
+                        color: main99GrayColor,
+                        style: BorderStyle.solid)),
+                onPressed: () {
+                  loginOut(context);
+                },
+                child: Text("退出登录",
+                    style: TextStyle(color: main99GrayColor, fontSize: 14)),
+              ),
+            ))
+          ]),
           Expanded(
             flex: 1,
             child: Container(color: mainF5GrayColor, height: 60),

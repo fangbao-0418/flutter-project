@@ -7,7 +7,7 @@ class LogsDB {
   // 失败上限
   static num maxFailTime = 10;
   // 日志最多存储10000条
-  static const maxLength = 100;
+  static const maxLength = 10000;
   static Future<Database> getDB() async {
     if (_db == null || !_db.isOpen) {
       _db = await openDatabase('flutter_logs.db');

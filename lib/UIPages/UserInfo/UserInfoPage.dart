@@ -68,6 +68,16 @@ class _UserInfoPageState extends State<UserInfoPage>
     XTRouter.closePage(context: context, result: {"1": "111"});
   }
 
+  Future getUserInfoData() {
+    print('getUserInfoData');
+    return XTUserInfoRequest.getUserInfoData().then((value) {
+      final usermodel = Provider.of<UserInfoVM>(context);
+      UserInfoModel mode = UserInfoModel.fromJson(Map.from(value.data));
+      usermodel.updateUser(mode);
+      return value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final usermodel = Provider.of<UserInfoVM>(context);
@@ -76,7 +86,7 @@ class _UserInfoPageState extends State<UserInfoPage>
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "个人信息", back: () => _xtback(context)),
         body: FutureBuilder(
-            future: XTUserInfoRequest.getUserInfoData(),
+            future: getUserInfoData(),
             builder: (context, result) {
               if (!result.hasData) {
                 return Card(
@@ -92,10 +102,6 @@ class _UserInfoPageState extends State<UserInfoPage>
                   child: Text("网络错误，请重试"),
                 );
               }
-
-              UserInfoModel mode =
-                  UserInfoModel.fromJson(Map.from(result.data));
-              usermodel.updateUser(mode);
               return Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),

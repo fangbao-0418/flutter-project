@@ -21,6 +21,7 @@ import 'Widgets/Wrapper.dart';
 import 'UIPages/setting_page.dart';
 import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
 import 'package:xtflutter/UIPages/TestPage/Page1.dart';
+import 'package:xtflutter/XTRouter/RoutesMap.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'package:flutter/services.dart';
 import 'package:xtflutter/Utils/Task/Task.dart';
@@ -46,7 +47,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // throw ('error test');
+
+    ///路由配置 -- flutter_boost
+    XTRouter.registerPageBuilders();
 
     ///客户端更新用户或者切换环境使用
     FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
@@ -60,7 +63,7 @@ class _MyAppState extends State<MyApp> {
       return;
     });
 
-    ///客户端用户退出或者更换用户
+    // ///客户端用户退出或者更换用户
     FlutterBoost.singleton.channel.addEventListener('updateUserInfo',
         (name, arguments) {
       // UserInfoVM
@@ -76,9 +79,6 @@ class _MyAppState extends State<MyApp> {
       print("updateUserInfo --- end");
       return;
     });
-
-    ///路由配置 -- flutter_boost
-    XTRouter.routerCongfig();
 
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
@@ -110,9 +110,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   void getUserInfo() async {
-    final userInfo = await XTMTDChannel.invokeMethod("userInfo");
+    String userInfo = await XTMTDChannel.invokeMethod("userInfo");
 
-    Map<String, dynamic> tp = Map.from(json.decode(userInfo));
+    Map<String, dynamic> tp =
+        Map.from(json.decode(userInfo) as Map<String, dynamic>);
     // tp["id"] = int.parse(tp["id"]);
 
     AppConfig().userVM.updateUser(UserInfoModel.fromJson(tp));
@@ -145,7 +146,9 @@ class _MyAppState extends State<MyApp> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent),
         title: 'Flutter Boost example',
-        builder: FlutterBoost.init(postPush: _onRoutePushed),
+        builder: (BuildContext context, Widget widget) {
+          return FlutterBoost.init(postPush: _onRoutePushed)(context, widget);
+        },
         routes: getRoutes(),
         home: Home());
   }
@@ -176,7 +179,9 @@ class _Home extends State<Home> {
 
     // return Container(child: SettingPage());
     // return GlobalOfficalName();
-    return TestPage1();
+    // return TestPage1();
+    return routeConfigs['editPhone']('', {}, '');
+    // return Text('xxx');
   }
 }
 
