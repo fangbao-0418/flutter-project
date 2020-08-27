@@ -81,34 +81,36 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
             flex: 3,
             child: Container(color: mainF5GrayColor, height: 60),
           ),
-          Positioned(
-              child: Container(
-            width: double.infinity,
-            color: mainF5GrayColor,
-            alignment: Alignment.center,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  "浙B2-20190758",
-                  style: TextStyle(
-                      fontSize: 14, height: 2, color: main99GrayColor),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  '杭州喜团科技版权所有',
-                  style: TextStyle(
-                      fontSize: 14, height: 2, color: main99GrayColor),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  "Copyright@2019 XiTuan All Rights Reserved",
-                  style: TextStyle(
-                      fontSize: 14, height: 2, color: main99GrayColor),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          )),
+          Stack(children: [
+            Positioned(
+                child: Container(
+              width: double.infinity,
+              color: mainF5GrayColor,
+              alignment: Alignment.center,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "浙B2-20190758",
+                    style: TextStyle(
+                        fontSize: 14, height: 2, color: main99GrayColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    '杭州喜团科技版权所有',
+                    style: TextStyle(
+                        fontSize: 14, height: 2, color: main99GrayColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    "Copyright@2019 XiTuan All Rights Reserved",
+                    style: TextStyle(
+                        fontSize: 14, height: 2, color: main99GrayColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ))
+          ]),
           Expanded(
             flex: 1,
             child: Container(color: mainF5GrayColor, height: 60),
