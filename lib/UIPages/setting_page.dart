@@ -121,13 +121,11 @@ class _SettingPageState extends State<SettingPage> {
       }));
     }
 
-    tp.add(basicContent("关于喜团", haveLine: false, tapFunc: () {
-      // XTRouter.pushToPage(
-      //   routerName: makeRouter(true, null, "aboutXiTuan"),
-      //   context: context,
-      // );
+    tp.add(basicContent("关于喜团",
+        childStr: "v" + AppConfig.getInstance().appVersion,
+        haveLine: false, tapFunc: () {
       XTRouter.pushToPage(
-        routerName: makeRouter(true, null, "aboutXituan"),
+        routerName: "aboutXituan",
         context: context,
       );
     }));
