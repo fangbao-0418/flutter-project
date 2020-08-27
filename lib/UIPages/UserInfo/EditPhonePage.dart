@@ -52,10 +52,10 @@ class _EditPhonePageState extends State<EditPhonePage>
     var phone = phoneController.text;
     var partten = RegExp("^1\\d{10}\$");
     if (phone.isEmpty) {
-      Toast.showToast(msg: '手机号不能为空', context: context);
+      Toast.showToast(msg: '手机号不能为空');
     } else if (!partten.hasMatch(phone)) {
       print(partten.hasMatch(phone));
-      Toast.showToast(msg: '手机号格式错误', context: context);
+      Toast.showToast(msg: '手机号格式错误');
     } else {
       res = true;
     }

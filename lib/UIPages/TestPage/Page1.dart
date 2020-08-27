@@ -52,7 +52,7 @@ class _PageState extends State<TestPage1> {
     return Scaffold(
         appBar: xtBackBar(title: title, back: () => _xtback(context)),
         body: FutureBuilder(
-            future: Future.value().then((res) {
+            future: Future.value('').then((res) {
               // print('-------------------');
               // setState(() {
               //   title = 'page2';
@@ -79,7 +79,8 @@ class _PageState extends State<TestPage1> {
                                   children: <Widget>[
                                     RaisedButton(
                                       onPressed: () {
-                                        LogsDB.takeData();
+                                        Toast.showToast(msg: 'xxxx');
+                                        // LogsDB.takeData();
                                         // Collection.record([
                                         //   {'a:': c}
                                         // ]);

@@ -1,30 +1,22 @@
 import 'dart:convert';
-
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:xtflutter/ProviderVM/UserInfoVM.dart';
-import 'package:xtflutter/UIPages/UserInfo/global_offical_name.dart';
-// import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
+import 'package:xtflutter/UIPages/TestPage/Page1.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/Utils/Error/Monitor.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
-import 'package:xtflutter/Utils/Error/ReportError.dart';
-// import 'package:xtflutter/XTConfig/AppConfig/XTMethodChannelConfig.dart';
-import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
-import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/XTModel/UserInfoModel.dart';
 import 'package:xtflutter/local/proxy.dart';
-import 'Widgets/Wrapper.dart';
-import 'UIPages/setting_page.dart';
-import 'package:xtflutter/UIPages/UserInfo/EditPhonePage.dart';
-import 'package:xtflutter/UIPages/TestPage/Page1.dart';
 import 'package:xtflutter/XTRouter/RoutesMap.dart';
+import 'package:xtflutter/UIPages/setting_page.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'package:flutter/services.dart';
 import 'package:xtflutter/Utils/Task/Task.dart';
+import 'package:xtflutter/Widgets/Wrapper.dart';
 
 void main() {
   monitor(() {
@@ -47,6 +39,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    // dynamic subscription = Connectivity()
+    //     .onConnectivityChanged
+    //     .listen((ConnectivityResult result) {
+    //   print('netWork status change');
+    //   print(result);
+    // });
 
     ///路由配置 -- flutter_boost
     XTRouter.registerPageBuilders();
@@ -146,9 +144,7 @@ class _MyAppState extends State<MyApp> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent),
         title: 'Flutter Boost example',
-        builder: (BuildContext context, Widget widget) {
-          return FlutterBoost.init(postPush: _onRoutePushed)(context, widget);
-        },
+        builder: FlutterBoost.init(postPush: _onRoutePushed),
         routes: getRoutes(),
         home: Home());
   }
@@ -175,13 +171,15 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    Global.context = context;
-
+    // Global.context = context;
     // return Container(child: SettingPage());
     // return GlobalOfficalName();
-    // return TestPage1();
-    return routeConfigs['editPhone']('', {}, '');
+    // return TestPage1(); page1 editPhone userInfo
+    // return Wrapper(child: routeConfigs['fl-user-info']('', {}, ''));
     // return Text('xxx');
+    // return Wrapper(child: routeConfigs['fl-user-info']('', {}, ''));
+    // return routeConfigs['fl-user-info']('', {}, '');
+    return SettingPage();
   }
 }
 

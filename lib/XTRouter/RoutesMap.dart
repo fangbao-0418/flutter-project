@@ -36,5 +36,6 @@ Map<String, PageBuilder> routeConfigs = {
   'page1': (pageName, params, _) => TestPage1(),
   'page2': (pageName, params, _) => TestPage2(),
   'page3': (pageName, params, _) => TestPage3(),
+  // 全球淘
   'officalname': (pageName, params, _) => GlobalOfficalName(),
 };
