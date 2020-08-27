@@ -29,7 +29,7 @@ Map<String, Widget Function(BuildContext)> getRoutes() {
 }
 
 class XTRouter {
-  ///flutter_boost 注册路由
+  ///flutter_boost注册路由
   static registerPageBuilders() {
     FlutterBoost.singleton.registerPageBuilders(getPageBuilder());
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:xtflutter/Utils/Global.dart';
+import 'package:xtflutter/Utils/Global.dart';
 import 'package:xtflutter/Utils/Toast.dart';
 import 'package:xtflutter/Utils/Loading.dart';
 
@@ -17,6 +17,12 @@ class _WrapperState extends State<Wrapper> {
   final Widget child;
   final BuildContext routeContext;
   _WrapperState({Key key, this.child, this.routeContext});
+  @override
+  void initState() {
+    super.initState();
+    Global.context = context;
+  }
+
   Widget build(BuildContext context) {
     return Container(child: child);
   }

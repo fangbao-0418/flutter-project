@@ -56,6 +56,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
 
   ///保存实名
   void _saveInfo(BuildContext context) async {
+    print('save');
     Loading.show(context: context);
     final result =
         await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal)
@@ -358,7 +359,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             children: <Widget>[
               Card(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15.0))), //设置圆角
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(15.0))), //设置圆角
                   margin: EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
@@ -390,8 +392,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Text("姓名        ",
-                                style:
-                                    TextStyle(color: mainBlackColor, fontSize: 16)),
+                                style: TextStyle(
+                                    color: mainBlackColor, fontSize: 16)),
                             Expanded(
                               child: TextField(
                                 controller: nameC,
@@ -414,9 +416,10 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                           // color: main99GrayColor,
                                           decoration: BoxDecoration(
                                             color: main99GrayColor,
-                                            border: Border.all(color: Colors.white),
-                                            borderRadius:
-                                                BorderRadius.all(Radius.circular(15)),
+                                            border:
+                                                Border.all(color: Colors.white),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
                                           ),
                                           child: IconButton(
                                               padding: EdgeInsets.zero,
@@ -439,8 +442,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                   ),
                                   hintText: '请输入付款账户的真实姓名',
                                   counterText: '',
-                                  hintStyle:
-                                      TextStyle(color: main99GrayColor, fontSize: 14),
+                                  hintStyle: TextStyle(
+                                      color: main99GrayColor, fontSize: 14),
                                 ),
                               ),
                             ),
@@ -456,8 +459,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Text("证件号码 ",
-                                style:
-                                    TextStyle(color: mainBlackColor, fontSize: 16)),
+                                style: TextStyle(
+                                    color: mainBlackColor, fontSize: 16)),
                             Expanded(
                               child: TextField(
                                 controller: idC,
@@ -480,9 +483,10 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                           // color: main99GrayColor,
                                           decoration: BoxDecoration(
                                             color: main99GrayColor,
-                                            border: Border.all(color: Colors.white),
-                                            borderRadius:
-                                                BorderRadius.all(Radius.circular(15)),
+                                            border:
+                                                Border.all(color: Colors.white),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
                                           ),
                                           child: IconButton(
                                               padding: EdgeInsets.zero,
@@ -505,8 +509,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                   ),
                                   hintText: '请输入付款账户的身份证号',
                                   counterText: '',
-                                  hintStyle:
-                                      TextStyle(color: main99GrayColor, fontSize: 14),
+                                  hintStyle: TextStyle(
+                                      color: main99GrayColor, fontSize: 14),
                                 ),
                               ),
                             ),
@@ -547,7 +551,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                         Text(
                           "添加实名认证",
                           textAlign: TextAlign.left,
-                          style: TextStyle(color: main66GrayColor, fontSize: 14),
+                          style:
+                              TextStyle(color: main66GrayColor, fontSize: 14),
                         ),
                       ],
                     ),
