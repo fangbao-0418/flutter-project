@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/Utils/Loading.dart';
 import '../../Utils/Toast.dart';
 import '../../XTConfig/AppConfig/XTMethodChannelConfig.dart';
 import '../../XTConfig/AppConfig/XTRouter.dart';
@@ -34,9 +35,9 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
 
   /// 获取用户微信信息
   void _getWechatInfo() async {
+    Loading.show(context: context);
     try {
       final WechatInfoModel model = await XTUserInfoRequest.getWechatInfoReq();
-      Toast.showToast(msg: model.toJson().toString());
       if (model.wechat.isNotEmpty && model.wxQr.isNotEmpty) {
         setState(() {
           _wechatAccountCon.text = model.wechat;
@@ -48,6 +49,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
       }
     } catch (err) {
     }
+    Loading.hide();
   }
 
   /// 更新头像

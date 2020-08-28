@@ -139,7 +139,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
     Picker picker = Picker(
       height: 300,
       itemExtent: 40,
-      selecteds: selectValue,
+      selecteds: [selectValue[0], selectValue[1], selectValue[2]],
       adapter: PickerDataAdapter<String>(pickerdata: data),
       changeToFirst: false,
       textAlign: TextAlign.left,

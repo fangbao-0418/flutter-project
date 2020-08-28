@@ -170,57 +170,64 @@ class XTUserInfoRequest {
     List cityResult = resluts[1];
     List areaResult = resluts[2];
 
-    List<Map<String, dynamic>> allList = [];
-    List<Map<String, dynamic>> allItemList = [];
-    for (int i = 0; i < provinceResult.length; i++) {
-      String provinceName = provinceResult[i]["name"];
-      String provinceValue = provinceResult[i]["value"].toString();
-      Map<String, List> provinceMap = {};
-      List<Map<String, List>> cityNameList = [];
+    /// 名称
+    Map<String, List> areaM = {};
+    Map<String, List> cityM = {};
+    List<Map<String, dynamic>> provinceM = [];
 
-      Map<String, List> provinceItemMap = {};
-      List<Map<String, List>> cityItemList = [];
+    /// id
+    Map<String, List> areaValueM = {};
+    Map<String, List> cityValueM = {};
+    List<Map<String, dynamic>> provinceValueM = [];
 
-      for (int j = 0; j < cityResult.length; j++) {
-        String cityName = cityResult[j]["name"];
-        String cityValue = cityResult[j]["value"];
-        String cityParent = cityResult[j]["parent"].toString();
-        Map<String, List> cityMap = {};
-        List<String> areaNameList = [];
+    for (int i = 0; i < areaResult.length; i++) {
+      //区
+      Map<String, dynamic> tm = areaResult[i];
 
-        Map<String, List> cityItemMap = {};
-        List areaItemList = [];
-
-        for (int k = 0; k < areaResult.length; k++) {
-          String areaName = areaResult[k]["name"];
-          String areaParent = areaResult[k]["parent"];
-
-          String areaValue = areaResult[k]["value"];
-          if (areaParent == cityValue) {
-            areaNameList.add(areaName);
-
-            areaItemList.add(areaValue);
-          }
-        }
-        cityMap[cityName] = areaNameList;
-
-        cityItemMap[cityValue] = areaItemList;
-        if (cityParent == provinceValue) {
-          cityNameList.add(cityMap);
-
-          cityItemList.add(cityItemMap);
-        }
+      String key = tm["parent"];
+      String name = tm["name"];
+      String value = tm["value"];
+      if (areaM[key] == null) {
+        areaM[key] = [];
       }
-      provinceMap[provinceName] = cityNameList;
-      allList.add(provinceMap);
+      List ar = areaM[key];
+      ar.add(name);
 
-      provinceItemMap[provinceValue] = cityItemList;
-      allItemList.add(provinceItemMap);
+      if (areaValueM[key] == null) {
+        areaValueM[key] = [];
+      }
+      List ar1 = areaValueM[key];
+      ar1.add(value);
     }
 
-    print("allItemListallItemList == ${allItemList.toString()}");
+    for (int i = 0; i < cityResult.length; i++) {
+      //市
+      Map<String, dynamic> tm = cityResult[i];
+      String key = tm["parent"];
+      String name = tm["name"];
+      String value = tm["value"];
+      if (cityM[key] == null) {
+        cityM[key] = [];
+      }
+      List ar = cityM[key];
+      ar.add({name: areaM[tm["value"]]});
 
-    Map dataMap = {"cityName": allList, "cityValue": allItemList};
+      if (cityValueM[key] == null) {
+        cityValueM[key] = [];
+      }
+      List ar1 = cityValueM[key];
+      ar1.add({value: areaValueM[tm["value"]]});
+    }
+
+    for (int i = 0; i < provinceResult.length; i++) {
+      //省
+      var tm = provinceResult[i];
+      provinceM.add({tm["name"]: cityM[tm["value"]]});
+
+      provinceValueM.add({tm["value"]: cityValueM[tm["value"]]});
+    }
+
+    Map dataMap = {"cityName": provinceM, "cityValue": provinceValueM};
 
     return dataMap;
   }

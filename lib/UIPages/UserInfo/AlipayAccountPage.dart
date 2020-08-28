@@ -32,6 +32,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
 
   /// 获取支付宝账号信息
   void getAlipayAccountInfo() async {
+    Loading.show(context: context);
     try {
       _account = await XTUserInfoRequest.getAlipayAccountReq();
       if (_account != null && _account.accountNumber.isNotEmpty) {
@@ -49,6 +50,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
     } catch (err) {
       print(err);
     }
+    Loading.hide();
   }
 
   /// 保存支付宝账户信息
