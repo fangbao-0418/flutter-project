@@ -67,13 +67,8 @@ class _MyAppState extends State<MyApp> {
       // UserInfoVM
       //todo
       print("updateUserInfo --- start");
-      Map configMode = new Map.from(arguments);
-
-      print("configMode ---" + configMode.toString());
+      Map<String, dynamic> configMode = Map.from(arguments);
       AppConfig().userVM.updateUser(UserInfoModel.fromJson(configMode));
-
-      // UserInfoVM
-
       print("updateUserInfo --- end");
       return;
     });
@@ -112,7 +107,6 @@ class _MyAppState extends State<MyApp> {
 
     Map<String, dynamic> tp =
         Map.from(json.decode(userInfo) as Map<String, dynamic>);
-    // tp["id"] = int.parse(tp["id"]);
 
     AppConfig().userVM.updateUser(UserInfoModel.fromJson(tp));
   }
