@@ -114,12 +114,12 @@ class XTUserInfoRequest {
   // https://testing-myouxuan.hzxituan.com/cweb/memberAuthentication/setDefault/1006
 
   /// 地址信息（新增/修改）
-  static Future<bool> addressInfoRequest(
+  static Future addressInfoRequest(
       Map<String, String> para, bool isAdd) async {
     final url =
         isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
     return HttpRequest.request(url,
-        method: "post", hideToast: true, params: para);
+        method: "post", params: para);
   }
 
   /// 获取省市区数据

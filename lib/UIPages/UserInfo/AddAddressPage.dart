@@ -141,9 +141,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
       XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
         showToast(_isAddAddress ? "保存成功" : "修改成功");
         XTRouter.closePage(context: context, result: {"isRefresh": true});
-      }).catchError((err) {
-        Loading.hide();
-        showToast(err.message);
       });
       Loading.hide();
     } catch (error) {
