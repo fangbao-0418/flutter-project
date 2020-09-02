@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xtflutter/XTModel/UserInfoModel.dart';
-import '../XTConfig/Extension/StringExtension.dart';
+import 'package:xtflutter/xt_model/userinfo_model.dart';
+import '../xt_config/extension/string_extension.dart';
 
 class UserInfoVM extends ChangeNotifier {
   UserInfoModel _user = UserInfoModel();

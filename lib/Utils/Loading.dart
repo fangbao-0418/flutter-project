@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:xtflutter/Utils/Global.dart';
-import 'package:flutter/widgets.dart';
-import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'package:xtflutter/utils/global.dart';
+import 'package:xtflutter/xt_config/app_config/appconfig.dart';
 
 class SpinKitCircle extends StatefulWidget {
   const SpinKitCircle({

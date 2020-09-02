@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:xtflutter/Utils/Error/ReportError.dart';
-import 'package:xtflutter/Widgets/CustomErrorWidget.dart';
+import 'package:xtflutter/utils/error/error_report.dart';
+import 'package:xtflutter/xt_widgets/custom_error.dart';
 
-// 错误监控
+
 void monitor(runApp) {
   FlutterError.onError = (FlutterErrorDetails details) {
     print('============= flutter error start =============');
@@ -12,6 +12,7 @@ void monitor(runApp) {
     reportError(details);
   };
   ErrorWidget.builder = (FlutterErrorDetails details) {
+
     return CustomErrorWidget();
   };
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' as FT;
-import 'package:xtflutter/Utils/Global.dart';
+import 'package:xtflutter/utils/global.dart';
 
 class Toast {
   FT.FToast fToast;

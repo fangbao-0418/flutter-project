@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:xtflutter/Utils/Global.dart';
+import 'package:xtflutter/utils/global.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'dart:async';
 import 'package:convert/convert.dart';
 import 'package:xtflutter/local/helper.dart' as local;
-import './Error/CollectData.dart' as Collection;
-import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
+import 'error/collect_data.dart' as Collection;
+import 'package:xtflutter/xt_config/app_config/appconfig.dart';
 
 // 是否上报数据
 const TO_REPORT = false;

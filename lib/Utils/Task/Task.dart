@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'ReportLogs.dart';
+import 'logs_report.dart';
 
 class Task {
   Timer t;

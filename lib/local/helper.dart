@@ -2,7 +2,7 @@ import 'package:dio/adapter.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'proxy.dart';
-import 'package:xtflutter/Utils/Global.dart';
+import 'package:xtflutter/utils/global.dart';
 
 void helper(Dio dio) {
   if (Global.isDebugger) {
