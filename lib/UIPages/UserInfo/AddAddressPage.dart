@@ -129,19 +129,15 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   /// 地址请求
   void addressInfoRequest(Map<String, String> params, bool isAdd) async {
-    try {
-      Loading.show(context: context);
-      XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
-        showToast(_isAddAddress ? "保存成功" : "修改成功");
-        XTRouter.closePage(context: context, result: {"isRefresh": true});
-      }).catchError((err) {
-        Loading.hide();
-        showToast(err.message);
-      });
+    Loading.show(context: context);
+    XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
+      showToast(_isAddAddress ? "保存成功" : "修改成功");
+      XTRouter.closePage(context: context, result: {"isRefresh": true});
+    }).catchError((err) {
+      showToast(err.message);
+    }).whenComplete(() {
       Loading.hide();
-    } catch (error) {
-      print("flutter address error == ${error.toString()}");
-    }
+    });
   }
 
   /// 展示地址选择窗
