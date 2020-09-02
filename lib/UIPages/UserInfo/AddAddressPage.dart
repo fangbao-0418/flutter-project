@@ -10,11 +10,11 @@ import 'package:flutter_picker/Picker.dart';
 import '../../Utils/Toast.dart';
 
 class AddAddressPage extends StatefulWidget {
-
   AddAddressPage({this.name, this.params});
 
   /// 路由名称
   final String name;
+
   /// 传过来的参数
   final Map<String, dynamic> params;
 
@@ -25,29 +25,40 @@ class AddAddressPage extends StatefulWidget {
 class _AddAddressPageState extends State<AddAddressPage> {
   /// 是否是添加地址
   bool _isAddAddress = true;
+
   /// 地址修改id
   int _editAddrId;
+
   /// 收货人
   final TextEditingController receiveTextCon = TextEditingController();
+
   /// 手机号
   final TextEditingController phoneTextCon = TextEditingController();
+
   /// 地区
   final TextEditingController addressTextCon = TextEditingController();
+
   /// 是否选中默认地址
   var isSelected = false;
+
   /// 地区文案
   String selectAddrStr = "选择地区";
+
   /// 选中行，默认全部第一行
   List<int> selectValue = [0, 0, 0];
+
   /// 城市区域列表
   List cityNameList = [];
   List cityValueList = [];
+
   /// 地址信息
-  AddressCityModel cityInfoModel = AddressCityModel(provinceId: "", cityId: "", areaId: "");
+  AddressCityModel cityInfoModel =
+      AddressCityModel(provinceId: "", cityId: "", areaId: "");
 
   @override
   void initState() {
     super.initState();
+
     /// 编辑地址参数
     if (widget.params.isNotEmpty && widget.params.containsKey("consignee")) {
       AddressListModel addressInfo = AddressListModel.fromJson(widget.params);
@@ -55,8 +66,12 @@ class _AddAddressPageState extends State<AddAddressPage> {
       _editAddrId = addressInfo.id;
       receiveTextCon.text = addressInfo.consignee;
       phoneTextCon.text = addressInfo.phone;
-      selectAddrStr = "${addressInfo.province} ${addressInfo.city} ${addressInfo.district}";
-      cityInfoModel = AddressCityModel(provinceId: addressInfo.provinceId.toString(), cityId: addressInfo.cityId.toString(), areaId: addressInfo.districtId.toString());
+      selectAddrStr =
+          "${addressInfo.province} ${addressInfo.city} ${addressInfo.district}";
+      cityInfoModel = AddressCityModel(
+          provinceId: addressInfo.provinceId.toString(),
+          cityId: addressInfo.cityId.toString(),
+          areaId: addressInfo.districtId.toString());
       addressTextCon.text = addressInfo.street;
       isSelected = addressInfo.defaultAddress == 1 ? true : false;
     }
@@ -116,19 +131,14 @@ class _AddAddressPageState extends State<AddAddressPage> {
   void addressInfoRequest(Map<String, String> params, bool isAdd) async {
     try {
       Loading.show(context: context);
-      final result = await XTUserInfoRequest.addressInfoRequest(params, isAdd).catchError((err) {
+      XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
+        showToast(_isAddAddress ? "保存成功" : "修改成功");
+        XTRouter.closePage(context: context, result: {"isRefresh": true});
+      }).catchError((err) {
         Loading.hide();
         showToast(err.message);
       });
       Loading.hide();
-      bool isSuccess = result["success"];
-      String msg = result["message"];
-      if (isSuccess) {
-        showToast(_isAddAddress ? "保存成功" : "修改成功");
-        XTRouter.closePage(context: context, result: {"isRefresh": true});
-      } else {
-        showToast(msg);
-      }
     } catch (error) {
       print("flutter address error == ${error.toString()}");
     }
@@ -137,36 +147,44 @@ class _AddAddressPageState extends State<AddAddressPage> {
   /// 展示地址选择窗
   void showPicker(List data) {
     Picker picker = Picker(
-      height: 300,
-      itemExtent: 40,
-      selecteds: [selectValue[0], selectValue[1], selectValue[2]],
-      adapter: PickerDataAdapter<String>(pickerdata: data),
-      changeToFirst: false,
-      textAlign: TextAlign.left,
-      textStyle: const TextStyle(fontSize: 15, color: Colors.black),
-      selectedTextStyle: TextStyle(fontSize: 15, color: Colors.black),
-      columnPadding: const EdgeInsets.all(8.0),
-      title: Text("所在地区", style: TextStyle(fontSize: 16, color: Colors.black)),
-      cancelText: "取消",
-      cancelTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
-      confirmText: "确定",
-      confirmTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
-      onConfirm: (Picker picker, List value) {
-        /// 记录选中行
-        selectValue = value;
-        /// 获取地区code
-        Map firstValue = cityValueList[value[0]];
-        String firstCode = firstValue.keys.first;
-        Map secondValue = firstValue[firstCode][value[1]];
-        String secondCode = secondValue.keys.first;
-        String thirdCode = secondValue[secondCode][value[2]];
-        /// 选中地区
-        setState(() {
-          selectAddrStr = picker.getSelectedValues().toString().replaceAll("[", "").replaceAll("]", "").replaceAll(",", " ");
-          cityInfoModel = AddressCityModel(provinceId: firstCode, cityId: secondCode, areaId: thirdCode);
+        height: 300,
+        itemExtent: 40,
+        selecteds: [selectValue[0], selectValue[1], selectValue[2]],
+        adapter: PickerDataAdapter<String>(pickerdata: data),
+        changeToFirst: false,
+        textAlign: TextAlign.left,
+        textStyle: const TextStyle(fontSize: 15, color: Colors.black),
+        selectedTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+        columnPadding: const EdgeInsets.all(8.0),
+        title:
+            Text("所在地区", style: TextStyle(fontSize: 16, color: Colors.black)),
+        cancelText: "取消",
+        cancelTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
+        confirmText: "确定",
+        confirmTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
+        onConfirm: (Picker picker, List value) {
+          /// 记录选中行
+          selectValue = value;
+
+          /// 获取地区code
+          Map firstValue = cityValueList[value[0]];
+          String firstCode = firstValue.keys.first;
+          Map secondValue = firstValue[firstCode][value[1]];
+          String secondCode = secondValue.keys.first;
+          String thirdCode = secondValue[secondCode][value[2]];
+
+          /// 选中地区
+          setState(() {
+            selectAddrStr = picker
+                .getSelectedValues()
+                .toString()
+                .replaceAll("[", "")
+                .replaceAll("]", "")
+                .replaceAll(",", " ");
+            cityInfoModel = AddressCityModel(
+                provinceId: firstCode, cityId: secondCode, areaId: thirdCode);
+          });
         });
-      }
-    );
     picker.showModal(context);
   }
 
@@ -181,7 +199,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
         int secondValue = 0;
         int thirdValue = 0;
         if (!_isAddAddress) {
-          for (int i = 0; i < cityValueList.length; i ++) {
+          for (int i = 0; i < cityValueList.length; i++) {
             Map firstMap = cityValueList[i];
             if (firstMap.containsKey(cityInfoModel.provinceId)) {
               firstValue = i;
@@ -189,14 +207,15 @@ class _AddAddressPageState extends State<AddAddressPage> {
             }
           }
           List cityList = cityValueList[firstValue][cityInfoModel.provinceId];
-          for (int i = 0; i < cityList.length; i ++) {
+          for (int i = 0; i < cityList.length; i++) {
             Map secondMap = cityList[i];
             if (secondMap.containsKey(cityInfoModel.cityId)) {
               secondValue = i;
               break;
             }
           }
-          List areaList = cityValueList[firstValue][cityInfoModel.provinceId][secondValue][cityInfoModel.cityId];
+          List areaList = cityValueList[firstValue][cityInfoModel.provinceId]
+              [secondValue][cityInfoModel.cityId];
           thirdValue = areaList.indexOf(cityInfoModel.areaId);
 
           selectValue = [firstValue, secondValue, thirdValue];
@@ -210,22 +229,27 @@ class _AddAddressPageState extends State<AddAddressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: xtBackBar(title: _isAddAddress ? "添加地址" : "编辑地址", back: () => XTRouter.closePage(context: context)),
+      appBar: xtBackBar(
+          title: _isAddAddress ? "添加地址" : "编辑地址",
+          back: () => XTRouter.closePage(context: context)),
       body: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          child: Container(
-            color: Colors.white,
-            child: CustomScrollView(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          color: Colors.white,
+          child: CustomScrollView(
             slivers: <Widget>[
               SliverToBoxAdapter(
                 child: Column(
                   children: <Widget>[
                     Container(height: 10, color: Color(0xFFF9F9F9)),
                     receiverAndPhoneView(true),
-                    Container(height: 1.5, color: Color(0xFFF9F9F9), margin: EdgeInsets.only(left: 15, right: 15)),
+                    Container(
+                        height: 1.5,
+                        color: Color(0xFFF9F9F9),
+                        margin: EdgeInsets.only(left: 15, right: 15)),
                     receiverAndPhoneView(false),
                     Container(height: 10, color: Color(0xFFF9F9F9)),
                     addressView(),
@@ -251,14 +275,16 @@ class _AddAddressPageState extends State<AddAddressPage> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text(isReveive ? "收货人：" : "手机号：", style: TextStyle(color: Colors.black, fontSize: 14)),
+          Text(isReveive ? "收货人：" : "手机号：",
+              style: TextStyle(color: Colors.black, fontSize: 14)),
           Expanded(
             child: TextField(
               controller: isReveive ? receiveTextCon : phoneTextCon,
               inputFormatters: [
                 LengthLimitingTextInputFormatter(isReveive ? 20 : 11)
               ],
-              keyboardType: isReveive ? TextInputType.text : TextInputType.phone,
+              keyboardType:
+                  isReveive ? TextInputType.text : TextInputType.phone,
               decoration: InputDecoration(
                 hintText: isReveive ? "请填写收货人" : "请填写手机号",
                 hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 14),
@@ -290,21 +316,26 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(selectAddrStr, style: TextStyle(color: Colors.black, fontSize: 14)),
-                  Icon(Icons.keyboard_arrow_right, color: Color(0xffb9b5b5),)
+                  Text(selectAddrStr,
+                      style: TextStyle(color: Colors.black, fontSize: 14)),
+                  Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Color(0xffb9b5b5),
+                  )
                 ],
               ),
             ),
           ),
-          Container(height: 1.5, color: Color(0xFFF9F9F9), margin: EdgeInsets.only(left: 15, right: 15)),
+          Container(
+              height: 1.5,
+              color: Color(0xFFF9F9F9),
+              margin: EdgeInsets.only(left: 15, right: 15)),
           Expanded(
             child: TextField(
               controller: addressTextCon,
               maxLines: 5,
               keyboardType: TextInputType.text,
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(40)
-              ],
+              inputFormatters: [LengthLimitingTextInputFormatter(40)],
               decoration: InputDecoration(
                 hintText: "请填写详细地址（比如街道、小区、乡镇、村）",
                 hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 14),
@@ -323,31 +354,27 @@ class _AddAddressPageState extends State<AddAddressPage> {
       height: 50,
       alignment: Alignment.centerLeft,
       child: FlatButton.icon(
-        onPressed: () {
-          setState(() {
-            isSelected = !isSelected;
-          });
-        }, 
-        icon: Icon(
-          isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-          color: isSelected ? mainRedColor : main99GrayColor,
-        ), 
-        label: Text("设置默认地址", style: TextStyle(color: Colors.black, fontSize: 14))
-      ),
+          onPressed: () {
+            setState(() {
+              isSelected = !isSelected;
+            });
+          },
+          icon: Icon(
+            isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: isSelected ? mainRedColor : main99GrayColor,
+          ),
+          label: Text("设置默认地址",
+              style: TextStyle(color: Colors.black, fontSize: 14))),
     );
   }
 
   Widget saveButton() {
     return RaisedButton(
       color: Color(0xffe60113),
-      child: Text(
-        _isAddAddress ? "保存并使用" : "保存修改",
-        style: TextStyle(color: Colors.white, fontSize: 16)
-      ),
+      child: Text(_isAddAddress ? "保存并使用" : "保存修改",
+          style: TextStyle(color: Colors.white, fontSize: 16)),
       padding: EdgeInsets.only(left: 40, right: 40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8)
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       onPressed: () {
         saveAddressAction();
       },

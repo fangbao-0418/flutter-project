@@ -106,17 +106,11 @@ class _EditPhonePageState extends State<EditPhonePage>
       return;
     }
     XTUserInfoRequest.changeUserPhone(phone, code).then((result) {
-      if (result["success"]) {
-        phoneController.text = '';
-        codeController.text = '';
-        Toast.showToast(msg: '修改成功', context: context).then(() {
-          XTRouter.closePage(context: context);
-        });
-      } else {
-        Toast.showToast(msg: result['message'], context: context);
-      }
-    }).catchError((error) {
-      // Toast.showToast(msg: error?.message, context: context);
+      phoneController.text = '';
+      codeController.text = '';
+      Toast.showToast(msg: '修改成功', context: context).then(() {
+        XTRouter.closePage(context: context);
+      });
     });
   }
 

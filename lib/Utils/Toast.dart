@@ -35,23 +35,14 @@ class Toast {
   }
 
   Toast.showToast({@required String msg, this.context, this.duration = 2}) {
-    Toast.cancel();
-    print('show toast');
-    // print(Overlay.of(Global.context));
-    // OverlayEntry _entry = OverlayEntry(builder: (context) {
-    //   return toast(msg);
-    // });
-
-    // Overlay.of(Global.context).insert(_entry);
-    // print('xxxx');
-    // print(context);
-    // print(Global.context);
     if (Global.context == null) {
       return;
     }
-    // print(Global.context);
-    // print('xxxx');
-    // return;
+    // OverlayEntry _entry = OverlayEntry(builder: (context) {
+    //   return toast(msg);
+    // });
+    // Overlay.of(Global.context).insert(_entry);
+
     fToast = FT.FToast(Global.context);
     fToast.showToast(
       child: toast(msg),
@@ -76,10 +67,10 @@ class Toast {
   }
 
   Toast.cancel() {
-    FT.FToast(context ?? Global.context).removeCustomToast();
+    FT.FToast(Global.context).removeCustomToast();
   }
 
   Toast.cancelAll() {
-    FT.FToast(context ?? Global.context).removeQueuedCustomToasts();
+    FT.FToast(Global.context).removeQueuedCustomToasts();
   }
 }
