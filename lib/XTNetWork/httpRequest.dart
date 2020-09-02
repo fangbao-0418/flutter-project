@@ -65,7 +65,7 @@ class HttpRequest {
         }
         return Future.error(xtNetError);
       } else {
-        return map["data"];
+        return map["data"] as T;
       }
     } catch (e) {
       XTNetError xtNetError;

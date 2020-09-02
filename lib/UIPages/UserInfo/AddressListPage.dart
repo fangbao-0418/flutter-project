@@ -42,27 +42,26 @@ class _AddressListPageState extends State<AddressListPage> {
       return Container(
         margin: EdgeInsets.only(top: 50, bottom: 50),
         child: FlatButton(
-          padding: EdgeInsets.only(left: 45,right: 45, top: 10, bottom: 10),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)),
-          color: Colors.red,
-          onPressed: () {
-            XTRouter.pushToPage(
-              routerName: "addAddress",
-              context: context,
-            ).then((value) {
-              Map result = Map<String, dynamic>.from(value);
-              if (result["isRefresh"] == true) {
-                refresh();
-                print("新增地址成功后，地址列表刷新");
-              }
-            });
-          },
-          child: Text(
-            "新增收货地址",
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          )
-        ),
+            padding: EdgeInsets.only(left: 45, right: 45, top: 10, bottom: 10),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            color: Colors.red,
+            onPressed: () {
+              XTRouter.pushToPage(
+                routerName: "addAddress",
+                context: context,
+              ).then((value) {
+                Map result = Map<String, dynamic>.from(value);
+                if (result["isRefresh"] == true) {
+                  refresh();
+                  print("新增地址成功后，地址列表刷新");
+                }
+              });
+            },
+            child: Text(
+              "新增收货地址",
+              style: TextStyle(fontSize: 15, color: Colors.white),
+            )),
       );
     }
 
@@ -78,7 +77,8 @@ class _AddressListPageState extends State<AddressListPage> {
           ),
           onPressed: () {
             XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
-              print("地址ID：" + model.id.toString() + "状态:" + value.toString());
+              // Toast.showToast(msg: '设置默认地址成功');
+              // print("地址ID：" + model.id.toString() + "状态:" + value.toString());
               //改变_CheckBoxState
               setState(() {});
             });
@@ -183,8 +183,8 @@ class _AddressListPageState extends State<AddressListPage> {
               style: TextStyle(color: Colors.white),
             ),
             onTap: () {
-              XTUserInfoRequest.deleteAddress(model.id).then((value){
-                  setState(() {});
+              XTUserInfoRequest.deleteAddress(model.id).then((value) {
+                setState(() {});
               });
             },
           )
@@ -242,8 +242,11 @@ class _AddressListPageState extends State<AddressListPage> {
           ),
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 200),
-              child: Text("还没有收货地址，快去添加收货地址吧～",style: TextStyle(color: Color(0xFF666666)),)),
+                margin: EdgeInsets.only(top: 200),
+                child: Text(
+                  "还没有收货地址，快去添加收货地址吧～",
+                  style: TextStyle(color: Color(0xFF666666)),
+                )),
           ),
           Expanded(
             flex: 1,
@@ -287,23 +290,16 @@ class _AddressListPageState extends State<AddressListPage> {
           // ignore: missing_return
           future: refresh(),
           builder: (BuildContext context, AsyncSnapshot snapShot) {
-            print('data:${snapShot.data}');
-            print('connectionState:${snapShot.connectionState}');
-            if (snapShot.connectionState == ConnectionState.waiting) {
-              Loading.show(context: context, showShade: false);
-              return Text('');
-            } else {
-              Loading.hide();
-              if (snapShot.hasData) {
-                addressModels = snapShot.data;
-                if (addressModels.length == 0) {
-                  return emptyViewAdd();
-                }
-                return buildAddressListView(addressModels);
-//                return Text(snapShot.data.toString());
-              } else {
+            // Loading.hide();
+            if (snapShot.hasData) {
+              addressModels = snapShot.data;
+              if (addressModels.length == 0) {
                 return emptyViewAdd();
               }
+              return buildAddressListView(addressModels);
+//                return Text(snapShot.data.toString());
+            } else {
+              return emptyViewAdd();
             }
           }),
     );

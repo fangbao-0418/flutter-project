@@ -56,12 +56,7 @@ class XTUserInfoRequest {
 
   static Future<bool> deleteAddress(int addressId) async {
     const url = "/cweb/memberaddress/delete/";
-    bool resetSuccess = false;
-    final result =
-        await HttpRequest.request(url + addressId.toString(), method: "post");
-    resetSuccess = result;
-    print(addressId.toString() + "删除地址状态:" + resetSuccess.toString());
-    return resetSuccess;
+    return HttpRequest.request(url + addressId.toString(), method: "post");
   }
 
   // 获取实名列表
@@ -114,12 +109,10 @@ class XTUserInfoRequest {
   // https://testing-myouxuan.hzxituan.com/cweb/memberAuthentication/setDefault/1006
 
   /// 地址信息（新增/修改）
-  static Future addressInfoRequest(
-      Map<String, String> para, bool isAdd) async {
+  static Future addressInfoRequest(Map<String, String> para, bool isAdd) async {
     final url =
         isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
-    return HttpRequest.request(url,
-        method: "post", params: para);
+    return HttpRequest.request(url, method: "post", params: para);
   }
 
   /// 获取省市区数据

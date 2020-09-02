@@ -136,16 +136,15 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   /// 地址请求
   void addressInfoRequest(Map<String, String> params, bool isAdd) async {
-    try {
-      Loading.show(context: context);
-      XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
-        showToast(_isAddAddress ? "保存成功" : "修改成功");
-        XTRouter.closePage(context: context, result: {"isRefresh": true});
-      });
+    Loading.show(context: context);
+    XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
+      showToast(_isAddAddress ? "保存成功" : "修改成功");
+      XTRouter.closePage(context: context, result: {"isRefresh": true});
+    }).catchError((err) {
+      showToast(err.message);
+    }).whenComplete(() {
       Loading.hide();
-    } catch (error) {
-      print("flutter address error == ${error.toString()}");
-    }
+    });
   }
 
   /// 展示地址选择窗
@@ -215,7 +214,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
     int secondValue = 0;
     int thirdValue = 0;
     if (!_isAddAddress) {
-      for (int i = 0; i < cityValueList.length; i ++) {
+      for (int i = 0; i < cityValueList.length; i++) {
         Map firstMap = cityValueList[i];
         if (firstMap.containsKey(cityInfoModel.provinceId)) {
           firstValue = i;
@@ -223,14 +222,15 @@ class _AddAddressPageState extends State<AddAddressPage> {
         }
       }
       List cityList = cityValueList[firstValue][cityInfoModel.provinceId];
-      for (int i = 0; i < cityList.length; i ++) {
+      for (int i = 0; i < cityList.length; i++) {
         Map secondMap = cityList[i];
         if (secondMap.containsKey(cityInfoModel.cityId)) {
           secondValue = i;
           break;
         }
       }
-      List areaList = cityValueList[firstValue][cityInfoModel.provinceId][secondValue][cityInfoModel.cityId];
+      List areaList = cityValueList[firstValue][cityInfoModel.provinceId]
+          [secondValue][cityInfoModel.cityId];
       thirdValue = areaList.indexOf(cityInfoModel.areaId);
 
       selectValue = [firstValue, secondValue, thirdValue];
