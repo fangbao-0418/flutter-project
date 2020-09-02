@@ -18,11 +18,17 @@ import 'package:xtflutter/UIPages/TestPage/page3.dart';
 
 Map<String, PageBuilder> routeConfigs = {
   'setting': (pageName, params, _) => SettingPage(),
+
+  // 用户信息
   'fl-user-info': (pageName, params, _) => UserInfoPage(),
   'editPage': (pageName, params, _) =>
       EditNamePage(params: params, name: pageName),
+
+  // 添加收货地址
   'addAddress': (pageName, params, _) =>
       AddAddressPage(params: params, name: pageName),
+
+  // 收货地址
   'addressList': (pageName, params, _) => AddressListPage(),
   'aboutXituan': (pageName, params, _) => AboutXituanPage(),
   'editPhone': (pageName, params, _) => EditPhonePage(),

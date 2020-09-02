@@ -101,34 +101,34 @@ class Loading {
   static OverlayEntry newEntry;
   static num counter = 0;
   Widget get widget => Stack(children: [
-    Positioned(
-        top: 70,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: Material(
-            color: showShade ? Colors.white : Colors.transparent,
-            child: Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                Transform(
-                    transform: Matrix4.identity()..rotateZ(-pi / 12 * 7),
-                    alignment: Alignment.center,
-                    child: SpinKitCircle()),
-                Padding(
-                    padding: EdgeInsets.only(top: 80),
-                    child: Text('加载中...',
-                        style: TextStyle(
-                          fontSize: 14,
-                          // decoration: TextDecoration.none,
-                          color: Color(0xFF999999),
-                        )))
-              ],
-            )
-            // Center(child: ),
+        Positioned(
+            top: 70,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Material(
+                color: showShade ? Colors.white : Colors.transparent,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Transform(
+                        transform: Matrix4.identity()..rotateZ(-pi / 12 * 7),
+                        alignment: Alignment.center,
+                        child: SpinKitCircle()),
+                    // Padding(
+                    //     padding: EdgeInsets.only(top: 80),
+                    //     child: Text('加载中...',
+                    //         style: TextStyle(
+                    //           fontSize: 14,
+                    //           // decoration: TextDecoration.none,
+                    //           color: Color(0xFF999999),
+                    //         )))
+                  ],
+                )
+                // Center(child: ),
 
-            ))
-  ]);
+                ))
+      ]);
   Loading.show({this.context, this.showShade = false}) {
     counter++;
     if (newEntry == null) {
