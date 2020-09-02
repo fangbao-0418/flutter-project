@@ -35,7 +35,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
 
   /// 获取用户微信信息
   void _getWechatInfo() async {
-    Loading.show(context: context);
+    Loading.show(context: context, showShade: true);
     try {
       final WechatInfoModel model = await XTUserInfoRequest.getWechatInfoReq();
       if (model.wechat.isNotEmpty && model.wxQr.isNotEmpty) {

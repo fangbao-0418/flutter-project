@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xtflutter/Utils/Loading.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTColorConfig.dart';
 import 'package:xtflutter/XTConfig/AppConfig/XTRouter.dart';
 import '../../XTModel/UserInfoModel.dart';
@@ -40,8 +41,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
   /// 选中行，默认全部第一行
   List<int> selectValue = [0, 0, 0];
   /// 城市区域列表
-  List cityNameList = [];
-  List cityValueList = [];
+  List cityNameList = AppConfig.cityNameList;
+  List cityValueList = AppConfig.cityValueList;
   /// 地址信息
   AddressCityModel cityInfoModel = AddressCityModel(provinceId: "", cityId: "", areaId: "");
 
@@ -60,7 +61,15 @@ class _AddAddressPageState extends State<AddAddressPage> {
       addressTextCon.text = addressInfo.street;
       isSelected = addressInfo.defaultAddress == 1 ? true : false;
     }
-    getCityList();
+    if (cityNameList.isEmpty && cityValueList.isEmpty) {
+      /// 没有缓存数据
+      getCityList();
+      print("AddAddressPage 1111");
+    } else {
+      /// 有缓存数据
+      setSelectValue();
+      print("AddAddressPage 2222");
+    }
   }
 
   @override
@@ -136,6 +145,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   /// 展示地址选择窗
   void showPicker(List data) {
+    FocusScope.of(context).requestFocus(FocusNode());
     Picker picker = Picker(
       height: 300,
       itemExtent: 40,
@@ -176,34 +186,41 @@ class _AddAddressPageState extends State<AddAddressPage> {
       XTUserInfoRequest.getCityList().then((dataMap) {
         cityNameList = dataMap["cityName"];
         cityValueList = dataMap["cityValue"];
+        AppConfig.updateCityNameList(cityNameList);
+        AppConfig.updateCityValueList(cityValueList);
 
-        int firstValue = 0;
-        int secondValue = 0;
-        int thirdValue = 0;
-        if (!_isAddAddress) {
-          for (int i = 0; i < cityValueList.length; i ++) {
-            Map firstMap = cityValueList[i];
-            if (firstMap.containsKey(cityInfoModel.provinceId)) {
-              firstValue = i;
-              break;
-            }
-          }
-          List cityList = cityValueList[firstValue][cityInfoModel.provinceId];
-          for (int i = 0; i < cityList.length; i ++) {
-            Map secondMap = cityList[i];
-            if (secondMap.containsKey(cityInfoModel.cityId)) {
-              secondValue = i;
-              break;
-            }
-          }
-          List areaList = cityValueList[firstValue][cityInfoModel.provinceId][secondValue][cityInfoModel.cityId];
-          thirdValue = areaList.indexOf(cityInfoModel.areaId);
-
-          selectValue = [firstValue, secondValue, thirdValue];
-        }
+        setSelectValue();
       });
     } catch (err) {
       print(err);
+    }
+  }
+
+  /// 初始化选中行
+  void setSelectValue() {
+    int firstValue = 0;
+    int secondValue = 0;
+    int thirdValue = 0;
+    if (!_isAddAddress) {
+      for (int i = 0; i < cityValueList.length; i ++) {
+        Map firstMap = cityValueList[i];
+        if (firstMap.containsKey(cityInfoModel.provinceId)) {
+          firstValue = i;
+          break;
+        }
+      }
+      List cityList = cityValueList[firstValue][cityInfoModel.provinceId];
+      for (int i = 0; i < cityList.length; i ++) {
+        Map secondMap = cityList[i];
+        if (secondMap.containsKey(cityInfoModel.cityId)) {
+          secondValue = i;
+          break;
+        }
+      }
+      List areaList = cityValueList[firstValue][cityInfoModel.provinceId][secondValue][cityInfoModel.cityId];
+      thirdValue = areaList.indexOf(cityInfoModel.areaId);
+
+      selectValue = [firstValue, secondValue, thirdValue];
     }
   }
 
