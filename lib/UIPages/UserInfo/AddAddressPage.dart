@@ -79,11 +79,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
     if (cityNameList.isEmpty && cityValueList.isEmpty) {
       /// 没有缓存数据
       getCityList();
-      print("AddAddressPage 1111");
     } else {
       /// 有缓存数据
       setSelectValue();
-      print("AddAddressPage 2222");
     }
   }
 
