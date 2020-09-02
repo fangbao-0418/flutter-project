@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/Utils/Global.dart';
 import 'package:flutter/widgets.dart';
+import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 
 class SpinKitCircle extends StatefulWidget {
   const SpinKitCircle({
@@ -102,7 +103,7 @@ class Loading {
   static num counter = 0;
   Widget get widget => Stack(children: [
         Positioned(
-            top: 70,
+            top: AppConfig.navH,
             bottom: 0,
             left: 0,
             right: 0,
@@ -126,7 +127,6 @@ class Loading {
                   ],
                 )
                 // Center(child: ),
-
                 ))
       ]);
   Loading.show({this.context, this.showShade = false}) {

@@ -32,6 +32,10 @@ class AppConfig {
   ///网络超时时常
   int timeout = 10000;
 
+  ///省市区数据
+  List<Map<String, dynamic>> cityName = [];
+  List<Map<String, dynamic>> cityValue = [];
+
   //私有构造函数
   AppConfig._internal();
 
@@ -106,6 +110,14 @@ class AppConfig {
     _instance.appVersion = version;
   }
 
+  static updateCityNameList(List<Map<String, dynamic>> list) {
+    _instance.cityName = list;
+  }
+
+  static updateCityValueList(List<Map<String, dynamic>> list) {
+    _instance.cityValue = list;
+  }
+
   ///状态栏高度
   static get statusH {
     return _instance.statusHeight;
@@ -132,6 +144,16 @@ class AppConfig {
 
   static AppSoftInfo get soft {
     return _instance.softInfo;
+  }
+
+  ///省市区城市名称
+  static get cityNameList {
+    return _instance.cityName;
+  }
+
+  ///省市区城市数据
+  static get cityValueList {
+    return _instance.cityValue;
   }
 }
 

@@ -112,8 +112,7 @@ class XTUserInfoRequest {
   static Future addressInfoRequest(Map<String, String> para, bool isAdd) async {
     final url =
         isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
-    return HttpRequest.request(url,
-        method: "post", hideToast: true, params: para);
+    return HttpRequest.request(url, method: "post", params: para);
   }
 
   /// 获取省市区数据
