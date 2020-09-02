@@ -56,20 +56,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
 
   ///保存实名
   void _saveInfo(BuildContext context) async {
-    print('save');
     Loading.show(context: context);
-    final result =
-        await XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal)
-            .catchError((err) {
-      Loading.hide();
-      Toast.showToast(msg: err.message, context: context);
-    });
-    if (result == null) {
-      return;
-    }
-    if (result["success"] == true) {
-      Loading.hide();
-
+    XTUserInfoRequest.addmemberAdd(_name, _idNo, _selectNormal).then((res) {
       nameC.clear();
       idC.clear();
 
@@ -85,29 +73,15 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
         pState = PageState.showlist;
       });
       memberAuthList();
-    } else {
+    }).whenComplete(() {
       Loading.hide();
-      Toast.showToast(msg: result["message"], context: context);
-    }
+    });
   }
 
   /// 删除实名
   void addmemberDelete(int id) async {
     Loading.show(context: context);
-    final result =
-        await XTUserInfoRequest.addmemberDelete(id).catchError((err) {
-      Loading.hide();
-      Toast.showToast(msg: err.message);
-    });
-
-    if (result == null) {
-      Loading.hide();
-      return;
-    }
-
-    if (result["success"] == true) {
-      Loading.hide();
-
+    XTUserInfoRequest.addmemberDelete(id).then((result) {
       for (RealNameModel item in listP) {
         if (item.id == id) {
           listP.remove(item);
@@ -119,9 +93,11 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
           pState = PageState.none;
         }
       });
-    } else {
-      Toast.showToast(msg: result["message"]);
-    }
+    }).catchError((err) {
+      Toast.showToast(msg: err.message);
+    }).whenComplete(() {
+      Loading.hide();
+    });
   }
 
   void addRealName(RealNameModel model) {

@@ -68,7 +68,7 @@ class XTUserInfoRequest {
   static Future<dynamic> memberAuthList() async {
     const url = "/cweb/memberAuthentication/getList";
     final result = await HttpRequest.request(url);
-    List model = result["data"];
+    List model = result;
 
     var list = [];
     if (model.length > 0) {
@@ -88,7 +88,6 @@ class XTUserInfoRequest {
     final result = await HttpRequest.request(url,
         method: "post",
         params: {"name": name, "idNo": idNo, "isDefault": isDefault});
-    print("object2222221" + result.toString());
     return result;
   }
 
