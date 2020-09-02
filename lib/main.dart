@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
         routes: getRoutes(),
-        home: Home());
+        home: Wrapper(child: Home()));
   }
 
   void _onRoutePushed(
@@ -165,7 +165,6 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    // Global.context = context;
     // return Container(child: SettingPage());
     // return GlobalOfficalName();
     // return TestPage1(); page1 editPhone userInfo

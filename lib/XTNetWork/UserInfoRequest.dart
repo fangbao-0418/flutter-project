@@ -1,53 +1,35 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 import '../XTModel/UserInfoModel.dart';
 import 'httpRequest.dart';
 
-//用户资料请求
+/// 用户资料请求
 class XTUserInfoRequest {
-  ///获取当前用户信息
+  /// 获取当前用户信息
   static Future<dynamic> getUserInfoData() async {
-    // 1.发送网络请求
     final url = "/cweb/member/getMember";
-    final result = await HttpRequest.request(url);
-
-    final resl = result["data"];
-    print("object -------------==== " + resl.toString());
-    return resl;
+    return HttpRequest.request(url);
   }
 
   /// 更新用户信息
   static Future<bool> updateUserInfo(Map<String, String> para) async {
     // 1.发送网络请求
     final url = "/cweb/member";
-    final result = await HttpRequest.request(url, method: "put", params: para);
-    // 2.json转modal
-    final resl = result["data"];
-    print("/cweb/member ----" + resl.toString());
-    return resl;
+    return HttpRequest.request(url, method: "put", params: para);
   }
 
   // 发送验证码
   static Future<dynamic> sendCode({@required String phone, num flag = 3}) {
     const url = "/bweb/member/getVerifyCode";
     return HttpRequest.request(url,
-        method: "post",
-        queryParameters: {"phone": phone, "flag": flag}).then((res) {
-      if (res['code'] == '00000' && res['success']) {
-        return res['data'];
-      } else {
-        throw res;
-      }
-    });
+        method: "post", queryParameters: {"phone": phone, "flag": flag});
   }
 
   // 更换手机号
   static Future<dynamic> changeUserPhone(String phone, String code) {
     const url = "/bweb/member/update/mobile";
-    final result = HttpRequest.request(url,
+    return HttpRequest.request(url,
         method: "post", queryParameters: {"mobile": phone, "code": code});
-    return result;
   }
 
   // 获取地址列表
@@ -55,11 +37,10 @@ class XTUserInfoRequest {
     const url = "/cweb/memberaddress/getList";
     List<AddressListModel> addressList = [];
     final result = await HttpRequest.request(url);
-    List models = result['data'];
+    List models = result;
     models.forEach((element) {
       addressList.add(AddressListModel.fromJson(element));
     });
-    print("addressListData:${models.toString()}");
     return addressList;
   }
 
@@ -68,7 +49,7 @@ class XTUserInfoRequest {
     bool resetSuccess = false;
     final result =
         await HttpRequest.request(url + addressId.toString(), method: "post");
-    resetSuccess = result['data'];
+    resetSuccess = result;
     print(addressId.toString() + "设置默认地址状态:" + resetSuccess.toString());
     return resetSuccess;
   }
@@ -77,8 +58,8 @@ class XTUserInfoRequest {
     const url = "/cweb/memberaddress/delete/";
     bool resetSuccess = false;
     final result =
-    await HttpRequest.request(url + addressId.toString(), method: "post");
-    resetSuccess = result['data'];
+        await HttpRequest.request(url + addressId.toString(), method: "post");
+    resetSuccess = result;
     print(addressId.toString() + "删除地址状态:" + resetSuccess.toString());
     return resetSuccess;
   }
@@ -134,12 +115,12 @@ class XTUserInfoRequest {
   // https://testing-myouxuan.hzxituan.com/cweb/memberAuthentication/setDefault/1006
 
   /// 地址信息（新增/修改）
-  static Future<Map<String, dynamic>> addressInfoRequest(
+  static Future<bool> addressInfoRequest(
       Map<String, String> para, bool isAdd) async {
     final url =
         isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
-    final result = await HttpRequest.request(url, method: "post", params: para);
-    return result;
+    return HttpRequest.request(url,
+        method: "post", hideToast: true, params: para);
   }
 
   /// 获取省市区数据
@@ -238,8 +219,6 @@ class XTUserInfoRequest {
             [getCityDataList(0), getCityDataList(1), getCityDataList(2)])
         .then((resluts) async {
       return await compute(cityDataSuccess, resluts);
-    }).catchError((err) {
-      print(err);
     });
   }
 
@@ -247,7 +226,7 @@ class XTUserInfoRequest {
   static Future<AlipayAccountModel> getAlipayAccountReq() async {
     final url = "/cweb/wx/withdrawals/selectAccountNumber";
     final result = await HttpRequest.request(url);
-    AlipayAccountModel model = AlipayAccountModel.fromJson(result["data"]);
+    AlipayAccountModel model = AlipayAccountModel.fromJson(result);
     return model;
   }
 
@@ -256,7 +235,7 @@ class XTUserInfoRequest {
     final url = "/cweb/member/alipayAccount";
     final result =
         await HttpRequest.request(url, method: "put", params: params);
-    bool isSuccess = result["data"];
+    bool isSuccess = result;
     return isSuccess;
   }
 
@@ -264,16 +243,13 @@ class XTUserInfoRequest {
   static Future<WechatInfoModel> getWechatInfoReq() async {
     final url = "/ncweb/user/info/base/v1";
     final result = await HttpRequest.request(url);
-    WechatInfoModel model = WechatInfoModel.fromJson(result["data"]);
+    WechatInfoModel model = WechatInfoModel.fromJson(result);
     return model;
   }
 
   /// 获取用户微信信息
   static Future<bool> saveWechatInfoReq(Map<String, String> params) async {
     final url = "/ncweb/user/modify/wx/v1";
-    final result =
-        await HttpRequest.request(url, method: "post", params: params);
-    bool isSuccess = result["data"];
-    return isSuccess;
+    return HttpRequest.request(url, method: "post", params: params);
   }
 }

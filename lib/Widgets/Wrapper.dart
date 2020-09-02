@@ -30,7 +30,7 @@ class _WrapperState extends State<Wrapper> {
   @override
   void dispose() {
     Loading.forceHide();
-    Toast.cancelAll();
+    // Toast.cancelAll();
     super.dispose();
   }
 }

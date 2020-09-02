@@ -90,6 +90,7 @@ class XTRouter {
       Map<String, dynamic> result,
       Map<String, dynamic> exts}) {
     if (AppConfig.getInstance().isAppSubModule) {
+      print('close');
       final BoostContainerSettings settings =
           BoostContainer.of(context).settings;
       return FlutterBoost.singleton
@@ -98,7 +99,7 @@ class XTRouter {
         return value as T;
       });
     } else {
-      Navigator.of(context ?? Global.context).pop(result);
+      // Navigator.of(context ?? Global.context).pop(result);
       Completer<T> com = Completer();
       return com.future;
     }

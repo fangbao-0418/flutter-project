@@ -9,7 +9,8 @@ import 'package:xtflutter/local/helper.dart' as local;
 import './Error/CollectData.dart' as Collection;
 import 'package:xtflutter/XTConfig/AppConfig/AppConfig.dart';
 
-const TO_REPORT = true;
+// 是否上报数据
+const TO_REPORT = false;
 
 const moonid = 'ijmtxxg4t';
 const XT_LOGDATA_KEY = 'xt-logdata';
