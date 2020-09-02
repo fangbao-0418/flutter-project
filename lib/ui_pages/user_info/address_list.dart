@@ -77,7 +77,8 @@ class _AddressListPageState extends State<AddressListPage> {
           ),
           onPressed: () {
             XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
-              print("地址ID：" + model.id.toString() + "状态:" + value.toString());
+              // Toast.showToast(msg: '设置默认地址成功');
+              // print("地址ID：" + model.id.toString() + "状态:" + value.toString());
               //改变_CheckBoxState
               setState(() {});
             });
@@ -289,23 +290,16 @@ class _AddressListPageState extends State<AddressListPage> {
           // ignore: missing_return
           future: refresh(),
           builder: (BuildContext context, AsyncSnapshot snapShot) {
-            print('data:${snapShot.data}');
-            print('connectionState:${snapShot.connectionState}');
-            if (snapShot.connectionState == ConnectionState.waiting) {
-              Loading.show(context: context, showShade: false);
-              return Text('');
-            } else {
-              Loading.hide();
-              if (snapShot.hasData) {
-                addressModels = snapShot.data;
-                if (addressModels.length == 0) {
-                  return emptyViewAdd();
-                }
-                return buildAddressListView(addressModels);
-//                return Text(snapShot.data.toString());
-              } else {
+            // Loading.hide();
+            if (snapShot.hasData) {
+              addressModels = snapShot.data;
+              if (addressModels.length == 0) {
                 return emptyViewAdd();
               }
+              return buildAddressListView(addressModels);
+//                return Text(snapShot.data.toString());
+            } else {
+              return emptyViewAdd();
             }
           }),
     );

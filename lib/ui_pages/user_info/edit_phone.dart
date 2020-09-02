@@ -44,6 +44,7 @@ class _EditPhonePageState extends State<EditPhonePage>
     WidgetsBinding.instance.removeObserver(this);
     phoneController.dispose();
     codeController.dispose();
+    _countdownTimer?.cancel();
     super.dispose();
   }
 

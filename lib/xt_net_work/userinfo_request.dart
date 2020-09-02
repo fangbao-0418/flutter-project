@@ -56,12 +56,7 @@ class XTUserInfoRequest {
 
   static Future<bool> deleteAddress(int addressId) async {
     const url = "/cweb/memberaddress/delete/";
-    bool resetSuccess = false;
-    final result =
-        await HttpRequest.request(url + addressId.toString(), method: "post");
-    resetSuccess = result;
-    print(addressId.toString() + "删除地址状态:" + resetSuccess.toString());
-    return resetSuccess;
+    return HttpRequest.request(url + addressId.toString(), method: "post");
   }
 
   // 获取实名列表
