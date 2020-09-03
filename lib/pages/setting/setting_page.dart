@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:xtflutter/state/userinfo_vm.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_channel.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/utils/global.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
-import 'package:provider/provider.dart';
-
-import '../normal/toast.dart';
 import '../../model/userinfo_model.dart';
 
 class SettingPage extends StatefulWidget {

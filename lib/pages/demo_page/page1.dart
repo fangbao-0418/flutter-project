@@ -43,7 +43,6 @@ class _PageState extends State<Testpage1> {
   // setK() {}
   num c = 0;
   Widget build(BuildContext context) {
-    dynamic a = '';
     return Scaffold(
         appBar: xtBackBar(title: title, back: () => _xtback(context)),
         body: FutureBuilder(

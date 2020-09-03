@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
-import 'package:xtflutter/utils/error/error.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';

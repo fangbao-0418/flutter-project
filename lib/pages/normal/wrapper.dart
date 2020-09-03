@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/utils/global.dart';
-import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 
 class Wrapper extends StatefulWidget {

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/config/app_config/size_fit.dart';
-import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
@@ -22,20 +19,21 @@ class _AddressListPageState extends State<AddressListPage> {
         result: <String, dynamic>{'result': 'data from second'});
   }
 
+  List<AddressListModel> addressModels;
+  Future future = XTUserInfoRequest.obtainAddressList();
+
+  Future refresh() async {
+    return future;
+  }
+
+  @override
+  initState() {
+    super.initState();
+    future = XTUserInfoRequest.obtainAddressList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<AddressListModel> addressModels;
-    Future future = XTUserInfoRequest.obtainAddressList();
-
-    Future refresh() async {
-      return future;
-    }
-
-    @override
-    initState() {
-      super.initState();
-      future = XTUserInfoRequest.obtainAddressList();
-    }
 
     ///获取新增收货地址Button
     Widget buildAddNewAddressButton() {
