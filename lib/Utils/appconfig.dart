@@ -2,17 +2,29 @@ import 'package:xtflutter/state/userinfo_vm.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/local/proxy.dart';
 
+///app配置的基本信息
 class AppConfig {
+  ///app配置的基本信息
+
+  ///用户信息VM 当用户信息改变触发notifyListeners
   UserInfoVM userVM = UserInfoVM();
 
+  ///app埋点基本信息
   AppSoftInfo softInfo = AppSoftInfo();
 
-  ///是不是app的subModule
-  bool isAppSubModule = false;
+  ///http请求头信息
   String device = "";
+
+  ///同盾black
   String black = "";
+
+  ///当前用户token
   String token = localToken;
+
+  ///app请求环境变量
   String baseURL = localBaseurl;
+
+  ///平台
   String platform = "ios";
 
   ///添加测试
@@ -24,6 +36,9 @@ class AppConfig {
 
   ///App 底部安全区域 默认 0  iOS X系列手机 34
   double bottomMargin = 0;
+
+  ///flutter 是不是以app模块运行
+  bool isAppSubModule = false;
 
   ///App 版本
   String appVersion = "2.2.0";
@@ -48,9 +63,12 @@ class AppConfig {
     return _instance;
   }
 
-  ///更新 baseURL device（手机信息） black（同盾）token platform （iOS or Android）
+  ///更新http请求头
   static updateConfig(String baseURL, String device, String black, String token,
       String platform) {
+    ///更新 baseURL device（手机信息） black（同盾）token platform （iOS or Android）
+
+    ///防止未初始化
     AppConfig.getInstance();
     _instance.isAppSubModule = true;
     _instance.baseURL = baseURL;
@@ -58,11 +76,14 @@ class AppConfig {
     _instance.black = black;
     _instance.token = token;
     _instance.platform = platform;
-    print(" token ==2=" + token);
   }
 
+  ///更新埋点信息
   static updateSoftInfo(
       String av, String dv, String md, String gid, String os, String ov) {
+    ///设置埋点  av dv md gid os ov
+    ///
+    ///防止未初始化
     AppConfig.getInstance();
     _instance.softInfo.av = av;
     _instance.softInfo.dv = dv;
@@ -74,56 +95,67 @@ class AppConfig {
   }
 
   static updateBaseUrl(String baseURL) {
+    ///更新网络
     _instance.baseURL = baseURL;
   }
 
   static updateDeviceInfo(String dict) {
+    ///更新设备
     _instance.device = dict;
   }
 
   static updateBlack(String black) {
+    ///更新黑盒
     _instance.black = black;
   }
 
   static updateToken(String token) {
+    ///更新token
     _instance.token = token;
   }
 
   static updatePlatform(String platform) {
+    ///更新平台
     _instance.platform = platform;
   }
 
   static updateStatusHeight(double height) {
+    ///更新电池栏高度
     _instance.statusHeight = height;
   }
 
   static updateNavHeight(double height) {
+    ///更新导航栏高度
     _instance.navHeight = height;
   }
 
   static updateBottomMargin(double height) {
+    ///更新底部安全区域高度
     _instance.bottomMargin = height;
   }
 
   static updateVersion(String version) {
+    ///更新app版本
     _instance.appVersion = version;
   }
 
   static updateCityNameList(List<Map<String, dynamic>> list) {
+    ///更新省市区名称,picker滚动数据源
     _instance.cityName = list;
   }
 
   static updateCityValueList(List<Map<String, dynamic>> list) {
+    ///更新省市区id列表
     _instance.cityValue = list;
   }
 
-  ///状态栏高度
   static get statusH {
+    ///状态栏高度
     return _instance.statusHeight;
   }
 
-  ///导航高度
   static get navH {
+    ///导航高度
     return _instance.navHeight;
   }
 
@@ -156,7 +188,9 @@ class AppConfig {
   }
 }
 
+///埋点的信息
 class AppSoftInfo {
+  ///埋点的信息
   String av = "";
   String dv = "";
   String md = "";

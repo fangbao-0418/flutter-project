@@ -3,12 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:xtflutter/net_work/local/proxy.dart';
+import 'package:xtflutter/config/app_config/app_listener.dart';
+import 'package:xtflutter/config/extension/string_extension.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/utils/error/monitor.dart';
-import 'package:xtflutter/config/app_config/method_channel.dart';
-import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:flutter/services.dart';
 import 'package:xtflutter/utils/task/task.dart';
@@ -36,83 +35,14 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    // dynamic subscription = Connectivity()
-    //     .onConnectivityChanged
-    //     .listen((ConnectivityResult result) {
-    //   print('netWork status change');
-    //   print(result);
-    // });
-
     ///路由配置 -- flutter_boost
     XTRouter.registerPageBuilders();
 
-    ///客户端更新用户或者切换环境使用
-    FlutterBoost.singleton.channel.addEventListener('updateFlutterHeader',
-        (name, arguments) {
-      //todo
-      print("updateFlutterHeader --- start");
-      Map configMode = new Map.from(arguments);
-      AppConfig.updateConfig(configMode["baseURL"], configMode["device"],
-          configMode["black"], configMode["token"], configMode["platform"]);
-      print("updateFlutterHeader --- end");
-      return;
-    });
-
-    // ///客户端用户退出或者更换用户
-    FlutterBoost.singleton.channel.addEventListener('updateUserInfo',
-        (name, arguments) {
-      // UserInfoVM
-      //todo
-      print("updateUserInfo --- start");
-      Map<String, dynamic> configMode = Map.from(arguments);
-      AppConfig().userVM.updateUser(UserInfoModel.fromJson(configMode));
-      print("updateUserInfo --- end");
-      return;
-    });
-
+    AppListener.headerListener();
+    AppListener.userinfoListener();
+    AppListener.appInitInfo();
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
-    if (inApp) {
-      getDeviceInfo();
-      getUIInfo();
-      getSoftInfo();
-      getUserInfo();
-    }
-  }
-
-  void getDeviceInfo() async {
-    var jsModel =
-        new Map.from(await XTMTDChannel.invokeMethod("getNetWorkInfo"));
-    print("-----get platform info-------" + jsModel.toString());
-    AppConfig.updateConfig(jsModel["baseURL"], jsModel["device"],
-        jsModel["black"], jsModel["token"], jsModel["platform"]);
-    print("-----get platform info-------");
-  }
-
-  void getUIInfo() async {
-    /// baseURL 、device、black、token、platform
-    var uiInfo = Map.from(await XTMTDChannel.invokeMethod("getUIInfo"));
-    print("uiInfo" + uiInfo.toString());
-    AppConfig.updateVersion(uiInfo["appVersion"]);
-    AppConfig.updateStatusHeight(uiInfo["statusHeight"]);
-    AppConfig.updateNavHeight(uiInfo["navHeight"]);
-    AppConfig.updateBottomMargin(uiInfo["bottomMargin"]);
-  }
-
-  void getUserInfo() async {
-    String userInfo = await XTMTDChannel.invokeMethod("userInfo");
-
-    Map<String, dynamic> tp =
-        Map.from(json.decode(userInfo) as Map<String, dynamic>);
-
-    AppConfig().userVM.updateUser(UserInfoModel.fromJson(tp));
-  }
-
-  void getSoftInfo() async {
-    var map = await XTMTDChannel.invokeMethod("softInfo");
-    print("softInfo ------- " + map.toString());
-    AppConfig.updateSoftInfo(
-        map["av"], map["dv"], map["md"], map["gid"], map["os"], map["ov"]);
   }
 
   @override
@@ -134,7 +64,7 @@ class _MyAppState extends State<MyApp> {
             primaryColorBrightness: Brightness.light,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent),
-        title: 'Flutter Boost example',
+        title: appNameStr,
         builder: FlutterBoost.init(postPush: _onRoutePushed),
         routes: getRoutes(),
         home: Wrapper(child: Home()));
