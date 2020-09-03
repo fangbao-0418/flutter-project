@@ -19,21 +19,20 @@ class _AddressListPageState extends State<AddressListPage> {
         result: <String, dynamic>{'result': 'data from second'});
   }
 
-  List<AddressListModel> addressModels;
-  Future future = XTUserInfoRequest.obtainAddressList();
-
-  Future refresh() async {
-    return future;
-  }
-
-  @override
-  initState() {
-    super.initState();
-    future = XTUserInfoRequest.obtainAddressList();
-  }
-
   @override
   Widget build(BuildContext context) {
+    List<AddressListModel> addressModels;
+    Future future = XTUserInfoRequest.obtainAddressList();
+
+    Future refresh() async {
+      return future;
+    }
+
+    @override
+    initState() {
+      super.initState();
+      future = XTUserInfoRequest.obtainAddressList();
+    }
 
     ///获取新增收货地址Button
     Widget buildAddNewAddressButton() {
