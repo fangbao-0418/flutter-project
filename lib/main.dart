@@ -1,22 +1,18 @@
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:xtflutter/ui_pages/demo_page/page1.dart';
-import 'package:xtflutter/xt_config/app_config/xt_router.dart';
-import 'package:xtflutter/xt_config/app_config/appconfig.dart';
+import 'package:xtflutter/net_work/local/proxy.dart';
+import 'package:xtflutter/router/router.dart';
+import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/utils/error/monitor.dart';
-import 'package:xtflutter/xt_config/app_config/xt_method_channel.dart';
-import 'package:xtflutter/xt_model/userinfo_model.dart';
-import 'package:xtflutter/local/proxy.dart';
-import 'package:xtflutter/xt_router/routers_map.dart';
-import 'package:xtflutter/ui_pages/setting_page.dart';
-import 'package:xtflutter/utils/global.dart';
+import 'package:xtflutter/config/app_config/method_channel.dart';
+import 'package:xtflutter/model/userinfo_model.dart';
+import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:flutter/services.dart';
 import 'package:xtflutter/utils/task/task.dart';
-import 'package:xtflutter/xt_widgets/wrapper.dart';
+import 'package:xtflutter/pages/normal/wrapper.dart';
 
 void main() {
   monitor(() {
@@ -39,6 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
     // dynamic subscription = Connectivity()
     //     .onConnectivityChanged
     //     .listen((ConnectivityResult result) {

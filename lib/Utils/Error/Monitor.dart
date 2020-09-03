@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/utils/error/error_report.dart';
-import 'package:xtflutter/xt_widgets/custom_error.dart';
+import 'package:xtflutter/pages/normal/custom_error.dart';
 
 
 void monitor(runApp) {

@@ -6,7 +6,7 @@ import 'package:xtflutter/utils/global.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'collect_data.dart' as Collection;
-import 'xt_error.dart';
+import 'error.dart';
 import '../report.dart';
 
 const TO_REPORT = true;
