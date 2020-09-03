@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/config/app_config/size_fit.dart';
-import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
