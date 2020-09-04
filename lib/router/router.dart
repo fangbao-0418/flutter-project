@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/utils/appconfig.dart';
@@ -6,6 +7,13 @@ import 'package:xtflutter/pages/normal/wrapper.dart';
 import 'package:xtflutter/utils/global.dart';
 import 'package:xtflutter/router/routers_map.dart';
 import 'package:xtflutter/utils/report.dart';
+
+///原生跳转参数配置
+String makeRouter(bool isNative, Map argument, String url) {
+  var map = {"native": isNative, "arg": argument, "url": url};
+  var result = json.encode(map);
+  return result;
+}
 
 Map<String, PageBuilder> getPageBuilder() {
   Map<String, PageBuilder> pageBuilder = {};
@@ -35,14 +43,19 @@ class XTRouter {
     FlutterBoost.singleton.registerPageBuilders(getPageBuilder());
   }
 
-  ///push到新页面
+  ///push到新页面 如果是原生页面 请把isNativePage 设置为true
   static Future<T> pushToPage<T extends Object>({
     @required String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
     @required BuildContext context, //上下文
+    bool isNativePage, //是不是原生页面
   }) {
     tracePage(routerName, params);
+
     if (AppConfig.getInstance().isAppSubModule) {
+      if (isNativePage == true) {
+        routerName = makeRouter(isNativePage, params, routerName);
+      }
       if (params != null) {
         return FlutterBoost.singleton
             .open(routerName, urlParams: Map.from(params))
@@ -51,7 +64,9 @@ class XTRouter {
           return res as T;
         });
       } else {
-        return FlutterBoost.singleton.open(routerName).then((res) {
+        return FlutterBoost.singleton
+            .open(routerName, urlParams: params)
+            .then((res) {
           return res as T;
         });
       }
@@ -61,17 +76,19 @@ class XTRouter {
     }
   }
 
-  ///present到新页面
+  ///present到新页面 如果是原生页面 请把isNativePage 设置为true
   static Future<T> presentToPage<T extends Object>({
     String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
     @required BuildContext context,
+    bool isNativePage, //是不是原生页面
   }) {
     tracePage(routerName, params);
     if (AppConfig.getInstance().isAppSubModule) {
-      Map tp = params == null
-          ? new Map.from({"present": true})
-          : new Map.from(params);
+      if (isNativePage == true) {
+        routerName = makeRouter(isNativePage, params, routerName);
+      }
+      Map tp = params == null ? Map.from({"present": true}) : Map.from(params);
       tp["present"] = true;
       return FlutterBoost.singleton.open(routerName, urlParams: tp).then((res) {
         print("------- ---FlutterBoost.singleton-------- -------");
@@ -91,7 +108,6 @@ class XTRouter {
       Map<String, dynamic> result,
       Map<String, dynamic> exts}) {
     if (AppConfig.getInstance().isAppSubModule) {
-      print('close');
       final BoostContainerSettings settings =
           BoostContainer.of(context).settings;
       return FlutterBoost.singleton

@@ -309,10 +309,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             elevation: 0,
             padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
             color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                side: BorderSide(
-                    width: 0.5, color: mainRedColor, style: BorderStyle.solid)),
+            shape: xtRoundLineCorners(
+                radius: 8.0, lineWidth: 0.5, lineColor: mainRedColor),
             onPressed: () {
               showRealname();
             },
@@ -331,9 +329,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
           child: Column(
             children: <Widget>[
               Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(15.0))), //设置圆角
+                  shape: xtRoundCorners(15.0), //设置圆角
                   margin: EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[

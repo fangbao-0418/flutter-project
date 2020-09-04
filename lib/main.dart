@@ -41,8 +41,6 @@ class _MyAppState extends State<MyApp> {
     AppListener.headerListener();
     AppListener.userinfoListener();
     AppListener.appInitInfo();
-    FlutterBoost.singleton
-        .addBoostNavigatorObserver(TestBoostNavigatorObserver());
   }
 
   @override
@@ -92,35 +90,6 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    // return Container(child: SettingPage());
-    // return GlobalOfficalName();
-    // return Testpage1(); page1 editPhone userInfo
-    // return Wrapper(child: routeConfigs['fl-user-info']('', {}, ''));
-    // return Text('xxx');
-    // return Wrapper(child: routeConfigs['fl-user-info']('', {}, ''));
-    // return routeConfigs['fl-user-info']('', {}, '');
     return SettingPage();
-  }
-}
-
-class TestBoostNavigatorObserver extends NavigatorObserver {
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('flutterboost#didPush');
-  }
-
-  @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('flutterboost#didPop');
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('flutterboost#didRemove');
-  }
-
-  @override
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    print('flutterboost#didReplace');
   }
 }

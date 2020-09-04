@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/pages/normal/custom_error.dart';
 import 'package:xtflutter/utils/global.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 
@@ -23,13 +24,16 @@ class _WrapperState extends State<Wrapper> {
   }
 
   Widget build(BuildContext context) {
-    return Container(child: child);
+    try {
+      return Container(child: child);
+    } catch (e) {
+      return Container(child: CustomErrorWidget());
+    }
   }
 
   @override
   void dispose() {
     Loading.forceHide();
-    // Toast.cancelAll();
     super.dispose();
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/state/userinfo_vm.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
@@ -87,8 +88,7 @@ class _UserInfoPageState extends State<UserInfoPage>
             builder: (context, result) {
               if (!result.hasData) {
                 return Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  shape: xtRoundCorners(10.0),
                   margin: EdgeInsets.all(10),
                   child: userInfoView(usermodel),
                   shadowColor: mainF5GrayColor,
@@ -100,8 +100,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                 );
               }
               return Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                shape: xtRoundCorners(10.0),
                 margin: EdgeInsets.all(10),
                 child: userInfoView(usermodel),
                 shadowColor: mainF5GrayColor,
@@ -150,15 +149,8 @@ class _UserInfoPageState extends State<UserInfoPage>
               context,
               userInfo,
               "头像",
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    image: DecorationImage(
-                      image: NetworkImage(userInfo.user.headImage.safeStr),
-                    )),
-              ),
+              child:
+                  xtRoundAvatarImage(60, 30, userInfo.user.headImage.safeStr),
               hasChild: true,
               height: 80,
               tapFunc: () => _updateAvAtar(userInfo),

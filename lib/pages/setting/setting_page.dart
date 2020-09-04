@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_channel.dart';
-import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
-
 
 class SettingPage extends StatefulWidget {
   @override
@@ -30,8 +29,7 @@ class _SettingPageState extends State<SettingPage> {
       body: Column(
         children: <Widget>[
           Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              shape: xtRoundCorners(10.0),
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
               child: listTab(context)),
@@ -49,12 +47,8 @@ class _SettingPageState extends State<SettingPage> {
                 elevation: 0,
                 padding: EdgeInsets.fromLTRB(45, 10, 45, 10),
                 color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    side: BorderSide(
-                        width: 0.5,
-                        color: main99GrayColor,
-                        style: BorderStyle.solid)),
+                shape: xtRoundLineCorners(
+                    radius: 8.0, lineWidth: 0.5, lineColor: main99GrayColor),
                 onPressed: () {
                   loginOut(context);
                 },
@@ -81,7 +75,6 @@ class _SettingPageState extends State<SettingPage> {
   List<Widget> childItem(BuildContext context) {
     List<Widget> tp = [
       basicContent("个人信息", tapFunc: () {
-        // Global.context = context;
         XTRouter.pushToPage(context: context, routerName: "fl-user-info")
             .then((value) {
           if (isReal != AppConfig.getInstance().userVM.isRealName) {
@@ -93,7 +86,6 @@ class _SettingPageState extends State<SettingPage> {
       }),
       basicContent("全球淘付款人实名信息", tapFunc: () {
         XTRouter.pushToPage(routerName: "officalname", context: context);
-        // XTRouter.pushToPage(context: context, routerName: "page1");
       }),
       basicContent("收货地址", tapFunc: () {
         XTRouter.pushToPage(
@@ -110,7 +102,7 @@ class _SettingPageState extends State<SettingPage> {
     }
     tp.add(basicContent("消息通知", tapFunc: () {
       XTRouter.pushToPage(
-          context: context, routerName: makeRouter(true, null, "gotoNotice"));
+          context: context, routerName: "gotoNotice", isNativePage: true);
     }));
     if (isReal) {
       tp.add(basicContent("微信信息", tapFunc: () {
@@ -121,10 +113,7 @@ class _SettingPageState extends State<SettingPage> {
     tp.add(basicContent("关于喜团",
         childStr: "v" + AppConfig.getInstance().appVersion,
         haveLine: false, tapFunc: () {
-      XTRouter.pushToPage(
-        routerName: "aboutXituan",
-        context: context,
-      );
+      XTRouter.pushToPage(routerName: "aboutXituan", context: context);
     }));
 
     return tp;

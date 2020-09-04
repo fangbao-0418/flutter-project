@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:xtflutter/config/app_config/method_config.dart';
+
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/router/router.dart';
 
 class CustomErrorWidget extends StatelessWidget {
   void _xtback(BuildContext context) {
@@ -58,7 +59,9 @@ class CustomErrorWidget extends StatelessWidget {
                         color: Color(0xFFE60113),
                         style: BorderStyle.solid)),
                 onPressed: () {
-                  FlutterBoost.singleton.open(makeRouter(true, {}, "home"));
+                  XTRouter.pushToPage(
+                      routerName: "home", context: context, isNativePage: true);
+                  // FlutterBoost.singleton.open(makeRouter(true, {}, "home"));
                 },
                 child: Text("回到首页",
                     style: TextStyle(color: Color(0xFFE60113), fontSize: 16)),

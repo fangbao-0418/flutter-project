@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
@@ -66,15 +67,22 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
                 Container(
                     child: basicContent("服务条款", tapFunc: () {
                   // Global.context = context;
-                  FlutterBoost.singleton.open(makeRouter(true, {},
-                      "https://myouxuan.hzxituan.com/h5/notify/user-agreement.html"));
+
+                  XTRouter.pushToPage(
+                      routerName:
+                          "https://myouxuan.hzxituan.com/h5/notify/user-agreement.html",
+                      context: context,
+                      isNativePage: true);
                 })),
                 line(true),
                 Container(
                     child: basicContent("隐私条款", tapFunc: () {
                   // Global.context = context;
-                  FlutterBoost.singleton.open(makeRouter(true, {},
-                      "https://myouxuan.hzxituan.com/h5/notify/user-privacy.html"));
+                  XTRouter.pushToPage(
+                      routerName:
+                          "https://myouxuan.hzxituan.com/h5/notify/user-privacy.html",
+                      context: context,
+                      isNativePage: true);
                 }))
               ])),
           Expanded(
