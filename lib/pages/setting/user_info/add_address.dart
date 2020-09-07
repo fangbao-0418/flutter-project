@@ -11,6 +11,8 @@ import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:flutter_picker/Picker.dart';
 
 class AddAddressPage extends StatefulWidget {
+  static String routerName = "addAddress";
+
   AddAddressPage({this.name, this.params});
 
   /// 路由名称

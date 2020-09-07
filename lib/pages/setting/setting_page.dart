@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
+import 'package:xtflutter/pages/setting/user_info/address_list.dart';
+import 'package:xtflutter/pages/setting/user_info/alipay_account.dart';
+import 'package:xtflutter/pages/setting/user_info/global_offical_name.dart';
+import 'package:xtflutter/pages/setting/user_info/user_info.dart';
+import 'package:xtflutter/pages/setting/user_info/wechat_info.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_channel.dart';
@@ -8,6 +14,8 @@ import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 
 class SettingPage extends StatefulWidget {
+  static String routerName = "setting";
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -75,7 +83,7 @@ class _SettingPageState extends State<SettingPage> {
   List<Widget> childItem(BuildContext context) {
     List<Widget> tp = [
       basicContent("个人信息", tapFunc: () {
-        XTRouter.pushToPage(context: context, routerName: "fl-user-info")
+        XTRouter.pushToPage(context: context, routerName: UserInfoPage.routerName)
             .then((value) {
           if (isReal != AppConfig.getInstance().userVM.isRealName) {
             setState(() {
@@ -85,11 +93,11 @@ class _SettingPageState extends State<SettingPage> {
         });
       }),
       basicContent("全球淘付款人实名信息", tapFunc: () {
-        XTRouter.pushToPage(routerName: "officalname", context: context);
+        XTRouter.pushToPage(routerName: GlobalOfficalName.routerName, context: context);
       }),
       basicContent("收货地址", tapFunc: () {
         XTRouter.pushToPage(
-          routerName: "addressList",
+          routerName: AddressListPage.routerName,
           context: context,
         );
       })
@@ -97,7 +105,7 @@ class _SettingPageState extends State<SettingPage> {
 
     if (isReal) {
       tp.add(basicContent("支付宝账号", tapFunc: () {
-        XTRouter.pushToPage(routerName: "alipayAccount", context: context);
+        XTRouter.pushToPage(routerName: AlipayAccountPage.routerName, context: context);
       }));
     }
     tp.add(basicContent("消息通知", tapFunc: () {
@@ -106,14 +114,14 @@ class _SettingPageState extends State<SettingPage> {
     }));
     if (isReal) {
       tp.add(basicContent("微信信息", tapFunc: () {
-        XTRouter.pushToPage(routerName: "wechatInfo", context: context);
+        XTRouter.pushToPage(routerName: WeChatInfoPage.routerName, context: context);
       }));
     }
 
     tp.add(basicContent("关于喜团",
         childStr: "v" + AppConfig.getInstance().appVersion,
         haveLine: false, tapFunc: () {
-      XTRouter.pushToPage(routerName: "aboutXituan", context: context);
+      XTRouter.pushToPage(routerName: AboutXituanPage.routerName, context: context);
     }));
 
     return tp;

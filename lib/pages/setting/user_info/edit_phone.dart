@@ -17,6 +17,8 @@ Widget label(String data) {
 }
 
 class EditPhonePage extends StatefulWidget {
+  static String routerName = "editPhone";
+
   @override
   _EditPhonePageState createState() => _EditPhonePageState();
 }

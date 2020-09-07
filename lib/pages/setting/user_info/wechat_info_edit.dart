@@ -8,6 +8,8 @@ import 'package:xtflutter/config/extension/string_extension.dart';
 import 'package:xtflutter/router/router.dart';
 
 class WeChatInfoNameChangePage extends StatefulWidget {
+  static String routerName = "wechatNameChange";
+
   WeChatInfoNameChangePage({this.name, this.params});
 
   /// 路由名称
@@ -108,6 +110,8 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
 }
 
 class WeChatInfoQrChangePage extends StatefulWidget {
+  static String routerName = "wechatQrChange";
+
   WeChatInfoQrChangePage({this.name, this.params});
 
   /// 路由名称

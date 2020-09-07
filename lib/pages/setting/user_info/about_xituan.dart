@@ -7,6 +7,8 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 
 class AboutXituanPage extends StatefulWidget {
+  static String routerName = "aboutXituan";
+
   @override
   _AboutXituanPageState createState() => _AboutXituanPageState();
 }

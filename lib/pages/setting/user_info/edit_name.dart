@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
@@ -10,6 +9,8 @@ import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 
 class EditNamePage extends StatefulWidget {
+  static String routerName = "editName";
+
   EditNamePage({
     this.name,
     this.params,
@@ -37,7 +38,7 @@ class _EditNamePage extends State<EditNamePage> {
       return;
     }
     if (widget.name == _tname) {
-      FlutterBoost.singleton.close("editPage");
+      XTRouter.closePage(context: context);
     }
     Loading.show(context: context);
     try {
@@ -50,7 +51,7 @@ class _EditNamePage extends State<EditNamePage> {
         Loading.hide();
         AppConfig.getInstance().userVM.updateNiceName(_tname);
         Toast.showToast(msg: "修改成功", context: context).then(() {
-          FlutterBoost.singleton.close("editPage");
+          XTRouter.closePage(context: context);
         });
       } else {
         Loading.hide();
