@@ -7,9 +7,12 @@ import 'package:xtflutter/config/app_config/method_channel.dart';
 import 'package:xtflutter/config/extension/string_extension.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
+import 'package:xtflutter/pages/setting/user_info/wechat_info_edit.dart';
 import 'package:xtflutter/router/router.dart';
 
 class WeChatInfoPage extends StatefulWidget {
+  static String routerName = "wechatInfo";
+
   @override
   _WeChatInfoPageState createState() => _WeChatInfoPageState();
 }
@@ -93,7 +96,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     if (isQr) {
       /// 修改微信二维码
       XTRouter.pushToPage(
-        routerName: "wechatQrChange",
+        routerName: WeChatInfoQrChangePage.routerName,
         params: {"qrUrl": _wechatQrImgUrl},
         context: context,
       ).then((value) => {
@@ -105,7 +108,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     } else {
       /// 修改微信号
       XTRouter.pushToPage(
-        routerName: "wechatNameChange",
+        routerName: WeChatInfoNameChangePage.routerName,
         params: {"name": _wechatAccountCon.text},
         context: context,
       ).then((value) => {

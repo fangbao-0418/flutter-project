@@ -7,6 +7,8 @@ import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/router/router.dart';
 
 class AlipayAccountPage extends StatefulWidget {
+  static String routerName = "alipayAccount";
+
   @override
   _AlipayAccountPageState createState() => _AlipayAccountPageState();
 }

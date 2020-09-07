@@ -4,6 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
+import 'package:xtflutter/pages/setting/user_info/edit_name.dart';
+import 'package:xtflutter/pages/setting/user_info/edit_phone.dart';
 import 'package:xtflutter/state/userinfo_vm.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
@@ -15,6 +17,8 @@ import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UserInfoPage extends StatefulWidget {
+  static String routerName = "userInfo";
+
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
 }
@@ -163,7 +167,7 @@ class _UserInfoPageState extends State<UserInfoPage>
               "昵称",
               tapFunc: () {
                 XTRouter.pushToPage(
-                    routerName: "editPage",
+                    routerName: EditNamePage.routerName,
                     params: {
                       'nickName': userInfo.user.nickName,
                     },
@@ -181,7 +185,7 @@ class _UserInfoPageState extends State<UserInfoPage>
               "手机号",
               tapFunc: () {
                 XTRouter.pushToPage(
-                    routerName: "editPhone",
+                    routerName: EditPhonePage.routerName,
                     params: {
                       'nickName': userInfo.user.nickName,
                     },

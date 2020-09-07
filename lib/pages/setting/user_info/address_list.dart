@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/pages/setting/user_info/add_address.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
@@ -8,6 +9,8 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddressListPage extends StatefulWidget {
+  static String routerName = "addressList";
+
   @override
   _AddressListPageState createState() => _AddressListPageState();
 }
@@ -45,7 +48,7 @@ class _AddressListPageState extends State<AddressListPage> {
             color: Colors.red,
             onPressed: () {
               XTRouter.pushToPage(
-                routerName: "addAddress",
+                routerName: AddAddressPage.routerName,
                 context: context,
               ).then((value) {
                 Map result = Map<String, dynamic>.from(value);
@@ -142,7 +145,7 @@ class _AddressListPageState extends State<AddressListPage> {
                 FlatButton.icon(
                     onPressed: () {
                       XTRouter.pushToPage(
-                        routerName: "addAddress",
+                        routerName: AddAddressPage.routerName,
                         params: model.toJson(),
                         context: context,
                       ).then((value) {
@@ -259,7 +262,7 @@ class _AddressListPageState extends State<AddressListPage> {
                     width: 0.5, color: mainRedColor, style: BorderStyle.solid)),
             onPressed: () {
               XTRouter.pushToPage(
-                routerName: "addAddress",
+                routerName: AddAddressPage.routerName,
                 context: context,
               ).then((value) {
                 Map result = Map<String, dynamic>.from(value);

@@ -9,6 +9,8 @@ import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 
 class GlobalOfficalName extends StatefulWidget {
+  static String routerName = "officalname";
+
   @override
   _GlobalOfficalNameState createState() => _GlobalOfficalNameState();
 }
