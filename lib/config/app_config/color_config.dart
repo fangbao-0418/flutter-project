@@ -9,7 +9,4 @@ const mainF5GrayColor = Color(0xFFF5F5F5);
 const mainA8GrayColor = Color(0xFFA8A8A8);
 const whiteColor = Color(0xFFFFFFFF);
 
-const TextStyle iosNavTextStyle =
-    TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 
-TextStyle navStyle = xtstyle(16, "333333", fweight: FontWeight.w500);

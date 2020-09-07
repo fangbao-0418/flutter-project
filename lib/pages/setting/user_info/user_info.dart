@@ -242,7 +242,7 @@ class _UserInfoPageState extends State<UserInfoPage>
               height: height,
               padding: userEdage,
               child: basicContent(context, title,
-                  hasChild ? child : Text(name, style: style), hasArrow)),
+                  hasChild ? child : xtTextWithStyle(name, style), hasArrow)),
           Offstage(
               offstage: !hasLine,
               child: Container(
@@ -262,9 +262,9 @@ class _UserInfoPageState extends State<UserInfoPage>
         Align(
           alignment: Alignment.centerLeft,
           child: Container(
-              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-              child: Text(name,
-                  style: TextStyle(color: mainBlackColor, fontSize: 16))),
+            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: xtText(name, 16, mainBlackColor),
+          ),
         ),
         Expanded(
           flex: 1,

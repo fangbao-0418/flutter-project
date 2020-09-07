@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
+
+///导航标题文字样式
+TextStyle navStyle = xtstyle(16, mainBlackColor, fontWeight: FontWeight.w500);
 
 /// 左返回 标题 右完成
 AppBar xtbackAndRightBar(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 ///设置文本Style
-TextStyle xtstyle(double size, String colorHexString,
-    {FontWeight fweight = FontWeight.normal, Color bgcolor = Colors.white}) {
+TextStyle xtstyle(double size, Color color,
+    {FontWeight fontWeight = FontWeight.normal, Color bgcolor = Colors.white}) {
   return TextStyle(
-      color: HexColor(colorHexString),
+      color: color,
       fontSize: size,
-      fontWeight: fweight,
+      fontWeight: fontWeight,
       backgroundColor: bgcolor);
 }
 
@@ -39,6 +39,35 @@ Container xtRoundAvatarImage(double avatarWH, double radius, imageUrl) {
           image: NetworkImage(imageUrl),
         )),
   );
+}
+
+///通用Text
+///txt 文字
+///fontSize 字号
+///colorString 字色
+///fontWeight 字体粗细
+///bgcolor 背景色
+///alignment 对齐方式
+Text xtText(String txt, double fontSize, Color color,
+    {FontWeight fontWeight = FontWeight.normal,
+    Color bgcolor = Colors.white,
+    TextAlign alignment,
+    int maxLines,
+    bool softWrap}) {
+  ///txt 文字 字号 字色 字体粗细 背景色  对齐方式
+  return Text(
+    txt,
+    style: xtstyle(fontSize, color, fontWeight: fontWeight, bgcolor: bgcolor),
+    textAlign: alignment,
+    maxLines: maxLines,
+    softWrap: softWrap,
+  );
+}
+
+///Text 文字 样式 对其方式
+Text xtTextWithStyle(String txt, TextStyle style, {TextAlign alignment}) {
+  ///txt 文字 字号 字色 字体粗细 背景色  对齐方式
+  return Text(txt, style: style, textAlign: alignment);
 }
 
 ///颜色拓展

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/router/router.dart';
@@ -313,9 +314,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                                         top: 10,
                                         bottom: 10),
                                     color: mainRedColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0)),
+                                    shape: xtRoundCorners(8.0),
                                     onPressed: () {
                                       onSubmit();
                                     },

@@ -228,27 +228,19 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             Row(
               children: <Widget>[
                 Container(
-                    padding: EdgeInsets.only(left: 10, top: 10, bottom: 5),
-                    child: Text(
-                      model.name,
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.left,
-                    )),
+                  padding: EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                  child: xtText(model.name, 14, mainBlackColor,
+                      alignment: TextAlign.left),
+                ),
               ],
             ),
             Row(
               children: <Widget>[
                 Container(
-                    padding: EdgeInsets.only(left: 10, top: 5, bottom: 10),
-                    child: Text(
-                      model.idNo,
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.left,
-                    )),
+                  padding: EdgeInsets.only(left: 10, top: 5, bottom: 10),
+                  child: xtText(model.idNo, 14, mainBlackColor,
+                      alignment: TextAlign.left),
+                ),
               ],
             ),
             Container(
@@ -269,19 +261,13 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                     onPressed: () {
                       setDefeat(model.id);
                     }),
-                Text(
-                  "默认",
-                  style: xtstyle(14, "666666"),
-                ),
+                xtText("默认", 14, main66GrayColor),
                 Expanded(child: Container()),
                 FlatButton(
                     onPressed: () {
                       addmemberDelete(model.id);
                     },
-                    child: Text(
-                      "删除",
-                      style: TextStyle(color: mainBlackColor),
-                    ))
+                    child: xtText("删除", 16, mainBlackColor))
               ],
             )
           ],
@@ -299,11 +285,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
               child: Image.asset("images/empty_name.png")),
           Container(
             padding: EdgeInsets.only(bottom: 10),
-            child: Text(
-              "您还没有实名认证信息哦～",
-              style: TextStyle(fontSize: 14, color: main99GrayColor),
-              textAlign: TextAlign.center,
-            ),
+            child: xtText("您还没有实名认证信息哦～", 14, main99GrayColor,
+                alignment: TextAlign.center),
           ),
           RaisedButton(
             elevation: 0,
@@ -314,8 +297,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             onPressed: () {
               showRealname();
             },
-            child: Text("马上认证",
-                style: TextStyle(color: mainRedColor, fontSize: 14)),
+            child: xtText("马上认证", 14, mainRedColor),
           )
         ],
       ),
@@ -344,11 +326,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                             width: double.maxFinite,
                           ),
                           Center(
-                            child: Text("身份信息",
-                                style: TextStyle(
-                                    color: whiteColor,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+                            child: xtText("身份信息", 18, whiteColor,
+                                fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -360,9 +339,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text("姓名        ",
-                                style: TextStyle(
-                                    color: mainBlackColor, fontSize: 16)),
+                            xtText("姓名        ", 16, mainBlackColor),
                             Expanded(
                               child: TextField(
                                 controller: nameC,
@@ -427,9 +404,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text("证件号码 ",
-                                style: TextStyle(
-                                    color: mainBlackColor, fontSize: 16)),
+                            xtText("证件号码 ", 16, mainBlackColor),
                             Expanded(
                               child: TextField(
                                 controller: idC,
@@ -449,7 +424,6 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                           width: 10,
                                           height: 10,
                                           margin: EdgeInsets.all(16),
-                                          // color: main99GrayColor,
                                           decoration: BoxDecoration(
                                             color: main99GrayColor,
                                             border:
@@ -503,10 +477,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                   _selectNormal = _selectNormal == 0 ? 1 : 0;
                                 });
                               }),
-                          Text(
-                            "默认实名人",
-                            style: xtstyle(14, "666666"),
-                          )
+                          xtText("默认实名人", 14, main66GrayColor),
                         ],
                       )
                     ],
@@ -517,34 +488,25 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                     padding: EdgeInsets.only(left: 10, top: 10),
                     child: Row(
                       children: <Widget>[
-                        Text(
-                          "添加实名认证",
-                          textAlign: TextAlign.left,
-                          style:
-                              TextStyle(color: main66GrayColor, fontSize: 14),
-                        ),
+                        xtText("添加实名认证", 14, main66GrayColor,
+                            alignment: TextAlign.left),
                       ],
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                    child: Text(
-                      "1.根据海关规定，购买跨境商品需要办理清关手续，请您配合进行实名认证。",
-                      textAlign: TextAlign.left,
-                      softWrap: true,
-                      maxLines: 3,
-                      style: TextStyle(color: main99GrayColor, fontSize: 12),
-                    ),
+                    child: xtText("1.根据海关规定，购买跨境商品需要办理清关手续，请您配合进行实名认证。", 12,
+                        main99GrayColor,
+                        maxLines: 3, softWrap: true),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                    child: Text(
-                      "2.购买跨境商品需要填写收货人的真实姓名，身份证号码，请如实填写，否则订单将无法正常发货。",
-                      textAlign: TextAlign.left,
-                      softWrap: true,
-                      maxLines: 3,
-                      style: TextStyle(color: main99GrayColor, fontSize: 12),
-                    ),
+                    child: xtText(
+                        "2.购买跨境商品需要填写收货人的真实姓名，身份证号码，请如实填写，否则订单将无法正常发货。",
+                        12,
+                        main99GrayColor,
+                        maxLines: 3,
+                        softWrap: true),
                   ),
                 ],
               ),
