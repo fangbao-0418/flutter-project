@@ -92,7 +92,7 @@ class _UserInfoPageState extends State<UserInfoPage>
             builder: (context, result) {
               if (!result.hasData) {
                 return Card(
-                  shape: xtRoundCorners(10.0),
+                  shape: xtShapeRound(10.0),
                   margin: EdgeInsets.all(10),
                   child: userInfoView(usermodel),
                   shadowColor: mainF5GrayColor,
@@ -104,7 +104,7 @@ class _UserInfoPageState extends State<UserInfoPage>
                 );
               }
               return Card(
-                shape: xtRoundCorners(10.0),
+                shape: xtShapeRound(10.0),
                 margin: EdgeInsets.all(10),
                 child: userInfoView(usermodel),
                 shadowColor: mainF5GrayColor,
@@ -118,9 +118,7 @@ class _UserInfoPageState extends State<UserInfoPage>
         SpinKitFadingCircle(
           itemBuilder: (BuildContext context, int index) {
             return DecoratedBox(
-              decoration: BoxDecoration(
-                  color: main99GrayColor,
-                  borderRadius: BorderRadius.circular(20)),
+              decoration: xtRoundDecoration(20, bgcolor: main99GrayColor),
             );
           },
         ),

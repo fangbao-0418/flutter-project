@@ -149,12 +149,8 @@ class _EditPhonePageState extends State<EditPhonePage>
                         ),
                         Container(
                           padding: EdgeInsets.only(left: 0, right: 10),
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                  width: 1.0, color: Color(0xFFDDDDDD)),
-                            ),
-                          ),
+                          decoration: xtRoundDecoration(0.0,
+                              borderWidth: 1.0, borderColor: mainDDColor),
                           child: TextField(
                             controller: phoneController,
                             focusNode: focusNode1,
@@ -176,12 +172,9 @@ class _EditPhonePageState extends State<EditPhonePage>
                                       height: 10,
                                       margin: EdgeInsets.all(16),
                                       // color: main99GrayColor,
-                                      decoration: BoxDecoration(
-                                        color: main99GrayColor,
-                                        border: Border.all(color: Colors.white),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                      ),
+                                      decoration: xtRoundDecoration(15,
+                                          bgcolor: main99GrayColor,
+                                          borderColor: whiteColor),
                                       child: IconButton(
                                           padding: EdgeInsets.zero,
                                           icon: Icon(
@@ -213,12 +206,8 @@ class _EditPhonePageState extends State<EditPhonePage>
                         ),
                         Container(
                           padding: EdgeInsets.only(left: 0, right: 10),
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                  width: 1.0, color: Color(0xFFDDDDDD)),
-                            ),
-                          ),
+                          decoration: xtRoundDecoration(0.0,
+                              borderColor: mainDDColor, borderWidth: 1.0),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -243,13 +232,9 @@ class _EditPhonePageState extends State<EditPhonePage>
                                               height: 10,
                                               margin: EdgeInsets.all(16),
                                               // color: main99GrayColor,
-                                              decoration: BoxDecoration(
-                                                color: main99GrayColor,
-                                                border: Border.all(
-                                                    color: Colors.white),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                              ),
+                                              decoration: xtRoundDecoration(15,
+                                                  bgcolor: main99GrayColor,
+                                                  borderColor: whiteColor),
                                               child: IconButton(
                                                   padding: EdgeInsets.zero,
                                                   icon: Icon(
@@ -316,7 +301,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                                         top: 10,
                                         bottom: 10),
                                     color: mainRedColor,
-                                    shape: xtRoundCorners(8.0),
+                                    shape: xtShapeRound(8.0),
                                     onPressed: () {
                                       onSubmit();
                                     },

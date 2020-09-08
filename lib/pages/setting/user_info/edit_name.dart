@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
@@ -138,12 +139,8 @@ class _EditNamePage extends State<EditNamePage> {
                     ? Container(
                         width: 10,
                         height: 10,
-                        // color: main99GrayColor,
-                        decoration: BoxDecoration(
-                          color: main99GrayColor,
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                        ),
+                        decoration: xtRoundDecoration(15,
+                            borderColor: whiteColor, bgcolor: main99GrayColor),
                         child: IconButton(
                             padding: EdgeInsets.zero,
                             icon: Icon(

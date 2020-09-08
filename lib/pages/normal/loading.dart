@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/utils/global.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
@@ -87,10 +88,7 @@ class _SpinKitCircleState extends State<SpinKitCircle>
     o = (o + 1) * 5 / 100;
     // print(index);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        color: Color.fromRGBO(0, 0, 0, o),
-      ),
+      decoration: xtRoundDecoration(16, bgcolor: Color.fromRGBO(0, 0, 0, o)),
     );
   }
 }

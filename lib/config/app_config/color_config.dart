@@ -7,6 +7,8 @@ const main66GrayColor = Color(0xFF666666);
 const main99GrayColor = Color(0xFF999999);
 const mainF5GrayColor = Color(0xFFF5F5F5);
 const mainA8GrayColor = Color(0xFFA8A8A8);
+const mainDDColor = Color(0xFFDDDDDD);
 const whiteColor = Color(0xFFFFFFFF);
+
 
 

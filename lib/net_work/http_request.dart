@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:xtflutter/net_work/local/proxy.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/utils/error/error.dart';
@@ -18,7 +19,9 @@ class HttpRequest {
     );
 
     Dio dio = Dio(baseOptions);
-    local.helper(dio);
+    if (needHttpDebug) {
+      local.helper(dio);
+    }
     // 1.网络配置
     final options = Options(method: method, headers: {
       "xt-platform": AppConfig.getInstance().platform,
@@ -68,6 +71,9 @@ class HttpRequest {
         return map["data"] as T;
       }
     } catch (e) {
+      print("e.toString()-------------------");
+      print(e.toString());
+      print("e.toString()-------------------");
       XTNetError xtNetError;
       String message = '';
       if (e is DioError) {

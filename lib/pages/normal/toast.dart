@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' as FT;
+import 'package:xtflutter/config/app_config/color_config.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/utils/global.dart';
 
 class Toast {
@@ -16,10 +18,7 @@ class Toast {
                 child: Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                color: Color(0xFF333333),
-              ),
+              decoration: xtRoundDecoration(5.0, bgcolor: mainBlackColor),
               child: Wrap(
                 children: [
                   Text(

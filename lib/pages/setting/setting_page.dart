@@ -37,7 +37,7 @@ class _SettingPageState extends State<SettingPage> {
       body: Column(
         children: <Widget>[
           Card(
-              shape: xtRoundCorners(10.0),
+              shape: xtShapeRound(10.0),
               margin: EdgeInsets.all(10),
               shadowColor: whiteColor,
               child: listTab(context)),
@@ -55,7 +55,7 @@ class _SettingPageState extends State<SettingPage> {
                 elevation: 0,
                 padding: EdgeInsets.fromLTRB(45, 10, 45, 10),
                 color: Colors.white,
-                shape: xtRoundLineCorners(
+                shape: xtShapeRoundLineCorners(
                     radius: 8.0, lineWidth: 0.5, lineColor: main99GrayColor),
                 onPressed: () {
                   loginOut(context);
@@ -83,7 +83,8 @@ class _SettingPageState extends State<SettingPage> {
   List<Widget> childItem(BuildContext context) {
     List<Widget> tp = [
       basicContent("个人信息", tapFunc: () {
-        XTRouter.pushToPage(context: context, routerName: UserInfoPage.routerName)
+        XTRouter.pushToPage(
+                context: context, routerName: UserInfoPage.routerName)
             .then((value) {
           if (isReal != AppConfig.getInstance().userVM.isRealName) {
             setState(() {
@@ -93,7 +94,8 @@ class _SettingPageState extends State<SettingPage> {
         });
       }),
       basicContent("全球淘付款人实名信息", tapFunc: () {
-        XTRouter.pushToPage(routerName: GlobalOfficalName.routerName, context: context);
+        XTRouter.pushToPage(
+            routerName: GlobalOfficalName.routerName, context: context);
       }),
       basicContent("收货地址", tapFunc: () {
         XTRouter.pushToPage(
@@ -105,7 +107,8 @@ class _SettingPageState extends State<SettingPage> {
 
     if (isReal) {
       tp.add(basicContent("支付宝账号", tapFunc: () {
-        XTRouter.pushToPage(routerName: AlipayAccountPage.routerName, context: context);
+        XTRouter.pushToPage(
+            routerName: AlipayAccountPage.routerName, context: context);
       }));
     }
     tp.add(basicContent("消息通知", tapFunc: () {
@@ -114,14 +117,16 @@ class _SettingPageState extends State<SettingPage> {
     }));
     if (isReal) {
       tp.add(basicContent("微信信息", tapFunc: () {
-        XTRouter.pushToPage(routerName: WeChatInfoPage.routerName, context: context);
+        XTRouter.pushToPage(
+            routerName: WeChatInfoPage.routerName, context: context);
       }));
     }
 
     tp.add(basicContent("关于喜团",
         childStr: "v" + AppConfig.getInstance().appVersion,
         haveLine: false, tapFunc: () {
-      XTRouter.pushToPage(routerName: AboutXituanPage.routerName, context: context);
+      XTRouter.pushToPage(
+          routerName: AboutXituanPage.routerName, context: context);
     }));
 
     return tp;

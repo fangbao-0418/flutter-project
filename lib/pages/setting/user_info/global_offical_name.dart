@@ -294,7 +294,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
             elevation: 0,
             padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
             color: Colors.white,
-            shape: xtRoundLineCorners(
+            shape: xtShapeRoundLineCorners(
                 radius: 8.0, lineWidth: 0.5, lineColor: mainRedColor),
             onPressed: () {
               showRealname();
@@ -313,7 +313,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
           child: Column(
             children: <Widget>[
               Card(
-                  shape: xtRoundCorners(15.0), //设置圆角
+                  shape: xtShapeRound(15.0), //设置圆角
                   margin: EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
@@ -361,14 +361,9 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                           width: 10,
                                           height: 10,
                                           margin: EdgeInsets.all(16),
-                                          // color: main99GrayColor,
-                                          decoration: BoxDecoration(
-                                            color: main99GrayColor,
-                                            border:
-                                                Border.all(color: Colors.white),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                          ),
+                                          decoration: xtRoundDecoration(15,
+                                              bgcolor: main99GrayColor,
+                                              borderColor: whiteColor),
                                           child: IconButton(
                                               padding: EdgeInsets.zero,
                                               icon: Icon(
@@ -426,13 +421,9 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                           width: 10,
                                           height: 10,
                                           margin: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: main99GrayColor,
-                                            border:
-                                                Border.all(color: Colors.white),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                          ),
+                                          decoration: xtRoundDecoration(15,
+                                              bgcolor: main99GrayColor,
+                                              borderColor: whiteColor),
                                           child: IconButton(
                                               padding: EdgeInsets.zero,
                                               icon: Icon(

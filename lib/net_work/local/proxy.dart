@@ -8,4 +8,8 @@ const String localToken =
 ///BaseUel
 const String localBaseurl = "https://youxuan-api.hzxituan.com";
 
+///app内运行
 const inApp = true;
+
+///是否要抓包
+const needHttpDebug = false;

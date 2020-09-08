@@ -1,24 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/color_config.dart';
 
 ///设置文本Style
+/// size 字体大小
+/// color 文字颜色
+/// fontWeight 字体粗细
+/// bgcolor 背景色
+/// height 高度比例 https://flutter.github.io/assets-for-api-docs/assets/painting/text_height_comparison_diagram.png
 TextStyle xtstyle(double size, Color color,
-    {FontWeight fontWeight = FontWeight.normal, Color bgcolor = Colors.white}) {
+    {FontWeight fontWeight = FontWeight.normal,
+    Color bgcolor = Colors.transparent,
+    double height = 1.0}) {
   return TextStyle(
       color: color,
       fontSize: size,
       fontWeight: fontWeight,
+      height: height,
       backgroundColor: bgcolor);
 }
 
-///设置圆角
-RoundedRectangleBorder xtRoundCorners(double radius) {
+/// 圆角的BoxDecoration
+/// image 图片
+/// bgcolor 背景色
+/// borderColor 圆角颜色
+/// borderWidth 圆角宽度
+/// style  BorderStyle
+BoxDecoration xtRoundDecoration(double radius,
+    {DecorationImage image,
+    Color bgcolor,
+    Color borderColor = whiteColor,
+    double borderWidth = 1.0,
+    BorderStyle style = BorderStyle.solid}) {
+  /// 圆角的BoxDecoration  图片 背景色  圆角颜色 圆角宽度  BorderStyle
+  return BoxDecoration(
+      //设置四周圆角 角度
+      image: image,
+      borderRadius: BorderRadius.all(Radius.circular(radius)),
+      color: bgcolor,
+      border: Border.all(color: borderColor, width: borderWidth, style: style));
+}
+
+///设置圆角  radius 圆角大小
+RoundedRectangleBorder xtShapeRound(double radius) {
   ///设置圆角
   return RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(radius)));
 }
 
 ///设置空心圆角线  圆弧 线宽 线色
-RoundedRectangleBorder xtRoundLineCorners(
+RoundedRectangleBorder xtShapeRoundLineCorners(
     {double radius, double lineWidth, Color lineColor}) {
   ///设置空心圆角线  圆弧 线宽 线色
   return RoundedRectangleBorder(
@@ -50,14 +80,16 @@ Container xtRoundAvatarImage(double avatarWH, double radius, imageUrl) {
 ///alignment 对齐方式
 Text xtText(String txt, double fontSize, Color color,
     {FontWeight fontWeight = FontWeight.normal,
-    Color bgcolor = Colors.white,
+    Color bgcolor = Colors.transparent,
     TextAlign alignment,
     int maxLines,
-    bool softWrap}) {
+    bool softWrap,
+    double height = 0}) {
   ///txt 文字 字号 字色 字体粗细 背景色  对齐方式
   return Text(
     txt,
-    style: xtstyle(fontSize, color, fontWeight: fontWeight, bgcolor: bgcolor),
+    style: xtstyle(fontSize, color,
+        fontWeight: fontWeight, bgcolor: bgcolor, height: height),
     textAlign: alignment,
     maxLines: maxLines,
     softWrap: softWrap,
