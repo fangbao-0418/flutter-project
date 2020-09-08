@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
@@ -77,6 +78,7 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                   children: <Widget>[
                     Container(height: 1, color: Color(0xFFF9F9F9)),
                     Container(
+                      padding: EdgeInsets.only(right: 10),
                       height: 55,
                       alignment: Alignment.center,
                       child: TextField(
@@ -85,6 +87,14 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                         controller: _wechatAccountCon,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
+                          suffixIconConstraints:
+                              BoxConstraints(minHeight: 15, minWidth: 15),
+                          suffixIcon: xtTextFieldClear(
+                              onPressed: () {
+                                _wechatAccountCon.clear();
+                              },
+                              bgColor: main99GrayColor,
+                              closeColor: whiteColor),
                           hintText: "请输入微信号",
                           hintStyle:
                               TextStyle(color: Color(0xffb9b5b5), fontSize: 16),

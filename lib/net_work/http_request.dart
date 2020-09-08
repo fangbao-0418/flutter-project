@@ -8,7 +8,7 @@ import 'package:xtflutter/net_work/local/helper.dart' as local;
 class HttpRequest {
   static Future<T> request<T>(String url,
       {String method = "get",
-      bool hideToast = false,
+      bool hideToast = true,
       bool processData = true,
       Map<String, dynamic> params,
       Map<String, dynamic> queryParameters,
@@ -68,6 +68,9 @@ class HttpRequest {
         }
         return Future.error(xtNetError);
       } else {
+        if (!hideToast) {
+          Toast.showToast(msg: map["message"]);
+        }
         return map["data"] as T;
       }
     } catch (e) {

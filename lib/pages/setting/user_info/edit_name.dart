@@ -136,25 +136,15 @@ class _EditNamePage extends State<EditNamePage> {
                 suffixIconConstraints:
                     BoxConstraints(minHeight: 15, minWidth: 15),
                 suffixIcon: isOnFocus
-                    ? Container(
-                        width: 10,
-                        height: 10,
-                        decoration: xtRoundDecoration(15,
-                            borderColor: whiteColor, bgcolor: main99GrayColor),
-                        child: IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Icons.close,
-                              size: 10,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              print(" clear -- clear ");
-                              editing.clear();
-                              _tname = "";
-                              editing.text = _tname;
-                            }),
-                      )
+                    ? xtTextFieldClear(
+                        onPressed: () {
+                          print(" clear -- clear ");
+                          editing.clear();
+                          _tname = "";
+                          editing.text = _tname;
+                        },
+                        bgColor: main99GrayColor,
+                        closeColor: whiteColor)
                     : Text(""),
               ),
               onChanged: (String change) {

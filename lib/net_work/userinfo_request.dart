@@ -99,10 +99,8 @@ class XTUserInfoRequest {
 // 设置默认实名信息
   static Future<dynamic> addmemberDefault(int id) async {
     String url = "/cweb/memberAuthentication/setDefault/" + id.toString();
-    final result = await HttpRequest.request(
-      url,
-      method: "put",
-    );
+    final result =
+        await HttpRequest.request(url, method: "put", hideToast: false);
     return result;
   }
 
@@ -112,7 +110,8 @@ class XTUserInfoRequest {
   static Future addressInfoRequest(Map<String, String> para, bool isAdd) async {
     final url =
         isAdd ? "/cweb/memberaddress/v1/add" : "/cweb/memberaddress/update";
-    return HttpRequest.request(url, method: "post", params: para, hideToast: true);
+    return HttpRequest.request(url,
+        method: "post", params: para, hideToast: true);
   }
 
   /// 获取省市区数据

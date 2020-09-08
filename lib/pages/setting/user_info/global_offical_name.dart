@@ -137,8 +137,8 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
 
   /// 设置默认实名信息
   void setDefeat(int id) async {
-    final result = await XTUserInfoRequest.addmemberDefault(id);
-    if (result["success"] == true) {
+    Loading.show(context: context);
+    XTUserInfoRequest.addmemberDefault(id).then((value) {
       for (RealNameModel item in listP) {
         if (item.isDefault == 1 && item.id != id) {
           item.isDefault = 0;
@@ -146,11 +146,10 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
           item.isDefault = 1;
         }
       }
-
       setState(() {
         print(123);
       });
-    }
+    }).whenComplete(() => Loading.hide());
   }
 
   AppBar showBar(PageState state, BuildContext context) {
@@ -336,7 +335,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                       Container(
                         height: 55,
                         color: Colors.white,
-                        padding: EdgeInsets.only(left: 15),
+                        padding: EdgeInsets.only(left: 15, right: 10),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -356,26 +355,13 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                   _name = value;
                                 },
                                 decoration: InputDecoration(
+                                  suffixIconConstraints: BoxConstraints(
+                                      minHeight: 15, minWidth: 15),
                                   suffixIcon: isOnFocus1
-                                      ? Container(
-                                          width: 10,
-                                          height: 10,
-                                          margin: EdgeInsets.all(16),
-                                          decoration: xtRoundDecoration(15,
-                                              bgcolor: main99GrayColor,
-                                              borderColor: whiteColor),
-                                          child: IconButton(
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(
-                                                Icons.close,
-                                                size: 10,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                nameC.clear();
-                                                _name = "";
-                                              }),
-                                        )
+                                      ? xtTextFieldClear(onPressed: () {
+                                          nameC.clear();
+                                          _name = "";
+                                        })
                                       : Text(""),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -396,7 +382,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                       Container(
                         height: 55,
                         color: Colors.white,
-                        padding: EdgeInsets.only(left: 15),
+                        padding: EdgeInsets.only(left: 15, right: 10),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -416,26 +402,13 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                                   _idNo = value;
                                 },
                                 decoration: InputDecoration(
+                                  suffixIconConstraints: BoxConstraints(
+                                      minHeight: 15, minWidth: 15),
                                   suffixIcon: isOnFocus2
-                                      ? Container(
-                                          width: 10,
-                                          height: 10,
-                                          margin: EdgeInsets.all(16),
-                                          decoration: xtRoundDecoration(15,
-                                              bgcolor: main99GrayColor,
-                                              borderColor: whiteColor),
-                                          child: IconButton(
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(
-                                                Icons.close,
-                                                size: 10,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                idC.clear();
-                                                _idNo = "";
-                                              }),
-                                        )
+                                      ? xtTextFieldClear(onPressed: () {
+                                          idC.clear();
+                                          _idNo = "";
+                                        })
                                       : Text(""),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide.none,

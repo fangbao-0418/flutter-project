@@ -1,6 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 
+/// TextField 后边的clearBtn
+/// width 宽 和 高一样 屏蔽高度参数
+/// bgColor 按钮的背景色 main99GrayColor
+/// closeColor  关闭按钮颜色 whiteColor
+/// 请加上下边两行
+/// suffixIconConstraints:
+/// BoxConstraints(minHeight: 15, minWidth: 15),
+
+Container xtTextFieldClear(
+    {double width = 10,
+    Color bgColor = main99GrayColor,
+    Color closeColor = whiteColor,
+    Function onPressed}) {
+  ///  宽和高一样, 按钮的背景色, 关闭按钮颜色
+  return Container(
+    width: width,
+    height: width,
+    decoration: xtRoundDecoration(width, bgcolor: bgColor),
+    child: IconButton(
+        padding: EdgeInsets.zero,
+        icon: Icon(
+          Icons.close,
+          size: 10,
+          color: closeColor,
+        ),
+        onPressed: onPressed),
+  );
+}
+
 ///设置文本Style
 /// size 字体大小
 /// color 文字颜色
@@ -10,12 +39,12 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 TextStyle xtstyle(double size, Color color,
     {FontWeight fontWeight = FontWeight.normal,
     Color bgcolor = Colors.transparent,
-    double height = 1.0}) {
+    double height}) {
   return TextStyle(
       color: color,
       fontSize: size,
-      fontWeight: fontWeight,
       height: height,
+      fontWeight: fontWeight,
       backgroundColor: bgcolor);
 }
 
@@ -84,7 +113,7 @@ Text xtText(String txt, double fontSize, Color color,
     TextAlign alignment,
     int maxLines,
     bool softWrap,
-    double height = 0}) {
+    double height}) {
   ///txt 文字 字号 字色 字体粗细 背景色  对齐方式
   return Text(
     txt,

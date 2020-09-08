@@ -19,8 +19,6 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> a = {"123": "12"};
-    var b = a["111"].c;
     return Scaffold(
         backgroundColor: mainF5GrayColor,
         appBar: xtBackBar(title: "关于喜团", back: () => _xtback(context)),
@@ -81,18 +79,12 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
             child: Column(
               children: <Widget>[
                 xtText("浙B2-20190758", 14, main99GrayColor,
-                    alignment: TextAlign.center,
-                    height: 1,
-                    bgcolor: Colors.transparent),
+                    alignment: TextAlign.center, bgcolor: Colors.transparent),
                 xtText('杭州喜团科技版权所有', 14, main99GrayColor,
-                    alignment: TextAlign.center,
-                    height: 1,
-                    bgcolor: Colors.transparent),
+                    alignment: TextAlign.center, bgcolor: Colors.transparent),
                 xtText('Copyright@2019 XiTuan All Rights Reserved', 14,
                     main99GrayColor,
-                    alignment: TextAlign.center,
-                    height: 1,
-                    bgcolor: Colors.transparent),
+                    alignment: TextAlign.center, bgcolor: Colors.transparent),
               ],
             ),
           ))

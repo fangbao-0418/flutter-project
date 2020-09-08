@@ -148,9 +148,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                           child: label('手机号码'),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 0, right: 10),
-                          decoration: xtRoundDecoration(0.0,
-                              borderWidth: 1.0, borderColor: mainDDColor),
+                          padding: EdgeInsets.only(left: 4, right: 10),
                           child: TextField(
                             controller: phoneController,
                             focusNode: focusNode1,
@@ -166,32 +164,20 @@ class _EditPhonePageState extends State<EditPhonePage>
                             maxLength: 11,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              suffixIconConstraints:
+                                  BoxConstraints(minHeight: 15, minWidth: 15),
                               suffixIcon: isOnFocus1
-                                  ? Container(
-                                      width: 10,
-                                      height: 10,
-                                      margin: EdgeInsets.all(16),
-                                      // color: main99GrayColor,
-                                      decoration: xtRoundDecoration(15,
-                                          bgcolor: main99GrayColor,
-                                          borderColor: whiteColor),
-                                      child: IconButton(
-                                          padding: EdgeInsets.zero,
-                                          icon: Icon(
-                                            Icons.close,
-                                            size: 10,
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            clearClick(phoneController);
-                                          }),
-                                    )
+                                  ? xtTextFieldClear(onPressed: () {
+                                      clearClick(phoneController);
+                                    })
                                   : Text(""),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
+                                borderSide:
+                                    BorderSide(color: mainDDColor, width: 1.0),
                               ),
                               focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
+                                borderSide:
+                                    BorderSide(color: mainDDColor, width: 1.0),
                               ),
                               hintText: '请输入手机号',
                               counterText: '',
@@ -205,9 +191,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                           child: label('验证码'),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 0, right: 10),
-                          decoration: xtRoundDecoration(0.0,
-                              borderColor: mainDDColor, borderWidth: 1.0),
+                          padding: EdgeInsets.only(left: 4, right: 10),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -226,27 +210,12 @@ class _EditPhonePageState extends State<EditPhonePage>
                                   maxLength: 6,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
+                                      suffixIconConstraints: BoxConstraints(
+                                          minHeight: 15, minWidth: 15),
                                       suffixIcon: isOnFocus2
-                                          ? Container(
-                                              width: 10,
-                                              height: 10,
-                                              margin: EdgeInsets.all(16),
-                                              // color: main99GrayColor,
-                                              decoration: xtRoundDecoration(15,
-                                                  bgcolor: main99GrayColor,
-                                                  borderColor: whiteColor),
-                                              child: IconButton(
-                                                  padding: EdgeInsets.zero,
-                                                  icon: Icon(
-                                                    Icons.close,
-                                                    size: 10,
-                                                    color: Colors.white,
-                                                  ),
-                                                  onPressed: () {
-                                                    print(" clear -- clear ");
-                                                    clearClick(codeController);
-                                                  }),
-                                            )
+                                          ? xtTextFieldClear(onPressed: () {
+                                              clearClick(codeController);
+                                            })
                                           : Text(""),
                                       counterText: '',
                                       enabledBorder: UnderlineInputBorder(
@@ -265,7 +234,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                                   width: 1,
                                   height: 12,
                                   margin: EdgeInsets.only(left: 10, right: 10),
-                                  color: Color(0xFFDDDDDD)),
+                                  color: mainDDColor),
                               GestureDetector(
                                 onTap: () {
                                   countDown();
@@ -277,9 +246,14 @@ class _EditPhonePageState extends State<EditPhonePage>
                                             ? Color.fromRGBO(141, 141, 141, 1)
                                             : Color.fromRGBO(216, 216, 216, 1),
                                         fontSize: 16)),
-                              )
+                              ),
                             ],
                           ),
+                        ),
+                        Container(
+                          height: 1.0,
+                          margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                          color: mainDDColor,
                         ),
                         Container(
                           margin: EdgeInsets.only(top: 40),
@@ -317,7 +291,7 @@ class _EditPhonePageState extends State<EditPhonePage>
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ]),
                     ),
                   ]),
