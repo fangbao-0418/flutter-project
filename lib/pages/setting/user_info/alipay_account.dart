@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
@@ -29,6 +30,9 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
 
   /// 是否显示没有账户信息页面
   bool _isShowNoAccount = false;
+
+  bool isOnFocusName = false;
+  bool isOnFocusAccount = false;
 
   @override
   void initState() {
@@ -65,8 +69,11 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
     bool isSuccess = await XTUserInfoRequest.saveAlipayAccountReq({
       "accountNumber": accountTextCon.text,
       "accountUserName": nameTextCon.text
+    }).catchError((err) {
+      Toast.showToast(msg: err.message, context: context);
+    }).whenComplete(() {
+      Loading.hide();
     });
-    Loading.hide();
     if (isSuccess) {
       Toast.showToast(msg: "保存成功", context: context);
       setState(() {
@@ -105,13 +112,27 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
     saveAlipayAccountInfo();
   }
 
+  /// 清除输入框
+  void _clearTextAction(TextEditingController controller) {
+    controller.clear();
+  }
+
+  /// 键盘收起
+  void _closeKeyboard() {
+    FocusScope.of(context).requestFocus(FocusNode());
+    setState(() {
+      isOnFocusName = false;
+      isOnFocusAccount = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: xtBackBar(
           title: "支付宝", back: () => XTRouter.closePage(context: context)),
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        onTap: () => _closeKeyboard(),
         child: Stack(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -146,18 +167,23 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                         color: Color(0xFFF9F9F9),
                         margin: EdgeInsets.only(left: 15, right: 15)),
                     Container(
-                      height: 55,
-                      padding: EdgeInsets.only(left: 15, right: 15),
+                      // height: 155,
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(15),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text("支付宝账号",
+                          Text("支付宝账号  ",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 16)),
-                          Text(_accountNum,
-                              style: TextStyle(
-                                  color: Color(0xff969696), fontSize: 16)),
+                          Expanded(
+                            child: Text(_accountNum,
+                                style: TextStyle(
+                                    color: Color(0xff969696), fontSize: 16),
+                                overflow: TextOverflow.clip,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -233,7 +259,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
   Widget accountAndNameView(bool isAccount) {
     return Container(
       height: 55,
-      padding: EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: 15, right: 15),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -250,7 +276,23 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                 hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 16),
                 contentPadding: EdgeInsets.only(left: 15, right: 15),
                 border: InputBorder.none,
+                suffixIconConstraints: BoxConstraints(
+                  minHeight: 15,
+                  minWidth: 15
+                ),
+                suffixIcon: (isAccount ? isOnFocusAccount : isOnFocusName) ? xtTextFieldClear(
+                  onPressed: () {
+                    _clearTextAction(isAccount ? accountTextCon : nameTextCon);
+                  }
+                ) : null,
               ),
+              onEditingComplete: () => _closeKeyboard(),
+              onTap: () {
+                setState(() {
+                  isOnFocusAccount = isAccount;
+                  isOnFocusName = !isAccount;
+                });
+              },
             ),
           ),
         ],

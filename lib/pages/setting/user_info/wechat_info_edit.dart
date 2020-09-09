@@ -30,6 +30,8 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
   /// 微信名称
   FocusNode _nameNode = FocusNode();
 
+  bool _isOnFocus = true;
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +70,10 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
           rightTitle: "完成",
           rightFun: () => _updateName()),
       body: GestureDetector(
-        onTap: () => _nameNode.unfocus(),
+        onTap: () {
+          _nameNode.unfocus();
+          setState(() { _isOnFocus = false; });
+        },
         child: Container(
           color: Colors.white,
           child: CustomScrollView(
@@ -89,12 +94,12 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                         decoration: InputDecoration(
                           suffixIconConstraints:
                               BoxConstraints(minHeight: 15, minWidth: 15),
-                          suffixIcon: xtTextFieldClear(
+                          suffixIcon: _isOnFocus ? xtTextFieldClear(
                               onPressed: () {
                                 _wechatAccountCon.clear();
                               },
                               bgColor: main99GrayColor,
-                              closeColor: whiteColor),
+                              closeColor: whiteColor) : null,
                           hintText: "请输入微信号",
                           hintStyle:
                               TextStyle(color: Color(0xffb9b5b5), fontSize: 16),
@@ -104,6 +109,14 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                         onEditingComplete: () {
                           _updateName();
                           _nameNode.unfocus();
+                          setState(() {
+                            _isOnFocus = false;
+                          });
+                        },
+                        onTap: () {
+                          setState(() {
+                            _isOnFocus = true;
+                          });
                         },
                       ),
                     ),
