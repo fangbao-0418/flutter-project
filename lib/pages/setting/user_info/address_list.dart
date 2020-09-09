@@ -223,14 +223,14 @@ class _AddressListPageState extends State<AddressListPage> {
               SizedBox(
                 height: 10,
                 child: Container(
-                  color: Color(0xFFF9F9F9),
+                  color: xtColor_F9F9F9,
                 ),
               ),
               buildSlideAddressCell(model),
               SizedBox(
                 height: 10,
                 child: Container(
-                  color: Color(0xFFF9F9F9),
+                  color: xtColor_F9F9F9,
                 ),
               ),
               buildAddNewAddressButton()
@@ -241,7 +241,7 @@ class _AddressListPageState extends State<AddressListPage> {
                 SizedBox(
                   height: 10,
                   child: Container(
-                    color: Color(0xFFF9F9F9),
+                    color: xtColor_F9F9F9,
                   ),
                 ),
                 buildSlideAddressCell(model)
@@ -257,7 +257,7 @@ class _AddressListPageState extends State<AddressListPage> {
         SizedBox(
           height: 10,
           child: Container(
-            color: Color(0xFFF9F9F9),
+            color: xtColor_F9F9F9,
           ),
         ),
         Center(

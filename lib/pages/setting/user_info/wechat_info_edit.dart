@@ -81,7 +81,7 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
               SliverToBoxAdapter(
                 child: Column(
                   children: <Widget>[
-                    Container(height: 1, color: Color(0xFFF9F9F9)),
+                    Container(height: 1, color: xtColor_F9F9F9),
                     Container(
                       padding: EdgeInsets.only(right: 10),
                       height: 55,
@@ -102,7 +102,7 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                               closeColor: whiteColor) : null,
                           hintText: "请输入微信号",
                           hintStyle:
-                              TextStyle(color: Color(0xffb9b5b5), fontSize: 16),
+                              TextStyle(color: xtColor_B9B5B5, fontSize: 16),
                           contentPadding: EdgeInsets.only(left: 15, right: 15),
                           border: InputBorder.none,
                         ),
@@ -120,7 +120,7 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
                         },
                       ),
                     ),
-                    Container(height: 1, color: Color(0xFFF9F9F9)),
+                    Container(height: 1, color: xtColor_F9F9F9),
                   ],
                 ),
               )

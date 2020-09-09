@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
@@ -164,7 +165,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                   children: <Widget>[
                     Container(
                         height: 1.5,
-                        color: Color(0xFFF9F9F9),
+                        color: xtColor_F9F9F9,
                         margin: EdgeInsets.only(left: 15, right: 15)),
                     Container(
                       // height: 155,
@@ -180,7 +181,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                           Expanded(
                             child: Text(_accountNum,
                                 style: TextStyle(
-                                    color: Color(0xff969696), fontSize: 16),
+                                    color: xtColor_969696, fontSize: 16),
                                 overflow: TextOverflow.clip,
                             ),
                           ),
@@ -189,7 +190,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                     ),
                     Container(
                         height: 1.5,
-                        color: Color(0xFFF9F9F9),
+                        color: xtColor_F9F9F9,
                         margin: EdgeInsets.only(left: 15, right: 15)),
                   ],
                 ),
@@ -205,13 +206,13 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                     borderRadius: BorderRadius.circular(8.0),
                     side: BorderSide(
                         width: 0.5,
-                        color: Color(0xFFE60113),
+                        color: mainRedColor,
                         style: BorderStyle.solid)),
                 onPressed: () {
                   changeAlipayAccount();
                 },
                 child: Text("修改支付宝账号",
-                    style: TextStyle(color: Color(0xFFE60113), fontSize: 15)),
+                    style: TextStyle(color: mainRedColor, fontSize: 15)),
               )),
         ],
       ),
@@ -227,16 +228,16 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
           SliverToBoxAdapter(
             child: Column(
               children: <Widget>[
-                Container(height: 10, color: Color(0xFFF9F9F9)),
+                Container(height: 10, color: xtColor_F9F9F9),
                 accountAndNameView(true),
                 Container(
                     height: 1.5,
-                    color: Color(0xFFF9F9F9),
+                    color: xtColor_F9F9F9,
                     margin: EdgeInsets.only(left: 15, right: 15)),
                 accountAndNameView(false),
                 Container(
                     height: 1.5,
-                    color: Color(0xFFF9F9F9),
+                    color: xtColor_F9F9F9,
                     margin: EdgeInsets.only(left: 15, right: 15)),
                 Container(
                     alignment: Alignment.centerLeft,
@@ -244,7 +245,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                     child: Text("*如果支付宝账号和姓名不匹配，将无法到账",
                         textAlign: TextAlign.left,
                         style:
-                            TextStyle(fontSize: 12, color: Color(0xffe60113)))),
+                            TextStyle(fontSize: 12, color: mainRedColor))),
                 SizedBox(height: 150),
                 saveButton(),
                 SizedBox(height: 50),
@@ -273,7 +274,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
                   isAccount ? TextInputType.emailAddress : TextInputType.text,
               decoration: InputDecoration(
                 hintText: isAccount ? "请输入支付宝账号" : "请输入真实姓名",
-                hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 16),
+                hintStyle: TextStyle(color: xtColor_B9B5B5, fontSize: 16),
                 contentPadding: EdgeInsets.only(left: 15, right: 15),
                 border: InputBorder.none,
                 suffixIconConstraints: BoxConstraints(
@@ -302,7 +303,7 @@ class _AlipayAccountPageState extends State<AlipayAccountPage> {
 
   Widget saveButton() {
     return RaisedButton(
-      color: Color(0xffe60113),
+      color: mainRedColor,
       child: Text("保存", style: TextStyle(color: Colors.white, fontSize: 16)),
       padding: EdgeInsets.fromLTRB(80, 10, 80, 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
