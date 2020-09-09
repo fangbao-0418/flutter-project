@@ -41,17 +41,14 @@ class _AddressListPageState extends State<AddressListPage> {
       backgroundColor: Colors.white,
       appBar: xtBackBar(title: "我的收货地址", back: () => _xtback(context)),
       body: FutureBuilder(
-          // ignore: missing_return
           future: refresh(),
           builder: (BuildContext context, AsyncSnapshot snapShot) {
-            // Loading.hide();
             if (snapShot.hasData) {
               addressModels = snapShot.data;
               if (addressModels.length == 0) {
                 return emptyViewAdd();
               }
               return buildAddressListView(addressModels);
-//                return Text(snapShot.data.toString());
             } else {
               return emptyViewAdd();
             }
@@ -66,7 +63,7 @@ class _AddressListPageState extends State<AddressListPage> {
       child: FlatButton(
           padding: EdgeInsets.only(left: 45, right: 45, top: 10, bottom: 10),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           color: Colors.red,
           onPressed: () {
             XTRouter.pushToPage(
@@ -304,5 +301,4 @@ class _AddressListPageState extends State<AddressListPage> {
       ],
     );
   }
-
 }
