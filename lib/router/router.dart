@@ -48,7 +48,7 @@ class XTRouter {
     @required String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
     @required BuildContext context, //上下文
-    bool isNativePage, //是不是原生页面
+    bool isNativePage = false, //是不是原生页面
   }) {
     tracePage(routerName, params);
 
@@ -81,7 +81,7 @@ class XTRouter {
     String routerName, //路由名称
     Map<String, dynamic> params, //路由参数
     @required BuildContext context,
-    bool isNativePage, //是不是原生页面
+    bool isNativePage = false, //是不是原生页面
   }) {
     tracePage(routerName, params);
     if (AppConfig.getInstance().isAppSubModule) {

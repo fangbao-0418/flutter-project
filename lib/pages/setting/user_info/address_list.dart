@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';

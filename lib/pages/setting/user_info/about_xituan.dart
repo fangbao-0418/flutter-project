@@ -26,6 +26,7 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
   }
 
   Widget view() {
+
     return Column(
       children: <Widget>[
         Container(
