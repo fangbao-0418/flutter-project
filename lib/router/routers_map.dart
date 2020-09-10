@@ -1,4 +1,5 @@
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/pages/promotion/promotion.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';
 import 'package:xtflutter/pages/setting/user_info/address_list.dart';
@@ -47,6 +48,10 @@ Map<String, PageBuilder> routeConfigs = {
   ///修改微信账户
   WeChatInfoNameChangePage.routerName: (pageName, params, _) =>
       WeChatInfoNameChangePage(params: params, name: pageName),
+
+  ///活动页
+  Promotion.routerName: (pageName, params, _) =>
+      Promotion(params: params, name: pageName),
 
   ///修改微信二维码
   WeChatInfoQrChangePage.routerName: (pageName, params, _) =>
