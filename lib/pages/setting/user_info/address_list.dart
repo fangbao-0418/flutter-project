@@ -39,7 +39,7 @@ class _AddressListPageState extends State<AddressListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: whiteColor,
       appBar: xtBackBar(title: "我的收货地址", back: () => _xtback(context)),
       body: FutureBuilder(
           future: refresh(),
@@ -80,7 +80,7 @@ class _AddressListPageState extends State<AddressListPage> {
           },
           child: Text(
             "新增收货地址",
-            style: TextStyle(fontSize: 15, color: Colors.white),
+            style: TextStyle(fontSize: 15, color: whiteColor),
           )),
     );
   }
@@ -108,7 +108,7 @@ class _AddressListPageState extends State<AddressListPage> {
   /// 获取ListViewCell
   Widget buildAddressListCell(AddressListModel model) {
     return Container(
-      color: Colors.white,
+      color: whiteColor,
       padding: EdgeInsets.only(top: 15),
       child: Column(
         children: <Widget>[
@@ -140,7 +140,7 @@ class _AddressListPageState extends State<AddressListPage> {
                     left: 16.0, top: 10, bottom: 15, right: 16),
                 child: Text(
                   model.address,
-                  style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C)),
+                  style: TextStyle(fontSize: 12, color: xtColor_8C8C8C),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -152,7 +152,7 @@ class _AddressListPageState extends State<AddressListPage> {
             height: 1,
             indent: 16,
             endIndent: 16,
-            color: Color(0xFFEEEEEE),
+            color: xtColor_EEEEEE,
           ),
           Row(
             children: <Widget>[
@@ -200,7 +200,7 @@ class _AddressListPageState extends State<AddressListPage> {
           color: Colors.red,
           child: Text(
             "删除",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: whiteColor),
           ),
           onTap: () {
             XTUserInfoRequest.deleteAddress(model.id).then((value) {
@@ -265,12 +265,12 @@ class _AddressListPageState extends State<AddressListPage> {
               margin: EdgeInsets.only(top: 200),
               child: Text(
                 "还没有收货地址，快去添加收货地址吧～",
-                style: TextStyle(color: Color(0xFF666666)),
+                style: TextStyle(color: xtColor_666666),
               )),
         ),
         Expanded(
           flex: 1,
-          child: Container(color: Colors.white, height: 300),
+          child: Container(color: whiteColor, height: 300),
         ),
         RaisedButton(
           elevation: 0,
@@ -293,11 +293,11 @@ class _AddressListPageState extends State<AddressListPage> {
             });
           },
           child: Text("新增收货地址",
-              style: TextStyle(color: Colors.white, fontSize: 15)),
+              style: TextStyle(color: whiteColor, fontSize: 15)),
         ),
         Expanded(
           flex: 1,
-          child: Container(color: Colors.white, height: 60),
+          child: Container(color: whiteColor, height: 60),
         ),
       ],
     );
