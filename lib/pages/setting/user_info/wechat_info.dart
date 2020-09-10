@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
@@ -149,7 +150,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
         behavior: HitTestBehavior.translucent,
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: Container(
-          color: Color(0xFFF9F9F9),
+          color: xtColor_F9F9F9,
           child: CustomScrollView(
             slivers: <Widget>[
               SliverToBoxAdapter(
@@ -181,7 +182,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                 decoration: InputDecoration(
                                   hintText: "请输入微信号",
                                   hintStyle: TextStyle(
-                                      color: Color(0xffb9b5b5), fontSize: 16),
+                                      color: xtColor_B9B5B5, fontSize: 16),
                                   contentPadding:
                                       EdgeInsets.only(left: 30, right: 15),
                                   border: InputBorder.none,
@@ -191,7 +192,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                             Visibility(
                                 visible: _state == WeChatInfoState.have,
                                 child: Icon(Icons.keyboard_arrow_right,
-                                    color: Color(0xffb9b5b5)))
+                                    color: xtColor_B9B5B5))
                           ],
                         ),
                       ),
@@ -259,7 +260,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                           child: FlatButton(
                                             padding: EdgeInsets.only(left: 0),
                                             child: Icon(Icons.cancel,
-                                                color: Color(0xff999999)),
+                                                color: main99GrayColor),
                                             onPressed: () {
                                               _wechatQrImgUrl = "";
                                               setState(() => _state =
@@ -277,7 +278,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                 child: Container(
                                     margin: EdgeInsets.only(top: 15),
                                     child: Icon(Icons.keyboard_arrow_right,
-                                        color: Color(0xffb9b5b5))))
+                                        color: xtColor_B9B5B5)))
                           ],
                         ),
                       ),
@@ -288,12 +289,12 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                         child: Text("您的微信号和二维码将展示在团队成员的页面\n方便团队成员更快的找到你哦~",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                                fontSize: 12, color: Color(0xff969696)))),
+                                fontSize: 12, color: xtColor_969696))),
                     SizedBox(height: 50),
                     Visibility(
                       visible: _state != WeChatInfoState.have,
                       child: RaisedButton(
-                        color: Color(0xffe60113),
+                        color: mainRedColor,
                         child: Text("保存",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 16)),

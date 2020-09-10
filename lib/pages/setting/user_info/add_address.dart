@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
@@ -57,6 +58,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
   /// 地址信息
   AddressCityModel cityInfoModel =
       AddressCityModel(provinceId: "", cityId: "", areaId: "");
+
+  bool isOnFocusName = false;
+  bool isOnFocusPhone = false;
 
   @override
   void initState() {
@@ -151,7 +155,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   /// 展示地址选择窗
   void showPicker(List data) {
-    FocusScope.of(context).requestFocus(FocusNode());
+    _closeKeyboard();
     Picker picker = Picker(
         height: 300,
         itemExtent: 40,
@@ -165,9 +169,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
         title:
             Text("所在地区", style: TextStyle(fontSize: 16, color: Colors.black)),
         cancelText: "取消",
-        cancelTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
+        cancelTextStyle: TextStyle(fontSize: 14, color: xtColor_4D88FF),
         confirmText: "确定",
-        confirmTextStyle: TextStyle(fontSize: 14, color: Color(0xff4d88ff)),
+        confirmTextStyle: TextStyle(fontSize: 14, color: xtColor_4D88FF),
         onConfirm: (Picker picker, List value) {
           /// 记录选中行
           selectValue = value;
@@ -239,6 +243,22 @@ class _AddAddressPageState extends State<AddAddressPage> {
     }
   }
 
+  /// 清除输入框
+  void _clearTextAction(TextEditingController controller) {
+    controller.clear();
+  }
+
+  /// 键盘收起
+  void _closeKeyboard({bool isClose = true}) {
+    if (isClose) {
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+    setState(() {
+      isOnFocusName = false;
+      isOnFocusPhone = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,9 +267,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
           back: () => XTRouter.closePage(context: context)),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
+        onTap: () => _closeKeyboard(),
         child: Container(
           color: Colors.white,
           child: CustomScrollView(
@@ -257,16 +275,16 @@ class _AddAddressPageState extends State<AddAddressPage> {
               SliverToBoxAdapter(
                 child: Column(
                   children: <Widget>[
-                    Container(height: 10, color: Color(0xFFF9F9F9)),
+                    Container(height: 10, color: xtColor_F9F9F9),
                     receiverAndPhoneView(true),
                     Container(
                         height: 1.5,
-                        color: Color(0xFFF9F9F9),
+                        color: xtColor_F9F9F9,
                         margin: EdgeInsets.only(left: 15, right: 15)),
                     receiverAndPhoneView(false),
-                    Container(height: 10, color: Color(0xFFF9F9F9)),
+                    Container(height: 10, color: xtColor_F9F9F9),
                     addressView(),
-                    Container(height: 10, color: Color(0xFFF9F9F9)),
+                    Container(height: 10, color: xtColor_F9F9F9),
                     selectAction(),
                     SizedBox(height: 80),
                     saveButton(),
@@ -283,7 +301,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
   Widget receiverAndPhoneView(bool isReveive) {
     return Container(
       height: 50,
-      padding: EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: 15, right: 15),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -300,10 +318,26 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   isReveive ? TextInputType.text : TextInputType.phone,
               decoration: InputDecoration(
                 hintText: isReveive ? "请填写收货人" : "请填写手机号",
-                hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 14),
+                hintStyle: TextStyle(color: xtColor_B9B5B5, fontSize: 14),
                 contentPadding: EdgeInsets.only(left: 15, right: 15),
                 border: InputBorder.none,
+                suffixIconConstraints: BoxConstraints(
+                  minHeight: 15,
+                  minWidth: 15
+                ),
+                suffixIcon: (isReveive ? isOnFocusName : isOnFocusPhone) ? xtTextFieldClear(
+                  onPressed: () {
+                    _clearTextAction(isReveive ? receiveTextCon : phoneTextCon);
+                  }
+                ) : null,
               ),
+              onEditingComplete: () => _closeKeyboard(),
+              onTap: () {
+                setState(() {
+                  isOnFocusName = isReveive;
+                  isOnFocusPhone = !isReveive;
+                });
+              },
             ),
           ),
         ],
@@ -333,7 +367,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
                       style: TextStyle(color: Colors.black, fontSize: 14)),
                   Icon(
                     Icons.keyboard_arrow_right,
-                    color: Color(0xffb9b5b5),
+                    color: xtColor_B9B5B5,
                   )
                 ],
               ),
@@ -341,7 +375,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
           ),
           Container(
               height: 1.5,
-              color: Color(0xFFF9F9F9),
+              color: xtColor_F9F9F9,
               margin: EdgeInsets.only(left: 15, right: 15)),
           Expanded(
             child: TextField(
@@ -351,10 +385,11 @@ class _AddAddressPageState extends State<AddAddressPage> {
               inputFormatters: [LengthLimitingTextInputFormatter(40)],
               decoration: InputDecoration(
                 hintText: "请填写详细地址（比如街道、小区、乡镇、村）",
-                hintStyle: TextStyle(color: Color(0xffb9b5b5), fontSize: 14),
+                hintStyle: TextStyle(color: xtColor_B9B5B5, fontSize: 14),
                 contentPadding: EdgeInsets.only(top: 5, right: 15),
                 border: InputBorder.none,
               ),
+              onTap: () => _closeKeyboard(isClose: false),
             ),
           ),
         ],
@@ -383,7 +418,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   Widget saveButton() {
     return RaisedButton(
-      color: Color(0xffe60113),
+      color: mainRedColor,
       child: Text(_isAddAddress ? "保存并使用" : "保存修改",
           style: TextStyle(color: Colors.white, fontSize: 16)),
       padding: EdgeInsets.only(left: 40, right: 40),
