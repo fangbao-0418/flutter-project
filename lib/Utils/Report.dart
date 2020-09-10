@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:xtflutter/net_work/local/proxy.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/utils/global.dart';
 import 'dart:convert';
@@ -48,7 +49,9 @@ Future sendReportRequest(List<Map<String, dynamic>> xtLogdata) {
       baseUrl: baseUrl,
       connectTimeout: connectTimeout,
       headers: {'referer': 'https://myouxuan.hzxituan.com/'}));
-  local.helper(dio);
+  if (needHttpDebug) {
+    local.helper(dio);
+  }
   // print('send report start');
   return dio.post(url, data: data).then((v) {
     print('send report success');
@@ -207,7 +210,7 @@ Map<String, dynamic> getBaseInfo() {
   Map<String, dynamic> baseInfo = {
     'flutter': true,
     'env': logEnv,
-    'ap': 'AppStore',
+    'ap': AppConfig.getInstance().platform,
     'av': AppConfig.soft.av,
     'dv': AppConfig.soft.dv,
     'md': AppConfig.soft.md,

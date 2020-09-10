@@ -24,11 +24,12 @@ class _WrapperState extends State<Wrapper> {
   }
 
   Widget build(BuildContext context) {
-    try {
-      return Container(child: child);
-    } catch (e) {
+    ///错误捕捉统一处理页面
+    ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
       return Container(child: CustomErrorWidget());
-    }
+    };
+
+    return Container(child: child);
   }
 
   @override

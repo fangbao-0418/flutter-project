@@ -18,15 +18,14 @@ Future _sendRequest(List<Map<String, dynamic>> xtLogdata) {
 
 // 数据上报
 void _handleReport(
-    {String message, String req, String res, StackTrace stack, int timestamp}) {
+    {String message,
+    String req,
+    String res,
+    String stackString = "",
+    int timestamp}) {
   if (!Global.isDebugger) {
     return;
   }
-
-  String stackString = stack?.toString() ?? '';
-  List<String> stackList = stackString.split(new RegExp(r'[\t\r\n\v]'));
-  // 提取前10错误栈信息
-  stackString = stackList.sublist(0, min(stackList.length, 10)).join('\r\n');
 
   Map<String, dynamic> baseInfo = getBaseInfo();
   Map<String, dynamic> info = {
@@ -66,7 +65,15 @@ void reportError(FlutterErrorDetails details) {
   if (!TO_REPORT) {
     return;
   }
-  _handleReport(message: details.toString(), stack: details.stack);
+  var errDetail =
+      details.context.toString() + "\n" + details.exceptionAsString();
+
+  String stackString = details.stack?.toString() ?? '';
+  List<String> stackList = stackString.split(new RegExp(r'[\t\r\n\v]'));
+  // 提取前6错误栈信息 抛弃后边 多数无用
+  stackString = stackList.sublist(0, min(stackList.length, 6)).join('\r\n');
+
+  _handleReport(message: errDetail, stackString: stackString);
 }
 
 // 上报网络错误
@@ -113,6 +120,6 @@ void reportNetError(XTNetError xtNetError) {
     _handleReport(req: req, res: res, message: dioError.toString());
   } else if (xTNetErrorType == XTNetErrorType.SYNTAX_ERROR) {
     Error error = xtNetError.error;
-    _handleReport(message: error.toString(), stack: error.stackTrace);
+    _handleReport(message: error.toString(), stackString: xtNetError.message);
   }
 }
