@@ -78,10 +78,8 @@ class _AddressListPageState extends State<AddressListPage> {
               }
             });
           },
-          child: Text(
-            "新增收货地址",
-            style: TextStyle(fontSize: 15, color: whiteColor),
-          )),
+          child:xtText("新增收货地址", 15, whiteColor)
+      ),
     );
   }
 
@@ -116,18 +114,12 @@ class _AddressListPageState extends State<AddressListPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  model.consignee,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
+                child: xtText(model.consignee, 14, Colors.black),
               ),
               Spacer(),
               Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: Text(
-                  model.phone,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
+                child: xtText(model.phone, 14, Colors.black),
               ),
             ],
           ),
@@ -138,12 +130,7 @@ class _AddressListPageState extends State<AddressListPage> {
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.only(
                     left: 16.0, top: 10, bottom: 15, right: 16),
-                child: Text(
-                  model.address,
-                  style: TextStyle(fontSize: 12, color: xtColor_8C8C8C),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                child: xtText(model.address, 12, xtColor_8C8C8C,overflow: TextOverflow.ellipsis),
               ),
               Spacer()
             ],
@@ -157,10 +144,7 @@ class _AddressListPageState extends State<AddressListPage> {
           Row(
             children: <Widget>[
               buildCheckBox(model, model.defaultAddress == 1),
-              Text(
-                "默认地址",
-                style: TextStyle(fontSize: 14, color: Colors.black),
-              ),
+              xtText("默认地址", 14, Colors.black),
               Spacer(),
               FlatButton.icon(
                   onPressed: () {
@@ -180,10 +164,8 @@ class _AddressListPageState extends State<AddressListPage> {
                     AssetImage('images/my_address_list_edit.png'),
                     color: Colors.black,
                   ),
-                  label: Text(
-                    "编辑",
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                  ))
+                  label: xtText("编辑", 14, Colors.black)
+              )
             ],
           ),
         ],
@@ -198,16 +180,62 @@ class _AddressListPageState extends State<AddressListPage> {
       secondaryActions: <Widget>[
         SlideAction(
           color: Colors.red,
-          child: Text(
-            "删除",
-            style: TextStyle(color: whiteColor),
-          ),
+          child: xtText("删除", 14, whiteColor),
           onTap: () {
             XTUserInfoRequest.deleteAddress(model.id).then((value) {
               setState(() {});
             });
           },
         )
+      ],
+    );
+  }
+
+  Widget emptyViewAdd() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 10,
+          child: Container(
+            color: xtColor_F9F9F9,
+          ),
+        ),
+        Center(
+          child: Container(
+              margin: EdgeInsets.only(top: 200),
+              child: xtText("还没有收货地址，快去添加收货地址吧～", 14, xtColor_666666)
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(color: whiteColor, height: 300),
+        ),
+        RaisedButton(
+          elevation: 0,
+          padding: EdgeInsets.fromLTRB(100, 10, 100, 10),
+          color: mainRedColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              side: BorderSide(
+                  width: 0.5, color: mainRedColor, style: BorderStyle.solid)),
+          onPressed: () {
+            XTRouter.pushToPage(
+              routerName: AddAddressPage.routerName,
+              context: context,
+            ).then((value) {
+              Map result = Map<String, dynamic>.from(value);
+              if (result["isRefresh"] == true) {
+                refresh();
+                print("新增地址成功后，地址列表刷新");
+              }
+            });
+          },
+          child:xtText("新增收货地址", 15, whiteColor),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(color: whiteColor, height: 60),
+        ),
       ],
     );
   }
@@ -249,57 +277,5 @@ class _AddressListPageState extends State<AddressListPage> {
             );
           }
         });
-  }
-
-  Widget emptyViewAdd() {
-    return Column(
-      children: <Widget>[
-        SizedBox(
-          height: 10,
-          child: Container(
-            color: xtColor_F9F9F9,
-          ),
-        ),
-        Center(
-          child: Container(
-              margin: EdgeInsets.only(top: 200),
-              child: Text(
-                "还没有收货地址，快去添加收货地址吧～",
-                style: TextStyle(color: xtColor_666666),
-              )),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(color: whiteColor, height: 300),
-        ),
-        RaisedButton(
-          elevation: 0,
-          padding: EdgeInsets.fromLTRB(100, 10, 100, 10),
-          color: mainRedColor,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              side: BorderSide(
-                  width: 0.5, color: mainRedColor, style: BorderStyle.solid)),
-          onPressed: () {
-            XTRouter.pushToPage(
-              routerName: AddAddressPage.routerName,
-              context: context,
-            ).then((value) {
-              Map result = Map<String, dynamic>.from(value);
-              if (result["isRefresh"] == true) {
-                refresh();
-                print("新增地址成功后，地址列表刷新");
-              }
-            });
-          },
-          child: Text("新增收货地址",
-              style: TextStyle(color: whiteColor, fontSize: 15)),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(color: whiteColor, height: 60),
-        ),
-      ],
-    );
   }
 }

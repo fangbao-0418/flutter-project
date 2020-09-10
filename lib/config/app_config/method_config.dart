@@ -113,7 +113,8 @@ Text xtText(String txt, double fontSize, Color color,
     TextAlign alignment,
     int maxLines,
     bool softWrap,
-    double height}) {
+    double height,
+    TextOverflow overflow}) {
   ///txt 文字 字号 字色 字体粗细 背景色  对齐方式
   return Text(
     txt,
@@ -122,6 +123,7 @@ Text xtText(String txt, double fontSize, Color color,
     textAlign: alignment,
     maxLines: maxLines,
     softWrap: softWrap,
+    overflow: overflow,
   );
 }
 

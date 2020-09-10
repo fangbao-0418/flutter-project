@@ -48,7 +48,7 @@ class XTUserInfoRequest {
     const url = "/cweb/memberaddress/default/";
     bool resetSuccess = false;
     final result =
-        await HttpRequest.request(url + addressId.toString(), method: "post");
+        await HttpRequest.request(url + addressId.toString(), method: "post",hideToast: false);
     resetSuccess = result;
     print(addressId.toString() + "设置默认地址状态:" + resetSuccess.toString());
     return resetSuccess;
