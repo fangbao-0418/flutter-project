@@ -13,6 +13,7 @@ AppBar xtbackAndRightBar(
     String rightTitle,
     VoidCallback rightFun}) {
   return AppBar(
+    centerTitle: true,
     elevation: 0,
     leading: IconButton(
       color: mainBlackColor,
@@ -41,6 +42,7 @@ AppBar xtBackBar({
   String title,
 }) {
   return AppBar(
+      centerTitle: true,
       elevation: 0,
       leading: IconButton(
         color: mainBlackColor,
