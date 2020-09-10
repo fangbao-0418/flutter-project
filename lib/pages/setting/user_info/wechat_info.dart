@@ -30,6 +30,8 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
   /// 上传图片的路径
   String _wechatQrImgUrl = "";
 
+  FocusNode _accountNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +42,9 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
   void _getWechatInfo() async {
     Loading.show(context: context, showShade: true);
     try {
-      final WechatInfoModel model = await XTUserInfoRequest.getWechatInfoReq();
+      final WechatInfoModel model = await XTUserInfoRequest.getWechatInfoReq().whenComplete(() {
+        Loading.hide();
+      });
       if (model.wechat.isNotEmpty && model.wxQr.isNotEmpty) {
         setState(() {
           _wechatAccountCon.text = model.wechat;
@@ -51,7 +55,6 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
         setState(() => _state = WeChatInfoState.none);
       }
     } catch (err) {}
-    Loading.hide();
   }
 
   /// 更新头像
@@ -141,6 +144,11 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     ));
   }
 
+  /// 收起弹窗
+  void _closeKeyboard() {
+    _accountNode.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +156,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
           title: "微信信息", back: () => XTRouter.closePage(context: context)),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        onTap: () => _closeKeyboard(),
         child: Container(
           color: xtColor_F9F9F9,
           child: CustomScrollView(
@@ -164,9 +172,8 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                         }
                       },
                       child: Container(
-                        height: 55,
                         color: Colors.white,
-                        padding: EdgeInsets.only(left: 15, right: 10),
+                        padding: EdgeInsets.only(left: 15, right: 10, top: 5, bottom: 5),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -176,9 +183,11 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                     color: Colors.black, fontSize: 16)),
                             Expanded(
                               child: TextField(
+                                focusNode: _accountNode,
                                 enabled: _state != WeChatInfoState.have,
                                 controller: _wechatAccountCon,
                                 keyboardType: TextInputType.text,
+                                maxLines: null,
                                 decoration: InputDecoration(
                                   hintText: "请输入微信号",
                                   hintStyle: TextStyle(
@@ -220,10 +229,10 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                               onTap: () {
                                 switch (_state) {
                                   case WeChatInfoState.none:
+                                    _closeKeyboard();
                                     _uploadWxCodeImg();
                                     break;
                                   case WeChatInfoState.uploaded:
-                                    // Toast.showToast(msg: "查看大图", context: context);
                                     _lookBigPic();
                                     break;
                                   case WeChatInfoState.have:

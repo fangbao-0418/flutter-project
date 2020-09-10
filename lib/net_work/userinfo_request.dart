@@ -241,6 +241,6 @@ class XTUserInfoRequest {
   /// 获取用户微信信息
   static Future<bool> saveWechatInfoReq(Map<String, String> params) async {
     final url = "/ncweb/user/modify/wx/v1";
-    return HttpRequest.request(url, method: "post", params: params);
+    return HttpRequest.request(url, method: "post", params: params, hideToast: false);
   }
 }
