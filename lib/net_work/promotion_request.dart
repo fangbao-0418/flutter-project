@@ -7,14 +7,16 @@ class PromotionRequest {
         method: "post", params: {"magicPageId": promotionId, "source": "1"});
     return data;
   }
-  static Future<dynamic> promotionMgicData(String componentId,int page) async {
-    final url = "/ncweb/yx/magic/getMagicData";
-    final data = HttpRequest.request(url,
-        method: "post", params: {"componentId": componentId, "source": "1", "pageSize": 10, "currentPage": page});
-    return data;
 
-  
-}
+  static Future<dynamic> promotionMgicData(String componentId, int page) async {
+    final url = "/ncweb/yx/magic/getMagicData";
+    final data = HttpRequest.request(url, method: "post", params: {
+      "componentId": componentId,
+      "source": "1",
+      "pageSize": 10,
+      "currentPage": page
+    });
+    return data;
   }
 
   // ncweb/yx/magic/getMagicData
