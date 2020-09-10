@@ -1,5 +1,5 @@
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:xtflutter/pages/home/limit_time_spike.dart';
+import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';
 import 'package:xtflutter/pages/setting/user_info/address_list.dart';
@@ -53,5 +53,5 @@ Map<String, PageBuilder> routeConfigs = {
 
   /// -------------------------  Home  -------------------------
   /// 限时秒杀
-  LimitTimeSpikePage.routerName: (pageName, params, _) => LimitTimeSpikePage(),
+  LimitTimeSeckillPage.routerName: (pageName, params, _) => LimitTimeSeckillPage(),
 };
