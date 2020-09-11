@@ -60,7 +60,9 @@ class _EditNamePage extends State<EditNamePage> {
       }
       // vm.updateNiceName(_tname);
     } catch (err) {
-      print(err);
+      Toast.showToast(msg: "修改失败，请重试", context: context);
+
+      Loading.hide();
     }
   }
 

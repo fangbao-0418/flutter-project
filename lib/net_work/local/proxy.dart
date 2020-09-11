@@ -1,3 +1,5 @@
+import 'package:xtflutter/utils/global.dart';
+
 ///IP 地址
 const String localProxy = "PROXY 192.168.4.152:8888";
 

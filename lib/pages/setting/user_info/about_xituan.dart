@@ -26,9 +26,7 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
   }
 
   Widget view() {
-    // Map<String, dynamic> a = {"12": "23"};
-    // var b = a["123"].c;
-    var arr = ["123", "123"];
+
 
     return Column(
       children: <Widget>[
@@ -53,7 +51,7 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
             shape: xtShapeRound(10.0),
             child: Column(children: <Widget>[
               Container(
-                  child: basicContent("服务条款" + arr[3], tapFunc: () {
+                  child: basicContent("服务条款", tapFunc: () {
                 XTRouter.pushToPage(
                     routerName:
                         "https://myouxuan.hzxituan.com/h5/notify/user-agreement.html",

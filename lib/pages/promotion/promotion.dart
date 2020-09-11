@@ -34,7 +34,8 @@ class _PromotionState extends State<Promotion> {
     return Scaffold(
       appBar: xtBackBar(
           title: "活动", back: () => XTRouter.closePage(context: context)),
-      body: xtText("活动页呀" + widget.params["id"], 20, mainRedColor),
+      body:  ListView()
+      // xtText("活动页呀" + widget.params["id"], 20, mainRedColor),
     );
   }
 }
