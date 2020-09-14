@@ -13,6 +13,7 @@ class HttpRequest {
       bool hideSuccessToast = true, //每一个请求成功之后返回的数据 message 是否要toast
       bool processData = true, //进度
       bool noBase = true, //不需要baseUrl ，默认走配置
+      bool dealData = true, //是否要处理返回数据  默认处理  
       Map<String, dynamic> params, //body 体参数
       Map<String, dynamic> queryParameters, //url 后拼接参数
       Interceptor inter}) async {
@@ -52,6 +53,10 @@ class HttpRequest {
       Response response = await dio.request(url,
           data: params, queryParameters: queryParameters, options: options);
       print(response);
+
+      if (!dealData) {
+        return response.data;
+      }
 
       Map<String, dynamic> map = response.data;
       if (!processData) {
