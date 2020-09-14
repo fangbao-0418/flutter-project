@@ -10,7 +10,7 @@ import 'package:xtflutter/utils/report.dart';
 
 ///原生跳转参数配置
 String makeRouter(bool isNative, Map argument, String url) {
-  var map = {"native": isNative, "arg": argument, "url": url};
+  var map = {"fl-native-fl": isNative, "arg": argument, "url": url};
   var result = json.encode(map);
   return result;
 }
