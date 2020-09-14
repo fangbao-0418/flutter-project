@@ -22,7 +22,7 @@ class XTNetError {
         print('============= XtError start =============');
     print(this.toString());
     print('============= XtError end =============');
-    reportNetError(this);
+    // reportNetError(this);
   }
   String toString() {
     var msg = 'XTNetError $type, ${message ?? error.toString()}';

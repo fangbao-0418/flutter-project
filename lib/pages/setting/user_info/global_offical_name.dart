@@ -8,6 +8,7 @@ import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 
+
 class GlobalOfficalName extends StatefulWidget {
   static String routerName = "officalname";
 
@@ -36,6 +37,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
   List listP = [];
 
   void _xtback(BuildContext context) {
+    clearInfo();
     if (pState == PageState.none) {
       XTRouter.closePage(context: context);
     } else if (pState == PageState.showAdd) {
@@ -64,9 +66,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
       mm.isDefault = _selectNormal;
       mm.name = _name;
       mm.idNo = _idNo;
-      _name = "";
-      _idNo = "";
-      _selectNormal = 0;
+      clearInfo();
       listP.add(mm);
       setState(() {
         pState = PageState.showlist;
@@ -75,6 +75,14 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
     }).whenComplete(() {
       Loading.hide();
     });
+  }
+
+  void clearInfo() {
+    nameC.clear();
+    idC.clear();
+    _name = "";
+    _idNo = "";
+    _selectNormal = 0;
   }
 
   /// 删除实名

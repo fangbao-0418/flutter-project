@@ -7,14 +7,17 @@ import 'package:xtflutter/net_work/local/helper.dart' as local;
 
 class HttpRequest {
   static Future<T> request<T>(String url,
-      {String method = "get",
-      bool hideToast = true,
-      bool processData = true,
-      Map<String, dynamic> params,
-      Map<String, dynamic> queryParameters,
+      {String method = "get", //默认请求方式
+      bool hideToast = true, //每一个请求返回的数据 message 是否要toast
+      bool hideErrorToast = true, //每一个请求失败之后返回的数据 message 是否要toast
+      bool hideSuccessToast = true, //每一个请求成功之后返回的数据 message 是否要toast
+      bool processData = true, //进度
+      bool noBase = true, //不需要baseUrl ，默认走配置
+      Map<String, dynamic> params, //body 体参数
+      Map<String, dynamic> queryParameters, //url 后拼接参数
       Interceptor inter}) async {
     BaseOptions baseOptions = BaseOptions(
-      baseUrl: AppConfig.getInstance().baseURL,
+      baseUrl: noBase ? AppConfig.getInstance().baseURL : "",
       connectTimeout: AppConfig.getInstance().timeout,
     );
 
@@ -48,27 +51,29 @@ class HttpRequest {
     try {
       Response response = await dio.request(url,
           data: params, queryParameters: queryParameters, options: options);
-      // print(response);
+      print(response);
+
       Map<String, dynamic> map = response.data;
       if (!processData) {
         return response as T;
       }
+
       if (map["success"] == false) {
         XTNetError xtNetError = XTNetError(
             type: XTNetErrorType.DEFAULT,
             message: map["message"],
-            data: map,
-            error: DioError(
-                type: DioErrorType.DEFAULT,
-                request: response.request,
-                response: response));
-        if (!hideToast) {
+            data: map.toString(),
+            error: null);
+        if (!hideToast || !hideErrorToast) {
           print('show message');
           Toast.showToast(msg: map["message"]);
         }
+        print(xtNetError.message);
+        print(xtNetError.data);
+
         return Future.error(xtNetError);
       } else {
-        if (!hideToast) {
+        if (!hideToast || !hideSuccessToast) {
           Toast.showToast(msg: map["message"]);
         }
         return map["data"] as T;
@@ -78,15 +83,16 @@ class HttpRequest {
       print(e.toString());
       print("e.toString()-------------------");
       XTNetError xtNetError;
-      String message = '';
+      String message = '网络异常';
       if (e is DioError) {
         print(e.type);
         // dio error
         xtNetError = XTNetError(
           dioErrorType: e.type,
-          error: e,
+          error: null,
           type: XTNetErrorType.DIO_ERROR,
         );
+
         if (e.type == DioErrorType.DEFAULT) {
           message = '网络异常';
         } else if (e.type == DioErrorType.RESPONSE) {
@@ -108,20 +114,11 @@ class HttpRequest {
         xtNetError = XTNetError(type: XTNetErrorType.SYNTAX_ERROR, error: e);
       }
       xtNetError.message = message;
-      if (!hideToast && message != '') {
+      if (!hideToast || !hideErrorToast) {
         Toast.showToast(msg: message);
       }
       return Future.error(xtNetError);
     }
-  }
-
-  static void xtprintRequest(RequestOptions request) {
-    // print(request.uri);
-    // print(request.baseUrl);
-    // print(request.path);
-    // print(request.queryParameters);
-    // print(request.method);
-    // print(request.headers.toString());
   }
 
   static Future<T> requestOnly<T>(String url, {String method = "get"}) async {
@@ -129,7 +126,10 @@ class HttpRequest {
       connectTimeout: AppConfig.getInstance().timeout,
     );
     Dio dio = Dio(baseOptions);
-    local.helper(dio);
+    if (needHttpDebug) {
+      local.helper(dio);
+    }
+
     final options = Options(method: method, headers: {
       "xt-platform": AppConfig.getInstance().platform,
       "device-info": AppConfig.getInstance().device,

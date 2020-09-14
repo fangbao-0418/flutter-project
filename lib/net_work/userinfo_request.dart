@@ -82,17 +82,16 @@ class XTUserInfoRequest {
     const url = "/cweb/memberAuthentication/add";
     final result = await HttpRequest.request(url,
         method: "post",
-        params: {"name": name, "idNo": idNo, "isDefault": isDefault});
+        params: {"name": name, "idNo": idNo, "isDefault": isDefault},
+        hideToast: false);
     return result;
   }
 
 // 删除实名信息
   static Future<dynamic> addmemberDelete(int id) async {
     String url = "/cweb/memberAuthentication/delete/" + id.toString();
-    final result = await HttpRequest.request(
-      url,
-      method: "delete",
-    );
+    final result =
+        await HttpRequest.request(url, method: "delete", hideToast: false);
     return result;
   }
 

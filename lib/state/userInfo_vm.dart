@@ -7,6 +7,10 @@ class UserInfoVM extends ChangeNotifier {
 
   ///更新用户信息
   void updateUser(UserInfoModel info) {
+    if (info.idCard != null && info.idCard.length == 18) {
+      var str = info.idCard;
+      info.idCard = str.replaceRange(6, 14, "******");
+    }
     _user = info;
 
     notifyListeners();
@@ -23,6 +27,7 @@ class UserInfoVM extends ChangeNotifier {
   }
 
   void updateRealInfo(String idcard, String name) {
+    idcard = idcard.replaceRange(6, 14, "******");
     _user.idCard = idcard;
     _user.userName = name;
     notifyListeners();

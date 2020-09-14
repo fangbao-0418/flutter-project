@@ -94,6 +94,9 @@ class _AddressListPageState extends State<AddressListPage> {
           size: 20,
         ),
         onPressed: () {
+          if (model.defaultAddress == 1) {
+            return;
+          }
           XTUserInfoRequest.setDefaultAddress(model.id).then((value) {
             // Toast.showToast(msg: '设置默认地址成功');
             // print("地址ID：" + model.id.toString() + "状态:" + value.toString());

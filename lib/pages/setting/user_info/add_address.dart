@@ -321,15 +321,14 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 hintStyle: TextStyle(color: xtColor_B9B5B5, fontSize: 14),
                 contentPadding: EdgeInsets.only(left: 15, right: 15),
                 border: InputBorder.none,
-                suffixIconConstraints: BoxConstraints(
-                  minHeight: 15,
-                  minWidth: 15
-                ),
-                suffixIcon: (isReveive ? isOnFocusName : isOnFocusPhone) ? xtTextFieldClear(
-                  onPressed: () {
-                    _clearTextAction(isReveive ? receiveTextCon : phoneTextCon);
-                  }
-                ) : null,
+                suffixIconConstraints:
+                    BoxConstraints(minHeight: 15, minWidth: 15),
+                suffixIcon: (isReveive ? isOnFocusName : isOnFocusPhone)
+                    ? xtTextFieldClear(onPressed: () {
+                        _clearTextAction(
+                            isReveive ? receiveTextCon : phoneTextCon);
+                      })
+                    : null,
               ),
               onEditingComplete: () => _closeKeyboard(),
               onTap: () {

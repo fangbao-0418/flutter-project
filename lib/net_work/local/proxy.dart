@@ -1,7 +1,7 @@
 import 'package:xtflutter/utils/global.dart';
 
 ///IP 地址
-const String localProxy = "PROXY 192.168.4.152:8888";
+const String localProxy = "PROXY 192.168.5.110:8888";
 
 ///用户token
 const String localToken =
@@ -14,4 +14,4 @@ const String localBaseurl = "https://youxuan-api.hzxituan.com";
 const inApp = true;
 
 ///是否要抓包
-const needHttpDebug = true;
+const needHttpDebug = false;
