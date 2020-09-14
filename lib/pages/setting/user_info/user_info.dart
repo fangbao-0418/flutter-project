@@ -73,8 +73,8 @@ class _UserInfoPageState extends State<UserInfoPage>
   Future getUserInfoData() {
     print('getUserInfoData');
     return XTUserInfoRequest.getUserInfoData().then((value) {
-      final usermodel = Provider.of<UserInfoVM>(context);
-      UserInfoModel mode = UserInfoModel.fromJson(Map.from(value.data));
+      final usermodel = Provider.of<UserInfoVM>(context,listen: false);
+      UserInfoModel mode = UserInfoModel.fromJson(Map.from(value));
       usermodel.updateUser(mode);
       return value;
     });

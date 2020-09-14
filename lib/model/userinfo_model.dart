@@ -127,7 +127,7 @@ class InviteMemberVo {
   String joinTime;
   int memberType;
   int memberTypeLevel;
-  bool isUpdateInvite;
+  int isUpdateInvite;
   int updateInviteTime;
 
   factory InviteMemberVo.fromJson(Map<String, dynamic> json) {
