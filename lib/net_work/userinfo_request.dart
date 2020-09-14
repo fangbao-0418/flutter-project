@@ -133,7 +133,7 @@ class XTUserInfoRequest {
         realUrl = areaUrl;
         break;
     }
-    return await HttpRequest.requestOnly(realUrl);
+    return await HttpRequest.request(realUrl, noBase: false, dealData: false);
   }
 
   static Map cityDataSuccess(List resluts) {

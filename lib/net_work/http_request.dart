@@ -18,7 +18,7 @@ class HttpRequest {
       Map<String, dynamic> queryParameters, //url 后拼接参数
       Interceptor inter}) async {
     BaseOptions baseOptions = BaseOptions(
-      baseUrl: noBase ? AppConfig.getInstance().baseURL : "",
+      baseUrl: noBase ? AppConfig.getInstance().baseURL : null,
       connectTimeout: AppConfig.getInstance().timeout,
     );
 
