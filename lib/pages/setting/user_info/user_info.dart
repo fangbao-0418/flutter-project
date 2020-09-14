@@ -82,7 +82,6 @@ class _UserInfoPageState extends State<UserInfoPage>
 
   @override
   Widget build(BuildContext context) {
-    final usermodel = Provider.of<UserInfoVM>(context);
 
     return Scaffold(
         backgroundColor: mainF5GrayColor,
@@ -90,6 +89,7 @@ class _UserInfoPageState extends State<UserInfoPage>
         body: FutureBuilder(
             future: getUserInfoData(),
             builder: (context, result) {
+              final usermodel = Provider.of<UserInfoVM>(context);
               if (!result.hasData) {
                 return Card(
                   shape: xtShapeRound(10.0),
