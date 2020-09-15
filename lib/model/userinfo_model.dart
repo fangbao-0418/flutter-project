@@ -7,7 +7,6 @@ class UserInfoModel {
     this.id,
     this.phone,
     this.memberType,
-    this.memberTypeLevel,
     this.memberTypeTime,
     this.parentMemberId,
     this.headImage,
@@ -30,7 +29,6 @@ class UserInfoModel {
   int id; //用户ID
   String phone; //手机号
   int memberType; //类型
-  int memberTypeLevel;
   int memberTypeTime;
   int parentMemberId; //上层ID
   String headImage = ""; //头像
@@ -55,13 +53,11 @@ class UserInfoModel {
     }
     json["id"] = int.parse(json["id"].toString());
     json["memberType"] = int.parse(json["memberType"].toString());
-    json["memberTypeLevel"] = int.parse(json["memberTypeLevel"].toString());
 
     return UserInfoModel(
       id: json["id"],
       phone: json["phone"],
       memberType: json["memberType"],
-      memberTypeLevel: json["memberTypeLevel"],
       memberTypeTime: json["memberTypeTime"],
       parentMemberId: json["parentMemberId"],
       headImage: json["headImage"],
@@ -86,7 +82,6 @@ class UserInfoModel {
         "id": id,
         "phone": phone,
         "memberType": memberType,
-        "memberTypeLevel": memberTypeLevel,
         "memberTypeTime": memberTypeTime,
         "parentMemberId": parentMemberId,
         "headImage": headImage,

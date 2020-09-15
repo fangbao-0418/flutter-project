@@ -91,7 +91,8 @@ class LogsDB {
       if (results is Map) {
         limit = results.length > limit ? limit : results.length;
       }
-      batch.rawDelete('DELETE FROM $_table limit 0, $limit');
+      print("takeData===$results");
+      batch.rawDelete('DELETE FROM $_table where content in(select content from $_table limit 0, $limit)');
       await batch.commit();
 
       return results[0] ?? [];
