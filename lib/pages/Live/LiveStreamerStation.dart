@@ -27,28 +27,46 @@ class _LiveStreamerStationPageState extends State<LiveStreamerStationPage> {
     print("liveStationHeight:${AppConfig.navH}");
     return Scaffold(
       body: Stack(children: <Widget>[
+        obtainTopBgImage(),
         obtainLiveAppBar(),
-        Container(
-          padding: EdgeInsets.only(top: AppConfig.navH),
-            child: ListView.builder(
-                padding: EdgeInsets.only(top: 0),
-                itemCount: 10,
-                itemBuilder: (context, index) {
+        obtainListViewContainer(),
+      ],
+    ));
+  }
+
+  Widget obtainListViewContainer(){
+    return Container(
+        padding: EdgeInsets.only(top: AppConfig.navH),
+        child: ListView.builder(
+            padding: EdgeInsets.only(top: 0),
+            itemCount: 10,
+            itemBuilder: (context, index) {
 //            final model = models[index];
-                  if (index == 0) {
-                    return obtainProfileWidget();
-                  } else {
-                    return Container();
-                  }
-                })),
-      ],)
+              if (index == 0) {
+                return obtainProfileWidget();
+              } else {
+                return Container();
+              }
+            }
+        )
     );
+  }
+
+  //顶部背景图片
+  Widget obtainTopBgImage(){
+    return Container(
+        width: double.infinity,
+        child: Image(
+          image: AssetImage("images/live_station_top_bg.png"),
+          fit: BoxFit.fitWidth,
+        ));
   }
 
   Widget obtainLiveAppBar() {
     return Container(
       height: AppConfig.navH,
       child: AppBar(
+        backgroundColor: Colors.transparent,
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -94,12 +112,6 @@ class _LiveStreamerStationPageState extends State<LiveStreamerStationPage> {
   Widget obtainProfileWidget(){
     return Stack(
       children: <Widget>[
-        Container(
-            width: double.infinity,
-            child: Image(
-              image: AssetImage("images/live_station_top_bg.png"),
-              fit: BoxFit.fitWidth,
-            )),
         Row(
           children: <Widget>[
             Container(
