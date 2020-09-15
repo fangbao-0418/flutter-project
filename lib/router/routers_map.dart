@@ -15,6 +15,7 @@ import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:xtflutter/pages/demo_page/page1.dart';
 import 'package:xtflutter/pages/demo_page/page2.dart';
 import 'package:xtflutter/pages/demo_page/page3.dart';
+import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
 
 Map<String, PageBuilder> routeConfigs = {
   'page1': (pageName, params, _) => Testpage1(),
@@ -69,4 +70,8 @@ Map<String, PageBuilder> routeConfigs = {
   /// -------------------------  Home  -------------------------
   /// 限时秒杀
   LimitTimeSeckillPage.routerName: (pageName, params, _) => LimitTimeSeckillPage(),
+
+  /// -------------------------  Live  -------------------------
+  /// 主播台
+  LiveStreamerStationPage.routerName: (pageName, params, _) => LiveStreamerStationPage(),
 };

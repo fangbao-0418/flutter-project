@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
+import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
@@ -28,6 +29,7 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("height:${AppConfig.navH}");
     return Scaffold(
       backgroundColor: mainF5GrayColor,
       appBar: xtBackBar(
@@ -72,6 +74,9 @@ class _SettingPageState extends State<SettingPage> {
           ),
         ],
       ),
+      floatingActionButton: FlatButton(onPressed: (){
+        XTRouter.pushToPage(routerName: LiveStreamerStationPage.routerName, context: context);
+      }, child: xtText("主播台跳转", 22, Colors.black)),
     );
   }
 
