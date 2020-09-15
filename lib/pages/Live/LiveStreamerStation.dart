@@ -26,9 +26,7 @@ class _LiveStreamerStationPageState extends State<LiveStreamerStationPage> {
   Widget build(BuildContext context) {
     print("liveStationHeight:${AppConfig.navH}");
     return Scaffold(
-      appBar: AppBar(),
       body: Stack(children: <Widget>[
-
         obtainLiveAppBar(),
         Container(
           padding: EdgeInsets.only(top: AppConfig.navH),
@@ -51,7 +49,6 @@ class _LiveStreamerStationPageState extends State<LiveStreamerStationPage> {
     return Container(
       height: AppConfig.navH,
       child: AppBar(
-        backgroundColor: xtColor_E10264,
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -83,8 +80,6 @@ class _LiveStreamerStationPageState extends State<LiveStreamerStationPage> {
         actions: <Widget>[
           FlatButton(
             textColor: whiteColor,
-            splashColor: xtColor_E10264,
-            highlightColor: xtColor_E10264,
             child: Text("我的店铺", style: xtstyle(14, whiteColor)),
             onPressed: () {
               Toast.showToast(msg: "我的店铺", context: context);
