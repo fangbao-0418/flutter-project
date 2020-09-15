@@ -6,9 +6,9 @@ class HomeRequest {
   static Future<Map<String, dynamic>> getSeckillListReq(Map<String, dynamic> params) async {
     const url = "/ncweb/product/promotion/seckill/list/v4";
     List<LimitTimeSeckillModel> list = [];
-    final result = await HttpRequest.request(url, queryParameters: params, hideToast: false);
-    List models = result;
     int defaultIndex = 0;
+    final result = await HttpRequest.request(url, queryParameters: params, hideErrorToast: false);
+    List models = result;
     for (var i = 0; i < models.length; i++) {
       LimitTimeSeckillModel model = LimitTimeSeckillModel.fromJson(models[i]);
       list.add(model);
