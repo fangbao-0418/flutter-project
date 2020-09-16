@@ -41,7 +41,6 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
       setState(() => _wechatAccountCon.text = arg.toString());
     });
     bus.on(WeChatInfoQrChangePage.busEventName, (arg) {
-      print("busEventName11 == " + arg.toString());
       setState(() => _wechatQrImgUrl = arg.toString());
     });
   }

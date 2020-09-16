@@ -8,6 +8,7 @@ import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:xtflutter/utils/event_bus.dart';
 
 class AddressListPage extends StatefulWidget {
   static String routerName = "addressList";
@@ -34,6 +35,9 @@ class _AddressListPageState extends State<AddressListPage> {
   initState() {
     super.initState();
     future = XTUserInfoRequest.obtainAddressList();
+    bus.on(AddAddressPage.busEventName, (arg) {
+      refresh();
+    });
   }
 
   @override
@@ -70,13 +74,7 @@ class _AddressListPageState extends State<AddressListPage> {
             XTRouter.pushToPage(
               routerName: AddAddressPage.routerName,
               context: context,
-            ).then((value) {
-              Map result = Map<String, dynamic>.from(value);
-              if (result["isRefresh"] == true) {
-                refresh();
-                print("新增地址成功后，地址列表刷新");
-              }
-            });
+            );
           },
           child:xtText("新增收货地址", 15, whiteColor)
       ),
@@ -155,13 +153,7 @@ class _AddressListPageState extends State<AddressListPage> {
                       routerName: AddAddressPage.routerName,
                       params: model.toJson(),
                       context: context,
-                    ).then((value) {
-                      Map result = Map<String, dynamic>.from(value);
-                      if (result["isRefresh"] == true) {
-                        refresh();
-                        print("修改地址成功后，地址列表刷新");
-                      }
-                    });
+                    );
                   },
                   icon: ImageIcon(
                     AssetImage('images/my_address_list_edit.png'),
@@ -225,13 +217,7 @@ class _AddressListPageState extends State<AddressListPage> {
             XTRouter.pushToPage(
               routerName: AddAddressPage.routerName,
               context: context,
-            ).then((value) {
-              Map result = Map<String, dynamic>.from(value);
-              if (result["isRefresh"] == true) {
-                refresh();
-                print("新增地址成功后，地址列表刷新");
-              }
-            });
+            );
           },
           child:xtText("新增收货地址", 15, whiteColor),
         ),

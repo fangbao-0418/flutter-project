@@ -10,9 +10,11 @@ import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:flutter_picker/Picker.dart';
+import 'package:xtflutter/utils/event_bus.dart';
 
 class AddAddressPage extends StatefulWidget {
   static String routerName = "addAddress";
+  static String busEventName = "addressUpate";
 
   AddAddressPage({this.name, this.params});
 
@@ -145,7 +147,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
     Loading.show(context: context);
     XTUserInfoRequest.addressInfoRequest(params, isAdd).then((value) {
       showToast(_isAddAddress ? "保存成功" : "修改成功");
-      XTRouter.closePage(context: context, result: {"isRefresh": true});
+      bus.emit(AddAddressPage.busEventName);
+      XTRouter.closePage(context: context);
     }).catchError((err) {
       showToast(err.message);
     }).whenComplete(() {

@@ -52,7 +52,6 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
         "wechat": _wechatAccountCon.text,
       });
       if (isSuccess) {
-        Toast.showToast(msg: "更换成功");
         bus.emit(WeChatInfoNameChangePage.busEventName, _wechatAccountCon.text);
         XTRouter.closePage(context: context);
       } else {
@@ -177,7 +176,6 @@ class _WeChatInfoQrChangePageState extends State<WeChatInfoQrChangePage> {
         "wxQr": _qrUrl,
       });
       if (isSuccess) {
-        Toast.showToast(msg: "更换成功");
         bus.emit(WeChatInfoQrChangePage.busEventName, _qrUrl);
         XTRouter.closePage(context: context);
       } else {
