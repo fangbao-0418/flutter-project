@@ -78,7 +78,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
           height: 48,
           child: Tab(
             iconMargin: EdgeInsets.only(bottom: 3),
-            icon: Text(e.promotionStartTimeDesc, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+            icon: Text(e.promotionStartTimeDesc, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
             child: Text(e.desc, style: TextStyle(fontSize: 10)),
           ),
         )
@@ -130,9 +130,24 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
             tabs: _getTimeTabs()
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: _getViewTabs(),
+        body: Stack(
+          children: <Widget>[
+            TabBarView(
+              controller: _tabController,
+              children: _getViewTabs(),
+            ),
+            Positioned(
+              bottom: 160,
+              right: 0,
+              child: FlatButton(
+                onPressed: () {
+                  Toast.showToast(msg: "分享");
+                }, 
+                padding: EdgeInsets.zero,
+                child: Image.asset("images/limit_time_seckill_share.png")
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -347,18 +362,18 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                 children: <Widget>[
                                   Container(
                                     width: 100,
-                                    height: 10,
+                                    height: 12,
                                     decoration: BoxDecoration(
                                       color: xtColor_4DE60113,
-                                      borderRadius: BorderRadius.all(Radius.circular(5))
+                                      borderRadius: BorderRadius.all(Radius.circular(6))
                                     ),
                                   ),
                                   Container(
                                     width: 100 * model.sellRatio,
-                                    height: 10,
+                                    height: 12,
                                     decoration: BoxDecoration(
                                       color: mainRedColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(5))
+                                      borderRadius: BorderRadius.all(Radius.circular(6))
                                     ),
                                   ),
                                   xtText(model.sellText, 9, Colors.white, fontWeight: FontWeight.w500)
@@ -371,7 +386,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                       ],
                     ),
                     Visibility(
-                      visible: AppConfig.user.memberType >= 10,
+                      visible: (AppConfig.isLogin && AppConfig.user.memberType != null && AppConfig.user.memberType >= 10),
                       child: Row(
                         children: <Widget>[
                           Container(
@@ -397,7 +412,13 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                              xtText("¥", 18, _status == SeckillStatus.noStart ? xtColor_33AB33 : mainRedColor, fontWeight: FontWeight.w500, alignment: TextAlign.center),
+                              xtText(
+                                "¥", 
+                                18, 
+                                _status == SeckillStatus.noStart ? xtColor_33AB33 : mainRedColor, 
+                                fontWeight: FontWeight.w500, 
+                                alignment: TextAlign.center
+                              ),
                               xtText(
                                 (model.buyingPrice / 100).toString(), 
                                 24, 
@@ -421,7 +442,13 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                           FlatButton(
                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                             color: _status == SeckillStatus.noStart ? Colors.white : mainRedColor,
-                            shape: _status == SeckillStatus.noStart ? xtShapeRoundLineCorners(radius: 6, lineColor: (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33), lineWidth: 1) : xtShapeRound(6),
+                            shape: _status == SeckillStatus.noStart ? 
+                              xtShapeRoundLineCorners(
+                                radius: 6, 
+                                lineColor: (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33), 
+                                lineWidth: 1
+                              ) 
+                              : xtShapeRound(6),
                             onPressed: () => _clickAction(model),
                             child: xtText(
                               _status == SeckillStatus.noStart ? (model.isSub ? "取消提醒" : "提醒我") : "立即抢", 
