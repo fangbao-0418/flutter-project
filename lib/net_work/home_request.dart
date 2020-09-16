@@ -19,4 +19,10 @@ class HomeRequest {
     return {"dataList": list, "defaultIndex": defaultIndex};
   }
 
+  static Future<String> seckillMegSub(Map<String, dynamic> params) async {
+    const url = "/ncweb/promotion/message/subscribe";
+    final result = await HttpRequest.request(url, method: "post", params: params, hideErrorToast: false);
+    return result as String;
+  }
+
 }

@@ -186,6 +186,11 @@ class AppConfig {
   static get cityValueList {
     return _instance.cityValue;
   }
+
+  /// 平台
+  static get osPlatform {
+    return _instance.platform;
+  }
 }
 
 ///埋点的信息

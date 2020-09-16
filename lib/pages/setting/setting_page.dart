@@ -74,9 +74,22 @@ class _SettingPageState extends State<SettingPage> {
           ),
         ],
       ),
-      floatingActionButton: FlatButton(onPressed: (){
-        XTRouter.pushToPage(routerName: LiveStreamerStationPage.routerName, context: context);
-      }, child: xtText("主播台跳转", 22, Colors.black)),
+      floatingActionButton: Row(
+        children: <Widget>[
+          FlatButton(
+            onPressed: (){
+              XTRouter.pushToPage(routerName: LiveStreamerStationPage.routerName, context: context);
+            }, 
+            child: xtText("主播台", 22, Colors.black)
+          ),
+          FlatButton(
+            onPressed: (){
+              XTRouter.pushToPage(routerName: LimitTimeSeckillPage.routerName, context: context);
+            }, 
+            child: xtText("限时秒杀", 22, Colors.black)
+          ),
+        ],
+      ),
     );
   }
 

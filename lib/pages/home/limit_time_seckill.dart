@@ -1,16 +1,15 @@
 import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/net_work/home_request.dart';
-import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:xtflutter/utils/appconfig.dart';
 
 class LimitTimeSeckillPage extends StatefulWidget {
   static String routerName = "limitTimeSpick";
@@ -31,8 +30,8 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
   int _lastIndex = 0;
   /// 数据列表
   List<LimitTimeSeckillModel> _dataList = [];
-
-  LimitTimeSeckillProductModel _providerModel;
+  /// GlobalKey列表
+  List<GlobalKey<_LimitTimeSeckillListPageState>> globlKeys = [];
 
   @override
   void initState() {
@@ -53,6 +52,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
       _tabController = TabController(length: _length, vsync: this);
       _tabController.addListener(() {
         if (_lastIndex != _tabController.index) {
+          _changeSeckillIndex(_tabController.index);
           _lastIndex = _tabController.index;
         }
       });
@@ -61,6 +61,12 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
         _tabController.index = _defaultIndex;
       });
     }
+  }
+
+  void _changeSeckillIndex(int index) async {
+    Timer(Duration(milliseconds: 100), () {
+      globlKeys[index].currentState.updateProductList();
+    });
   }
 
   /// 获取时间列表
@@ -83,64 +89,61 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
 
   List<Widget> _getViewTabs() {
     List<Widget> childred = [];
-    _dataList.forEach((e) {
+    for (var i = 0; i < _dataList.length; i++) {
+      GlobalKey<_LimitTimeSeckillListPageState> listPageStateKey = GlobalKey<_LimitTimeSeckillListPageState>();
       childred.add(
         Container(
-          child: LimitTimeSeckillListPage(infoModel: e),
+          child: LimitTimeSeckillListPage(infoModel: _dataList[i], seckillIndex: i, key: listPageStateKey),
         )
-      );     
-    });
+      );
+      globlKeys.add(listPageStateKey);
+    }
     return childred;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (ctx) => _providerModel,
-      child: DefaultTabController(
-        length: _length, 
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: mainRedColor,
-            elevation: 0,
-            leading: IconButton(
-              color: Colors.white,
-              icon: Icon(
-                Icons.arrow_back,
-                size: 22,
-              ),
-              onPressed: () => XTRouter.closePage(context: context),
+    return DefaultTabController(
+      length: _length, 
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: mainRedColor,
+          elevation: 0,
+          leading: IconButton(
+            color: Colors.white,
+            icon: Icon(
+              Icons.arrow_back,
+              size: 22,
             ),
-            title: xtText("限时秒杀", 18, Colors.white),
-            bottom: TabBar(
-              controller: _tabController,
-              labelColor: Colors.white,
-              unselectedLabelColor: xtColor_B3FFFFFF,
-              indicatorColor: Colors.transparent,
-              isScrollable: true,
-              onTap: (int index) {
-                _lastIndex = index;
-              },
-              tabs: _getTimeTabs()
-            ),
+            onPressed: () => XTRouter.closePage(context: context),
           ),
-          body: TabBarView(
+          title: xtText("限时秒杀", 18, Colors.white),
+          bottom: TabBar(
             controller: _tabController,
-            children: _getViewTabs(),
+            labelColor: Colors.white,
+            unselectedLabelColor: xtColor_B3FFFFFF,
+            indicatorColor: Colors.transparent,
+            isScrollable: true,
+            onTap: (int index) {
+              _lastIndex = index;
+            },
+            tabs: _getTimeTabs()
           ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: _getViewTabs(),
         ),
       ),
     );
   }
 }
 
-
-
 class LimitTimeSeckillListPage extends StatefulWidget {
-  LimitTimeSeckillListPage({this.infoModel});
+  LimitTimeSeckillListPage({this.infoModel, this.seckillIndex, Key key}) : super(key: key);
 
   final LimitTimeSeckillModel infoModel;
-  
+  final int seckillIndex;
 
   @override
   _LimitTimeSeckillListPageState createState() => _LimitTimeSeckillListPageState();
@@ -151,145 +154,290 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   List<LimitTimeSeckillProductModel> _productList = [];
   /// 刷新器
   RefreshController _refreshController = RefreshController(initialRefresh: false);
+  /// 页码
+  int _pageIndex = 1;
+  /// 营销id
+  int _promotionId = 0;
+  /// 索引
+  int _seckillIndex = 0;
+  /// 开抢状态
+  SeckillStatus _status = SeckillStatus.buying;
 
   @override
   void initState() {
     super.initState();
     _productList = widget.infoModel.products;
+    _promotionId = widget.infoModel.promotionId;
+    _seckillIndex = widget.seckillIndex;
+    _status = widget.infoModel.seckillStatus;
   }
 
+  /// 重写setState方法
+  @override
+  void setState(fn) {
+    if (this.mounted) {
+      super.setState(fn);
+    }
+  }
+
+  /// 保持当前页面存活
   @override
   bool get wantKeepAlive => true;
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Container(
       child: _getListView(_productList),
     );
   }
 
-  void _onLoading() async {
-
+  /// 更新数据源
+  void updateProductList() async {
+    if (!(_productList == null || _productList.isEmpty)) {
+      return;
+    }
+    getProductListReq();
   }
 
-  Widget _getListView(List<LimitTimeSeckillProductModel> products) {
-    return ListView.builder(
-      itemExtent: 142,
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        return _getCellWithModel(products[index]);
+  /// 请求数据
+  void getProductListReq({bool isFirst = true}) async {
+    if (_pageIndex == 1) { Loading.show(); }
+    Map<String, dynamic> result = await HomeRequest.getSeckillListReq({"page": _pageIndex, "promotionId": _promotionId})
+    .whenComplete(() {
+      Loading.hide();
+    });
+    List<LimitTimeSeckillModel> list = result["dataList"];
+    List<LimitTimeSeckillProductModel> products = list[_seckillIndex].products;
+    setState(() {
+      if (_pageIndex == 1) {
+        _productList = products;
+      } else {
+        _productList.addAll(products);
       }
+    });
+    if (!isFirst) {
+        if (products.length < 10) {
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.loadComplete();
+        }
+      }
+  }
+
+  /// 上拉加载
+  void _onLoading() {
+    _pageIndex ++;
+    getProductListReq(isFirst: false);
+  }
+
+  /// 点击操作
+  void _clickAction(LimitTimeSeckillProductModel model) async {
+    switch (_status) {
+      case SeckillStatus.noStart:
+        Map<String, dynamic> params = {
+          "productName": model.productName,
+          "promotionId": _promotionId,
+          "productId": model.productId,
+          "platform": AppConfig.osPlatform,
+          "type": model.isSub ? 1 : 0
+        };
+        String result = await HomeRequest.seckillMegSub(params);
+        Toast.showToast(msg: result);
+        setState(() {
+          model.isSub = !model.isSub;
+        });
+        break;
+      default:
+        _gotoDetail(model);
+    }
+  }
+
+  /// 前往详情页面
+  void _gotoDetail(LimitTimeSeckillProductModel model) {
+    XTRouter.pushToPage(
+      routerName: "goods-detail?id=${model.productId}", 
+      context: context, 
+      isNativePage: true
     );
   }
 
+  /// 获取列表widget
+  Widget _getListView(List<LimitTimeSeckillProductModel> products) {
+    return SmartRefresher(
+      controller: _refreshController,
+      enablePullUp: true,
+      enablePullDown: false,
+      footer: CustomFooter(
+        builder: (BuildContext context,LoadStatus mode){
+          Widget body ;
+          if(mode==LoadStatus.idle){
+            body =  Text("上拉加载");
+          }
+          else if(mode==LoadStatus.loading){
+            body =  CupertinoActivityIndicator();
+          }
+          else if(mode == LoadStatus.failed){
+            body = Text("加载失败，请重试");
+          }
+          else if(mode == LoadStatus.canLoading){
+            body = Text("松开加载");
+          }
+          else{
+            body = Text("没后更多了");
+          }
+          return Container(
+            margin: EdgeInsets.only(bottom: AppConfig.bottomH + 20),
+            height: 55.0,
+            child: Center(child:body),
+          );
+        },
+      ),
+      onLoading: _onLoading,
+      child: ListView.builder(
+        itemExtent: 145,
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          return _getCellWithModel(products[index]);
+        }
+      ),
+    );
+  }
+
+  /// 获取单元格widget
   Widget _getCellWithModel(LimitTimeSeckillProductModel model) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(12, 8, 12, 0),
-      color: Colors.white,
-      shape: xtShapeRound(8),
-      elevation: 0,
-      child: Row(
-        children: <Widget>[
-          SizedBox(width: 8),
-          xtRoundAvatarImage(110, 8, model.coverImage),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 16, right: 12, top: 12, bottom: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      xtText(model.productName, 14, mainBlackColor, maxLines: 2, overflow: TextOverflow.ellipsis),
-                      SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Stack(
-                            alignment: Alignment.centerLeft,
+    return GestureDetector(
+      onTap: () => _gotoDetail(model),
+      child: Card(
+        margin: EdgeInsets.fromLTRB(12, 8, 12, 0),
+        color: Colors.white,
+        shape: xtShapeRound(8),
+        elevation: 0,
+        child: Row(
+          children: <Widget>[
+            SizedBox(width: 8),
+            xtRoundAvatarImage(110, 8, model.coverImage),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 16, right: 12, top: 12, bottom: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        xtText(model.productName, 14, mainBlackColor, maxLines: 2, overflow: TextOverflow.ellipsis),
+                        SizedBox(height: 5),
+                        Visibility(
+                          visible: _status == SeckillStatus.noStart,
+                          child: Row(
                             children: <Widget>[
-                              Container(
-                                width: 100,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  color: xtColor_4DE60113,
-                                  borderRadius: BorderRadius.all(Radius.circular(5))
-                                ),
-                              ),
-                              Container(
-                                width: 100 * model.sealsRatio,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  color: mainRedColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(5))
-                                ),
-                              ),
-                              xtText(model.sealsText, 9, Colors.white, fontWeight: FontWeight.w500)
+                              xtText(model.limitNumText, 12, main99GrayColor),
                             ],
-                          ),
-                          xtText(model.sealsCountText, 10, mainBlackColor)
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(left: 2, right: 2),
-                        alignment: Alignment.centerLeft,
-                        child: xtText(model.mostEarnText, 10, xtColor_FF6600, alignment: TextAlign.center),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                          border: Border.all(
-                            color: xtColor_FF6600,
-                            width: 0.5
                           )
                         ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    height: 30,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            xtText("¥", 18, mainRedColor, fontWeight: FontWeight.w500, alignment: TextAlign.center),
-                            xtText((model.buyingPrice / 100).toString(), 24, mainRedColor, fontWeight: FontWeight.w500, alignment: TextAlign.center),
-                            Text(
-                              model.marketPriceText,
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 12,
-                                color: mainA8GrayColor,
-                                decoration: TextDecoration.lineThrough,
-                                decorationColor: mainA8GrayColor
+                        Visibility(
+                          visible: _status != SeckillStatus.noStart,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Stack(
+                                alignment: Alignment.centerLeft,
+                                children: <Widget>[
+                                  Container(
+                                    width: 100,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: xtColor_4DE60113,
+                                      borderRadius: BorderRadius.all(Radius.circular(5))
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 100 * model.sellRatio,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: mainRedColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(5))
+                                    ),
+                                  ),
+                                  xtText(model.sellText, 9, Colors.white, fontWeight: FontWeight.w500)
+                                ],
                               ),
-                            ),
-                          ],
+                              xtText(model.sellCountText, 10, mainBlackColor)
+                            ],
+                          ),
                         ),
-                        FlatButton(
-                          padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                          color: mainRedColor,
-                          shape: xtShapeRound(6),
-                          onPressed: () {
-                            Toast.showToast(msg: "null");
-                          },
-                          child: xtText("立即抢", 14, Colors.white),
-                        )
                       ],
                     ),
-                  )
-                ],
-              ),
-            )
-          ),
-        ],
+                    Visibility(
+                      visible: AppConfig.user.memberType >= 10,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 2, right: 2),
+                            alignment: Alignment.centerLeft,
+                            child: xtText(model.mostEarnText, 10, xtColor_FF6600, alignment: TextAlign.center),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(3)),
+                              border: Border.all(
+                                color: xtColor_FF6600,
+                                width: 0.5
+                              )
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              xtText("¥", 18, _status == SeckillStatus.noStart ? xtColor_33AB33 : mainRedColor, fontWeight: FontWeight.w500, alignment: TextAlign.center),
+                              xtText(
+                                (model.buyingPrice / 100).toString(), 
+                                24, 
+                                _status == SeckillStatus.noStart ? xtColor_33AB33 : mainRedColor, 
+                                fontWeight: FontWeight.w500, 
+                                alignment: TextAlign.center
+                              ),
+                              Text(
+                                model.marketPriceText,
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12,
+                                  color: mainA8GrayColor,
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor: mainA8GrayColor
+                                ),
+                              ),
+                            ],
+                          ),
+                          FlatButton(
+                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                            color: _status == SeckillStatus.noStart ? Colors.white : mainRedColor,
+                            shape: _status == SeckillStatus.noStart ? xtShapeRoundLineCorners(radius: 6, lineColor: (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33), lineWidth: 1) : xtShapeRound(6),
+                            onPressed: () => _clickAction(model),
+                            child: xtText(
+                              _status == SeckillStatus.noStart ? (model.isSub ? "取消提醒" : "提醒我") : "立即抢", 
+                              14, 
+                              _status == SeckillStatus.noStart ? (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33) : Colors.white 
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ),
+          ],
+        ),
       ),
     );
   }

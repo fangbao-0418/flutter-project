@@ -1,20 +1,8 @@
 
-import 'package:flutter/material.dart';
-
-class LimitTimeSeckillProviderModel extends ChangeNotifier {
-  int _promotionId;
-  int get promotionId => _promotionId;
-  set promotionId(int value) {
-    _promotionId = value;
-    notifyListeners();
-  }
-
-  List<LimitTimeSeckillProductModel> _products = [];
-  List<LimitTimeSeckillProductModel> get products => _products;
-  set products(List<LimitTimeSeckillProductModel> value) {
-    _products = value;
-    notifyListeners();
-  }
+enum SeckillStatus {
+  buying,
+  end,
+  noStart
 }
 
 class LimitTimeSeckillModel {
@@ -40,6 +28,23 @@ class LimitTimeSeckillModel {
   String promotionStartTimeDesc;
   String desc;
   List<LimitTimeSeckillProductModel> products;
+
+  ///自定义参数
+  SeckillStatus get seckillStatus {
+    switch (status) {
+      case 3:
+        return SeckillStatus.noStart;
+        break;
+      case 2:
+        return SeckillStatus.end;
+        break;
+      case 1:
+        return SeckillStatus.buying;
+        break;
+      default:
+        return SeckillStatus.buying;
+    }
+  }
 
   factory LimitTimeSeckillModel.fromJson(Map<String, dynamic> json) =>
       LimitTimeSeckillModel(
@@ -72,7 +77,8 @@ class LimitTimeSeckillProductModel {
     this.remainInventory,
     this.inventory,
     this.spuSalesCount,
-    this.mostEarn});
+    this.mostEarn,
+    this.isSub});
 
   int promotionSpuId;
   int productId;
@@ -89,38 +95,54 @@ class LimitTimeSeckillProductModel {
   int inventory;
   int spuSalesCount;
   int mostEarn;
+  bool isSub;
 
   /// 自定义参数
+  /// 是否已售罄
+  bool get isSellOut => remainInventory == 0;
   /// 已售比例
-  double get sealsRatio => ((inventory - remainInventory) / inventory);
+  double get sellRatio {
+    if (inventory == null || remainInventory == null) {
+      return 0;
+    }
+    if (isSellOut) {
+      return 1;
+    } else {
+      return ((inventory - remainInventory) / inventory);
+    }
+  }
   /// 已售xxx%
-  String get sealsText {
-    double sealsRatio100 = sealsRatio * 100;
+  String get sellText {
+    double sealsRatio100 = sellRatio * 100;
     if (sealsRatio100 <= 0) {
       return "  已售0%";
     }
     return "  已售" + sealsRatio100.ceil().toString() + "%";
   }
   /// 已抢xxx件
-  String get sealsCountText {
-    if (spuSalesCount > 0) {
+  String get sellCountText {
+    if (spuSalesCount != null && spuSalesCount > 0) {
       return "  已抢$spuSalesCount件";
     }
     return "";
   }
   /// 划线价
   String get marketPriceText {
-    if (marketPrice > 0) {
+    if (marketPrice != null && marketPrice > 0) {
       return (marketPrice / 100).toString();
     }
     return "";
   }
   /// 分享赚
   String get mostEarnText {
-    if (mostEarn > 0) {
+    if (mostEarn != null && mostEarn > 0) {
       return "分享赚" + (mostEarn / 100).toString() + "元";
     }
     return "";
+  }
+  /// 限量多少件
+  String get limitNumText {
+    return inventory == null ? "" : "限量$inventory件";
   }
 
   factory LimitTimeSeckillProductModel.fromJson(Map<String, dynamic> json) =>
@@ -138,5 +160,6 @@ class LimitTimeSeckillProductModel {
           remainInventory: json["remainInventory"],
           inventory: json["inventory"],
           spuSalesCount: json["spuSalesCount"],
-          mostEarn: json["mostEarn"]);
+          mostEarn: json["mostEarn"],
+          isSub: json["isSub"]);
 }
