@@ -41,6 +41,12 @@ class _AddressListPageState extends State<AddressListPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    bus.off(AddAddressPage.busEventName);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: whiteColor,

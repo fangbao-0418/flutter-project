@@ -45,6 +45,13 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    [WeChatInfoNameChangePage.busEventName, 
+    WeChatInfoQrChangePage.busEventName].forEach((e) => bus.off(e));
+  }
+
   /// 获取用户微信信息
   void _getWechatInfo() async {
     Loading.show(context: context, showShade: true);
