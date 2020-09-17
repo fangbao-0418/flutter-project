@@ -90,7 +90,8 @@ class LimitTimeSeckillProductModel {
     this.mostEarn,
     this.isSub,
     this.tagPosition,
-    this.tagUrl});
+    this.tagUrl,
+    this.type});
 
   int promotionSpuId;
   int productId;
@@ -110,6 +111,7 @@ class LimitTimeSeckillProductModel {
   bool isSub;
   int tagPosition;
   String tagUrl;
+  int type;
 
   /// 自定义参数
   /// 是否已售罄
@@ -177,6 +179,16 @@ class LimitTimeSeckillProductModel {
         return TagPositionType.none;
     }
   }
+  /// 商品类型图标路径
+  String get productImgName {
+    if (type == 10) {
+      return "images/product_tag_abroad_s.png";
+    } else if (type == 20) {
+      return "images/product_tag_global_s.png";
+    } else {
+      return "";
+    }
+  }
 
   factory LimitTimeSeckillProductModel.fromJson(Map<String, dynamic> json) =>
       LimitTimeSeckillProductModel(
@@ -196,5 +208,6 @@ class LimitTimeSeckillProductModel {
           mostEarn: json["mostEarn"],
           isSub: json["isSub"],
           tagPosition: json["tagPosition"],
-          tagUrl: json["tagUrl"]);
+          tagUrl: json["tagUrl"],
+          type: json["type"]);
 }

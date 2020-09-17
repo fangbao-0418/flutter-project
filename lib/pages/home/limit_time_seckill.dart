@@ -39,6 +39,12 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
     _getSeckillList();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+
+  }
+
   /// 获取时间及列表
   void _getSeckillList() async {
     Loading.show(context: context, showShade: true);
@@ -117,7 +123,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
             ),
             onPressed: () => XTRouter.closePage(context: context),
           ),
-          title: xtText("限时秒杀", 18, Colors.white),
+          title: xtText("限时秒杀${AppConfig.bottomH}", 18, Colors.white),
           bottom: TabBar(
             controller: _tabController,
             labelColor: Colors.white,
@@ -302,8 +308,8 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
             body = xtText("—— 没有更多内容了哦 ——", 12, mainA8GrayColor);
           }
           return Container(
-            margin: EdgeInsets.only(bottom: AppConfig.bottomH + 20),
-            height: 55.0,
+            padding: EdgeInsets.only(bottom: AppConfig.bottomH),
+            height: 55.0 + AppConfig.bottomH,
             child: Center(child:body),
           );
         },
@@ -405,7 +411,48 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        xtText(model.productName, 14, mainBlackColor, maxLines: 2, overflow: TextOverflow.ellipsis),
+                        // xtText(model.productName, 14, mainBlackColor, maxLines: 2, overflow: TextOverflow.ellipsis),
+                        RichText(
+                          maxLines: 2,
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Visibility(
+                                  visible: (model.limitNumber != null && model.limitNumber >= 2),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Image(
+                                        image: AssetImage("images/pintuan_two.png"),
+                                        height: 15,
+                                      ),
+                                      SizedBox(width: 2)
+                                    ],
+                                  ),
+                                )
+                              ),
+                              WidgetSpan(
+                                child: Visibility(
+                                  visible: model.productImgName.isNotEmpty,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Image(
+                                        image: AssetImage(model.productImgName),
+                                        height: 15,
+                                      ),
+                                      SizedBox(width: 2)
+                                    ],
+                                  ),
+                                )
+                              ),
+                              TextSpan(
+                                text: model.productName,
+                                style: xtstyle(14, mainBlackColor),
+                              )
+                            ]
+                          )
+                        ),
                         SizedBox(height: 5),
                         Visibility(
                           visible: _status == SeckillStatus.noStart,
