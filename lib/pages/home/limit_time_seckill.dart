@@ -299,7 +299,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
             body = Text("松开加载");
           }
           else{
-            body = Text("没后更多了");
+            body = xtText("—— 没有更多内容了哦 ——", 12, mainA8GrayColor);
           }
           return Container(
             margin: EdgeInsets.only(bottom: AppConfig.bottomH + 20),
@@ -331,7 +331,71 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
         child: Row(
           children: <Widget>[
             SizedBox(width: 8),
-            xtRoundAvatarImage(110, 8, model.coverImage),
+            Stack(
+              children: <Widget>[
+                xtRoundAvatarImage(110, 8, model.coverImage, borderColor: mainF5GrayColor, borderWidth: 0.5),
+                /// 4个角落上的标签
+                Visibility(
+                  visible: model.tagType == TagPositionType.leftTop,
+                  child: Positioned(left: 0, top: 0,
+                    child: Container(width: 50, height: 30,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(8))
+                      ),
+                    ),
+                  )
+                ),
+                Visibility(
+                  visible: model.tagType == TagPositionType.leftBottom,
+                  child: Positioned(left: 0, bottom: 0,
+                    child: Container(width: 50, height: 30,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))
+                      ),
+                    ),
+                  )
+                ),
+                Visibility(
+                  visible: model.tagType == TagPositionType.rightTop,
+                  child: Positioned(right: 0, top: 0,
+                    child: Container(width: 50, height: 30,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
+                        borderRadius: BorderRadius.only(topRight: Radius.circular(8))
+                      ),
+                    ),
+                  )
+                ),
+                Visibility(
+                  visible: model.tagType == TagPositionType.rightBottom,
+                  child: Positioned(right: 0, bottom: 0,
+                    child: Container(width: 50, height: 30,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(8))
+                      ),
+                    ),
+                  )
+                ),
+                Visibility(
+                  visible: (model.isSellOut && _status != SeckillStatus.noStart),
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 110,
+                    width: 110,
+                    decoration: xtRoundDecoration(8, bgcolor: Color(0x7D000000)),
+                    child: Image(
+                      width: 68,
+                      height: 68,
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage("images/product-sellOut-small.png"),
+                    ),
+                  )
+                ),
+              ],
+            ),
             Expanded(
               child: Container(
                 margin: EdgeInsets.only(left: 16, right: 12, top: 12, bottom: 10),
@@ -439,21 +503,31 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                               ),
                             ],
                           ),
-                          FlatButton(
-                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                            color: _status == SeckillStatus.noStart ? Colors.white : mainRedColor,
-                            shape: _status == SeckillStatus.noStart ? 
-                              xtShapeRoundLineCorners(
-                                radius: 6, 
-                                lineColor: (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33), 
-                                lineWidth: 1
-                              ) 
-                              : xtShapeRound(6),
-                            onPressed: () => _clickAction(model),
-                            child: xtText(
-                              _status == SeckillStatus.noStart ? (model.isSub ? "取消提醒" : "提醒我") : "立即抢", 
-                              14, 
-                              _status == SeckillStatus.noStart ? (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33) : Colors.white 
+                          ButtonTheme(
+                            minWidth: 0,
+                            child: FlatButton(
+                              padding: EdgeInsets.only(left: 8, right: 8),
+                              color: (_status == SeckillStatus.noStart || model.isSellOut) ? Colors.white : mainRedColor,
+                              shape: _status == SeckillStatus.noStart ? 
+                                xtShapeRoundLineCorners(
+                                  radius: 6, 
+                                  lineColor: (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33), 
+                                  lineWidth: 1
+                                ) 
+                                : (model.isSellOut ? 
+                                    xtShapeRoundLineCorners(
+                                      radius: 6, 
+                                      lineColor: mainA8GrayColor, 
+                                      lineWidth: 1
+                                  ) 
+                                  : xtShapeRound(6)
+                                ),
+                              onPressed: () => _clickAction(model),
+                              child: xtText(
+                                _status == SeckillStatus.noStart ? (model.isSub ? "取消提醒" : "提醒我") : (model.isSellOut ? "已售罄" : "立即抢"), 
+                                14, 
+                                _status == SeckillStatus.noStart ? (model.isSub ? xtColor_7D33AB33 : xtColor_33AB33) : (model.isSellOut ? mainA8GrayColor : Colors.white) 
+                              ),
                             ),
                           )
                         ],

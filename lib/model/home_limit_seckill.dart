@@ -1,8 +1,18 @@
 
+import 'package:flutter/material.dart';
+
 enum SeckillStatus {
   buying,
   end,
   noStart
+}
+
+enum TagPositionType {
+  none,
+  leftTop,
+  leftBottom,
+  rightTop,
+  rightBottom
 }
 
 class LimitTimeSeckillModel {
@@ -78,7 +88,9 @@ class LimitTimeSeckillProductModel {
     this.inventory,
     this.spuSalesCount,
     this.mostEarn,
-    this.isSub});
+    this.isSub,
+    this.tagPosition,
+    this.tagUrl});
 
   int promotionSpuId;
   int productId;
@@ -96,6 +108,8 @@ class LimitTimeSeckillProductModel {
   int spuSalesCount;
   int mostEarn;
   bool isSub;
+  int tagPosition;
+  String tagUrl;
 
   /// 自定义参数
   /// 是否已售罄
@@ -144,6 +158,25 @@ class LimitTimeSeckillProductModel {
   String get limitNumText {
     return inventory == null ? "" : "限量$inventory件";
   }
+  /// 标签位置类型
+  TagPositionType get tagType {
+    switch (tagPosition) {
+      case 5:
+        return TagPositionType.leftTop;
+        break;
+      case 10:
+        return TagPositionType.leftBottom;
+        break;
+      case 15:
+        return TagPositionType.rightTop;
+        break;
+      case 20:
+        return TagPositionType.rightBottom;
+        break;
+      default:
+        return TagPositionType.none;
+    }
+  }
 
   factory LimitTimeSeckillProductModel.fromJson(Map<String, dynamic> json) =>
       LimitTimeSeckillProductModel(
@@ -161,5 +194,7 @@ class LimitTimeSeckillProductModel {
           inventory: json["inventory"],
           spuSalesCount: json["spuSalesCount"],
           mostEarn: json["mostEarn"],
-          isSub: json["isSub"]);
+          isSub: json["isSub"],
+          tagPosition: json["tagPosition"],
+          tagUrl: json["tagUrl"]);
 }
