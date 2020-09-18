@@ -21,6 +21,10 @@ const xtColor_666666 = Color(0xFF666666);
 const xtColor_FF6600 = Color(0xFFFF6600);
 const xtColor_33AB33 = Color(0xFF33AB33);
 const xtColor_7D33AB33 = Color(0x7D33AB33);
+const xtColor_4C4C4C = Color(0xFF4C4C4C);
+const xtColor_FFD652 = Color(0xFFFFD652);
+const xtColor_E02020 = Color(0xFFE02020);
+const xtColor_6D7278 = Color(0xFF6D7278);
 
 
 

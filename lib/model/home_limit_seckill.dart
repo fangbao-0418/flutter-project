@@ -142,6 +142,13 @@ class LimitTimeSeckillProductModel {
     }
     return "";
   }
+  /// 秒杀价
+  String get buyingPriceText {
+    if (buyingPrice != null && buyingPrice > 0) {
+      return (buyingPrice / 100).toString();
+    }
+    return "";
+  }
   /// 划线价
   String get marketPriceText {
     if (marketPrice != null && marketPrice > 0) {
@@ -210,4 +217,49 @@ class LimitTimeSeckillProductModel {
           tagPosition: json["tagPosition"],
           tagUrl: json["tagUrl"],
           type: json["type"]);
+}
+
+
+class ShareCardInfoModel {
+  ShareCardInfoModel({
+    this.shareType,
+    this.imagerUrl,
+    this.linkUrl,
+    this.host,
+    this.appid,
+    this.miniId,
+  });
+
+  String shareType;
+  String imagerUrl;
+  String linkUrl;
+  String host;
+  String appid;
+  String miniId;
+
+  /// mid
+  String _mid;
+  String get mid => _mid;
+  void setMid(String mid) {
+    this._mid = mid;
+  }
+
+  factory ShareCardInfoModel.fromJson(Map<String, dynamic> json) =>
+      ShareCardInfoModel(
+        shareType: json["shareType"],
+        imagerUrl: json["imagerUrl"],
+        linkUrl: json["linkUrl"],
+        host: json["host"],
+        appid: json["appid"],
+        miniId: json["miniId"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "shareType": shareType, 
+    "imagerUrl": imagerUrl, 
+    "linkUrl": linkUrl, 
+    "host": host,
+    "appid": appid, 
+    "miniId": miniId, 
+  };
 }

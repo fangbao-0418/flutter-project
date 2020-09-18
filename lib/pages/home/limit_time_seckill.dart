@@ -5,6 +5,7 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/net_work/home_request.dart';
+import 'package:xtflutter/pages/home/limit_time_seckill_share.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
@@ -75,6 +76,22 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
     });
   }
 
+  /// 分享 
+  void _shareAction() async{
+    Loading.show();
+    String mid = AppConfig.user.mid;
+    ShareCardInfoModel shareModel = await HomeRequest.getCardInfo({"page": "pages/seckill/index", "scene": "mid=" + mid})
+    .whenComplete(() => Loading.hide());
+    shareModel.setMid(mid);
+
+    Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return LimitTimeSeckillSharePage(productList: globlKeys[_lastIndex].currentState.productList, shareModel: shareModel);
+      },
+    ));
+  }
+
   /// 获取时间列表
   List<Widget> _getTimeTabs() {
     List<Widget> childred = [];
@@ -123,7 +140,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
             ),
             onPressed: () => XTRouter.closePage(context: context),
           ),
-          title: xtText("限时秒杀${AppConfig.bottomH}", 18, Colors.white),
+          title: xtText("限时秒杀", 18, Colors.white),
           bottom: TabBar(
             controller: _tabController,
             labelColor: Colors.white,
@@ -147,7 +164,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
               right: 0,
               child: FlatButton(
                 onPressed: () {
-                  Toast.showToast(msg: "分享");
+                  _shareAction();
                 }, 
                 padding: EdgeInsets.zero,
                 child: Image.asset("images/limit_time_seckill_share.png")
@@ -204,6 +221,9 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   /// 保持当前页面存活
   @override
   bool get wantKeepAlive => true;
+
+  /// 获取商品列表
+  List<LimitTimeSeckillProductModel> get productList => _productList;
 
   @override
   // ignore: must_call_super
@@ -531,7 +551,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                 alignment: TextAlign.center
                               ),
                               xtText(
-                                (model.buyingPrice / 100).toString(), 
+                                model.buyingPriceText, 
                                 24, 
                                 _status == SeckillStatus.noStart ? xtColor_33AB33 : mainRedColor, 
                                 fontWeight: FontWeight.w500, 

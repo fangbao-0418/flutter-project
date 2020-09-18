@@ -25,4 +25,11 @@ class HomeRequest {
     return result as String;
   }
 
+  static Future<ShareCardInfoModel> getCardInfo(Map<String, dynamic> params) async {
+    const url = "/cweb/wx/member/getCardInfo";
+    final result = await HttpRequest.request(url, method: "post", params: params, hideErrorToast: false);
+    ShareCardInfoModel model = ShareCardInfoModel.fromJson(result);
+    return model;
+  }
+
 }

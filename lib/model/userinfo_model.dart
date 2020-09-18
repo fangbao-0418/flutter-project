@@ -2,6 +2,8 @@
 //
 //     final welcome = welcomeFromJson(jsonString);
 
+import 'dart:math';
+
 class UserInfoModel {
   UserInfoModel({
     this.id,
@@ -46,6 +48,12 @@ class UserInfoModel {
   String identity;
   int limitDay;
   int allEarnings;
+
+  /// 自定义参数
+  /// mid (id + 两位随机数)
+  String get mid {
+    return "$id" + Random().nextInt(10).toString() + Random().nextInt(10).toString();
+  }
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     if (json["inviteMemberVO"] == null) {
