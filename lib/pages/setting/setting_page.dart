@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
-import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
+import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
@@ -78,7 +78,7 @@ class _SettingPageState extends State<SettingPage> {
         children: <Widget>[
           FlatButton(
             onPressed: (){
-              XTRouter.pushToPage(routerName: LiveStreamerStationPage.routerName, context: context);
+              XTRouter.pushToPage(routerName: LiveAnchorStationPage.routerName, context: context);
             }, 
             child: xtText("主播台", 22, Colors.black)
           ),
