@@ -13,7 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
 class LimitTimeSeckillPage extends StatefulWidget {
-  static String routerName = "limitTimeSpick";
+  static String routerName = "limitTimeSeckill";
 
   @override
   _LimitTimeSeckillPageState createState() => _LimitTimeSeckillPageState();
@@ -77,7 +77,12 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
   }
 
   /// 分享 
-  void _shareAction() async{
+  void _shareAction() async{    
+    if (!AppConfig.isLogin) {
+      /// 未登录，跳转登录页
+      XTRouter.pushToPage(routerName: "gotoLogin", context: context, isNativePage: true);
+      return;
+    }
     Loading.show();
     String mid = AppConfig.user.mid;
     ShareCardInfoModel shareModel = await HomeRequest.getCardInfo({"page": "pages/seckill/index", "scene": "mid=" + mid})

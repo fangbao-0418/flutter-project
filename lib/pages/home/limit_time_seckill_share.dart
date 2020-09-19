@@ -259,10 +259,6 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
 
   Widget _getGridCellView(LimitTimeSeckillProductModel model, bool isTwo) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: mainF5GrayColor, width: 0.5),
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

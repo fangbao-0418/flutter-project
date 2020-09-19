@@ -96,7 +96,7 @@ class _SettingPageState extends State<SettingPage> {
   void loginOut(BuildContext context) {
     AppConfig.getInstance().userVM.updateUser(UserInfoModel());
     XTMTDChannel.invokeMethod("loginOut");
-    XTRouter.closePage(context: context);
+    XTRouter.pushToPage(routerName: "home", context: context, isNativePage: true);
   }
 
   List<Widget> childItem(BuildContext context) {
