@@ -10,6 +10,7 @@ import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/pages/setting/user_info/wechat_info_edit.dart';
 import 'package:xtflutter/router/router.dart';
+import 'package:xtflutter/utils/event_bus.dart';
 
 class WeChatInfoPage extends StatefulWidget {
   static String routerName = "wechatInfo";
@@ -36,6 +37,19 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
   void initState() {
     super.initState();
     _getWechatInfo();
+    bus.on(WeChatInfoNameChangePage.busEventName, (arg) { 
+      setState(() => _wechatAccountCon.text = arg.toString());
+    });
+    bus.on(WeChatInfoQrChangePage.busEventName, (arg) {
+      setState(() => _wechatQrImgUrl = arg.toString());
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    [WeChatInfoNameChangePage.busEventName, 
+    WeChatInfoQrChangePage.busEventName].forEach((e) => bus.off(e));
   }
 
   /// 获取用户微信信息
@@ -103,24 +117,14 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
         routerName: WeChatInfoQrChangePage.routerName,
         params: {"qrUrl": _wechatQrImgUrl},
         context: context,
-      ).then((value) => {
-            setState(() {
-              Map result = Map<String, dynamic>.from(value);
-              _wechatQrImgUrl = result["qrUrl"];
-            })
-          });
+      );
     } else {
       /// 修改微信号
       XTRouter.pushToPage(
         routerName: WeChatInfoNameChangePage.routerName,
         params: {"name": _wechatAccountCon.text},
         context: context,
-      ).then((value) => {
-            setState(() {
-              Map result = Map<String, dynamic>.from(value);
-              _wechatAccountCon.text = result["name"];
-            })
-          });
+      );
     }
   }
 

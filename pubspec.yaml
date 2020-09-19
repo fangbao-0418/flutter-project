@@ -36,7 +36,7 @@ dependencies:
   flutter_boost:
     git:
       url: 'https://github.com/alibaba/flutter_boost.git'
-      ref: '1.12.13+3'
+      ref: 'v1.17.1-hotfixes'
   fluttertoast: ^7.0.2
   dio: ^3.0.9
   provider: ^4.0.4
@@ -47,6 +47,7 @@ dependencies:
   video_player: '>=0.10.12+2 <2.0.0'
 
   convex_bottom_bar: '<=2.3.0'
+  pull_to_refresh: ^1.6.1
 
 dev_dependencies:
   flutter_test:
@@ -115,3 +116,17 @@ flutter:
     - images/xituan_logo.png
     - images/loading.gif
     - images/joy.gif
+    - images/live_station_arrow_down.png
+    - images/live_station_top_bg.png
+    - images/live_star.png
+    - images/live_station_arrow_right.png
+    - images/limit_time_seckill_share.png
+    - images/product-sellOut-small.png
+    - images/product_tag_abroad_s.png
+    - images/product_tag_global_s.png
+    - images/pintuan_two.png
+    - images/limit_time_seckill_shareBg.png
+    - images/limit_time_seckill_shareBg_none.png
+    - images/limit_time_seckill_shareBg_two.png
+    - images/share_wechat.png
+    - images/share_save_img.png

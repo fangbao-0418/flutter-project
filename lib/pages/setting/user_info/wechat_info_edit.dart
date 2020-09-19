@@ -7,9 +7,11 @@ import 'package:xtflutter/config/app_config/method_channel.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/config/extension/string_extension.dart';
 import 'package:xtflutter/router/router.dart';
+import 'package:xtflutter/utils/event_bus.dart';
 
 class WeChatInfoNameChangePage extends StatefulWidget {
   static String routerName = "wechatNameChange";
+  static String busEventName = "wechatNameChange";
 
   WeChatInfoNameChangePage({this.name, this.params});
 
@@ -50,9 +52,8 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
         "wechat": _wechatAccountCon.text,
       });
       if (isSuccess) {
-        Toast.showToast(msg: "更换成功");
-        XTRouter.closePage(
-            context: context, result: {"name": _wechatAccountCon.text});
+        bus.emit(WeChatInfoNameChangePage.busEventName, _wechatAccountCon.text);
+        XTRouter.closePage(context: context);
       } else {
         Toast.showToast(msg: "更换失败，请重试", context: context);
       }
@@ -134,6 +135,7 @@ class _WeChatInfoNameChangePageState extends State<WeChatInfoNameChangePage> {
 
 class WeChatInfoQrChangePage extends StatefulWidget {
   static String routerName = "wechatQrChange";
+  static String busEventName = "wechatQrChange";
 
   WeChatInfoQrChangePage({this.name, this.params});
 
@@ -174,9 +176,8 @@ class _WeChatInfoQrChangePageState extends State<WeChatInfoQrChangePage> {
         "wxQr": _qrUrl,
       });
       if (isSuccess) {
-        Toast.showToast(msg: "更换成功", context: context).then(() {
-          XTRouter.closePage(context: context, result: {"qrUrl": _qrUrl});
-        });
+        bus.emit(WeChatInfoQrChangePage.busEventName, _qrUrl);
+        XTRouter.closePage(context: context);
       } else {
         Toast.showToast(msg: "更换失败，请重试", context: context);
       }

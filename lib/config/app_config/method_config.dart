@@ -87,7 +87,7 @@ RoundedRectangleBorder xtShapeRoundLineCorners(
 }
 
 ///圆角网络图片 avatarWH 图片宽高 圆角 地址
-Container xtRoundAvatarImage(double avatarWH, double radius, imageUrl) {
+Container xtRoundAvatarImage(double avatarWH, double radius, imageUrl, {Color borderColor = whiteColor, double borderWidth = 0.0,}) {
   ///圆角网络图片 宽高 圆角 地址
   return Container(
     width: avatarWH,
@@ -96,7 +96,8 @@ Container xtRoundAvatarImage(double avatarWH, double radius, imageUrl) {
         borderRadius: BorderRadius.circular(radius),
         image: DecorationImage(
           image: NetworkImage(imageUrl),
-        )),
+        ),
+        border: Border.all(color: borderColor, width: borderWidth))
   );
 }
 

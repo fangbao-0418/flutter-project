@@ -106,4 +106,14 @@ class AppListener {
     AppConfig.updateSoftInfo(
         map["av"], map["dv"], map["md"], map["gid"], map["os"], map["ov"]);
   }
-}
+
+  /// 保存图片
+  static void saveImage(Map<String, dynamic> params) async {
+    var _ = await XTMTDChannel.invokeMethod("saveImg", params);
+  }
+
+  /// 分享微信小程序
+  static void shareWechat(Map<String, dynamic> params) async {
+    var _ = await XTMTDChannel.invokeMethod("shareWechat", params);
+  }
+ }

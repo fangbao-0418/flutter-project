@@ -2,12 +2,13 @@
 //
 //     final welcome = welcomeFromJson(jsonString);
 
+import 'dart:math';
+
 class UserInfoModel {
   UserInfoModel({
     this.id,
     this.phone,
     this.memberType,
-    this.memberTypeLevel,
     this.memberTypeTime,
     this.parentMemberId,
     this.headImage,
@@ -49,19 +50,25 @@ class UserInfoModel {
   int limitDay;
   int allEarnings;
 
+  /// 自定义参数
+  /// mid (id + 两位随机数)
+  String get mid {
+    return "$id" +
+        Random().nextInt(10).toString() +
+        Random().nextInt(10).toString();
+  }
+
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     if (json["inviteMemberVO"] == null) {
       json["inviteMemberVO"] = {};
     }
     json["id"] = int.parse(json["id"].toString());
     json["memberType"] = int.parse(json["memberType"].toString());
-    json["memberTypeLevel"] = int.parse(json["memberTypeLevel"].toString());
 
     return UserInfoModel(
       id: json["id"],
       phone: json["phone"],
       memberType: json["memberType"],
-      memberTypeLevel: json["memberTypeLevel"],
       memberTypeTime: json["memberTypeTime"],
       parentMemberId: json["parentMemberId"],
       headImage: json["headImage"],
@@ -86,7 +93,6 @@ class UserInfoModel {
         "id": id,
         "phone": phone,
         "memberType": memberType,
-        "memberTypeLevel": memberTypeLevel,
         "memberTypeTime": memberTypeTime,
         "parentMemberId": parentMemberId,
         "headImage": headImage,

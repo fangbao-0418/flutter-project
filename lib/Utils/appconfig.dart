@@ -173,6 +173,11 @@ class AppConfig {
     return _instance.userVM.user;
   }
 
+  /// 是否登录
+  static bool get isLogin {
+    return (_instance.userVM.user != null && _instance.userVM.user.id != null && _instance.userVM.user.id > 0);
+  }
+
   static AppSoftInfo get soft {
     return _instance.softInfo;
   }
@@ -185,6 +190,11 @@ class AppConfig {
   ///省市区城市数据
   static get cityValueList {
     return _instance.cityValue;
+  }
+
+  /// 平台
+  static get osPlatform {
+    return _instance.platform;
   }
 }
 

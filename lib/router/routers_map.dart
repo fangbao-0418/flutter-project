@@ -1,4 +1,5 @@
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/promotion/promotion.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
@@ -69,4 +70,8 @@ Map<String, PageBuilder> routeConfigs = {
   /// -------------------------  Home  -------------------------
   /// 限时秒杀
   LimitTimeSeckillPage.routerName: (pageName, params, _) => LimitTimeSeckillPage(),
+
+  /// -------------------------  Live  -------------------------
+  /// 主播台
+  LiveAnchorStationPage.routerName: (pageName, params, _) => LiveAnchorStationPage(),
 };

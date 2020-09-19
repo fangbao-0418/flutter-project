@@ -88,7 +88,11 @@ class LogsDB {
       // String ids = (results[0] ?? []).map((record) => record['id']).join(',');
       // print('取出上报数据ids:');
       // print(ids);
-      batch.rawDelete('DELETE FROM $_table limit 0, $limit');
+      if (results is Map) {
+        limit = results.length > limit ? limit : results.length;
+      }
+      print("takeData===$results");
+      batch.rawDelete('DELETE FROM $_table where content in(select content from $_table limit 0, $limit)');
       await batch.commit();
 
       return results[0] ?? [];
