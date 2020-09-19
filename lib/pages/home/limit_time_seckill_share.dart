@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
@@ -11,6 +10,12 @@ import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/utils/appconfig.dart';
+
+enum SeckillShareType {
+  none,
+  twoPro,
+  sixPro
+}
 
 class LimitTimeSeckillSharePage extends StatefulWidget {
 
@@ -25,20 +30,29 @@ class LimitTimeSeckillSharePage extends StatefulWidget {
 }
 
 class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
-
+  /// 尺寸
   double _scale = 1;
-
+  /// 商品列表
   List<LimitTimeSeckillProductModel> _productList = [];
-
+  /// 分享数据
   ShareCardInfoModel _shareModel;
-
+  /// 截图key
   GlobalKey _repaintWidgetKey = GlobalKey();
+  /// 分享类型
+  SeckillShareType _shareType = SeckillShareType.none;
 
   @override
   void initState() {
     super.initState();
     _productList = widget.productList;
     _shareModel = widget.shareModel;
+    if (_productList.length >= 6) {
+      _shareType = SeckillShareType.sixPro;
+    } else if (_productList.length >= 2 && _productList.length < 6) {
+      _shareType = SeckillShareType.twoPro;
+    } else {
+      _shareType = SeckillShareType.none;
+    }
   }
 
   /// 分享微信
@@ -71,6 +85,40 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
       Toast.showToast(msg: "保存失败，请重试");
     }
   }
+
+  /// 获取分享背景图
+  String get _shareBgImgName {
+    switch (_shareType) {
+      case SeckillShareType.twoPro:
+        return "images/limit_time_seckill_shareBg_two.png";
+        break;
+      case SeckillShareType.sixPro:
+        return "images/limit_time_seckill_shareBg.png";
+        break;
+      default:
+        return "images/limit_time_seckill_shareBg_none.png";
+    }
+  }
+
+  /// 获取分享背景视图
+  Widget _getShareBgWidget() {
+    switch (_shareType) {
+      case SeckillShareType.twoPro:
+        return Container(
+          margin: EdgeInsets.only(top: 242 * _scale),
+          child: _getGridViewTwo(),
+        );
+        break;
+      case SeckillShareType.sixPro:
+        return Container(
+          margin: EdgeInsets.only(top: 187 * _scale),
+          child: _getGridView()
+        );
+        break;
+      default:
+        return Container();
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -96,11 +144,8 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: <Widget>[
-                        Image.asset("images/limit_time_seckill_shareBg.png"),
-                        Container(
-                          margin: EdgeInsets.only(top: 187 * _scale),
-                          child: _getGridView()
-                        ),
+                        Image.asset(_shareBgImgName),
+                        _getShareBgWidget(),
                         Container(
                           margin: EdgeInsets.only(top: 490 * _scale, left: 12 * _scale, right: 12 * _scale),
                           padding: EdgeInsets.only(left: 11 * _scale),
@@ -189,13 +234,35 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
         childAspectRatio: 110 / 143
       ), 
       itemBuilder: (BuildContext ctx, int index) {
-        return _getGridCellView(_productList[index]);
+        return _getGridCellView(_productList[index], false);
       },
     );
   }
 
-  Widget _getGridCellView(LimitTimeSeckillProductModel model) {
+  Widget _getGridViewTwo() {
+    return GridView.builder(
+      padding: EdgeInsets.only(left: 12 * _scale, right: 12 * _scale),
+      itemCount: 2,
+      controller: ScrollController(
+        keepScrollOffset: false
+      ),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 15 * _scale,
+        childAspectRatio: 168 / 218
+      ), 
+      itemBuilder: (BuildContext ctx, int index) {
+        return _getGridCellView(_productList[index], true);
+      },
+    );
+  }
+
+  Widget _getGridCellView(LimitTimeSeckillProductModel model, bool isTwo) {
     return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: mainF5GrayColor, width: 0.5),
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -213,11 +280,11 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
           ),
           Container(
             alignment: Alignment.center,
-            height: 28 * _scale,
+            height: (isTwo ? 43 : 28) * _scale,
             child: Text(
               "秒杀价¥${model.buyingPriceText}", 
               style: TextStyle(
-                fontSize: 12 * _scale, 
+                fontSize: (isTwo ? 16 : 12) * _scale, 
                 color: xtColor_E02020, 
                 fontWeight: FontWeight.bold, 
                 decoration: TextDecoration.none

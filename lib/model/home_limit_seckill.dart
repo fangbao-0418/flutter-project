@@ -1,6 +1,4 @@
 
-import 'package:flutter/material.dart';
-
 enum SeckillStatus {
   buying,
   end,
@@ -115,7 +113,7 @@ class LimitTimeSeckillProductModel {
 
   /// 自定义参数
   /// 是否已售罄
-  bool get isSellOut => remainInventory == 0;
+  bool get isSellOut => (remainInventory == 0 || inventory == 0);
   /// 已售比例
   double get sellRatio {
     if (inventory == null || remainInventory == null) {
@@ -214,8 +212,8 @@ class LimitTimeSeckillProductModel {
           spuSalesCount: json["spuSalesCount"],
           mostEarn: json["mostEarn"],
           isSub: json["isSub"],
-          tagPosition: json["tagPosition"],
-          tagUrl: json["tagUrl"],
+          tagPosition: json["tagPosition"] == null ? 0 : json["tagPosition"],
+          tagUrl: json["tagUrl"] == null ? "" : json["tagUrl"],
           type: json["type"]);
 }
 

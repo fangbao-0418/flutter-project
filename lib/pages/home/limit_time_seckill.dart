@@ -101,8 +101,8 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
           height: 48,
           child: Tab(
             iconMargin: EdgeInsets.only(bottom: 3),
-            icon: Text(e.promotionStartTimeDesc, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-            child: Text(e.desc, style: TextStyle(fontSize: 10)),
+            icon: Text(e.promotionStartTimeDesc, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+            child: Text(e.desc, style: TextStyle(fontSize: 11)),
           ),
         )
       );     
@@ -357,70 +357,53 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
         child: Row(
           children: <Widget>[
             SizedBox(width: 8),
-            Stack(
-              children: <Widget>[
-                xtRoundAvatarImage(110, 8, model.coverImage, borderColor: mainF5GrayColor, borderWidth: 0.5),
-                /// 4个角落上的标签
-                Visibility(
-                  visible: model.tagType == TagPositionType.leftTop,
-                  child: Positioned(left: 0, top: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(8))
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: Stack(
+                children: <Widget>[
+                  xtRoundAvatarImage(110, 8, model.coverImage, borderColor: mainF5GrayColor, borderWidth: 0.5),
+                  /// 4个角落上的标签
+                  Visibility(
+                    visible: model.tagType == TagPositionType.leftTop,
+                    child: Positioned(left: 0, top: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: model.tagType == TagPositionType.leftBottom,
+                    child: Positioned(left: 0, bottom: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: model.tagType == TagPositionType.rightTop,
+                    child: Positioned(right: 0, top: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: model.tagType == TagPositionType.rightBottom,
+                    child: Positioned(right: 0, bottom: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: (model.isSellOut && _status != SeckillStatus.noStart),
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 110,
+                      width: 110,
+                      decoration: xtRoundDecoration(8, bgcolor: Color(0x7D000000)),
+                      child: Image(
+                        width: 68,
+                        height: 68,
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("images/product-sellOut-small.png"),
                       ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: model.tagType == TagPositionType.leftBottom,
-                  child: Positioned(left: 0, bottom: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))
-                      ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: model.tagType == TagPositionType.rightTop,
-                  child: Positioned(right: 0, top: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(8))
-                      ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: model.tagType == TagPositionType.rightBottom,
-                  child: Positioned(right: 0, bottom: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(8))
-                      ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: (model.isSellOut && _status != SeckillStatus.noStart),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 110,
-                    width: 110,
-                    decoration: xtRoundDecoration(8, bgcolor: Color(0x7D000000)),
-                    child: Image(
-                      width: 68,
-                      height: 68,
-                      fit: BoxFit.fitWidth,
-                      image: AssetImage("images/product-sellOut-small.png"),
-                    ),
-                  )
-                ),
-              ],
+                    )
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: Container(
@@ -431,7 +414,6 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        // xtText(model.productName, 14, mainBlackColor, maxLines: 2, overflow: TextOverflow.ellipsis),
                         RichText(
                           maxLines: 2,
                           text: TextSpan(
@@ -488,27 +470,30 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Stack(
-                                alignment: Alignment.centerLeft,
-                                children: <Widget>[
-                                  Container(
-                                    width: 100,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      color: xtColor_4DE60113,
-                                      borderRadius: BorderRadius.all(Radius.circular(6))
+                              ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                child: Stack(
+                                  alignment: Alignment.centerLeft,
+                                  children: <Widget>[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      child: Container(
+                                        width: 100,
+                                        height: 12,
+                                        color: xtColor_4DE60113,
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 100 * model.sellRatio,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      color: mainRedColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(6))
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      child: Container(
+                                        width: 100 * model.sellRatio,
+                                        height: 12,
+                                        color: mainRedColor,
+                                      ),
                                     ),
-                                  ),
-                                  xtText(model.sellText, 9, Colors.white, fontWeight: FontWeight.w500)
-                                ],
+                                    xtText(model.sellText, 9, Colors.white, fontWeight: FontWeight.w500)
+                                  ],
+                                ),
                               ),
                               xtText(model.sellCountText, 10, mainBlackColor)
                             ],
