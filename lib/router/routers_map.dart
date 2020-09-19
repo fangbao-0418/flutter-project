@@ -1,5 +1,7 @@
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
+import 'package:xtflutter/pages/message/message_center.dart';
+import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/promotion/promotion.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';
@@ -74,4 +76,18 @@ Map<String, PageBuilder> routeConfigs = {
   /// -------------------------  Live  -------------------------
   /// 主播台
   LiveStreamerStationPage.routerName: (pageName, params, _) => LiveStreamerStationPage(),
+
+  // -------------------------- Message ----------------------
+  /**
+   * 消息中心页面
+   */
+  MessageCenterPage.routeName: (pageName, params, _) => MessageCenterPage(),
+
+  /**
+   * 消息详情列表页面
+   */
+  MessageDetailPage.routeName: (pageName, params, _) => MessageDetailPage(
+        pageName: pageName,
+        params: params,
+      ),
 };
