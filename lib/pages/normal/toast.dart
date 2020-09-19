@@ -41,13 +41,14 @@ class Toast {
     //   return toast(msg);
     // });
     // Overlay.of(Global.context).insert(_entry);
+    FT.Fluttertoast.showToast(msg: msg, gravity: FT.ToastGravity.CENTER,toastLength: FT.Toast.LENGTH_SHORT);
 
-    fToast = FT.FToast();
-    fToast.showToast(
-      child: toast(msg),
-      gravity: FT.ToastGravity.CENTER,
-      toastDuration: Duration(seconds: duration),
-    );
+    // fToast = FT.FToast().init(Global.context);
+    // fToast.showToast(
+    //   child: toast(msg),
+    //   gravity: FT.ToastGravity.CENTER,
+    //   toastDuration: Duration(seconds: duration),
+    // );
   }
 
   then(Function cb) {

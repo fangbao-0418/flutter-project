@@ -80,23 +80,23 @@ class HttpRequest {
         if (!hideToast || !hideSuccessToast) {
           Toast.showToast(msg: map["message"]);
         }
-        var result = map["data"];
-        if (result.runtimeType
-            .toString()
-            .contains("_InternalLinkedHashMap<String, dynamic>")) {
-          return Map.from(result) as T;
-        } else if (result.runtimeType.toString().contains("List")) {
-          var tl = [];
-          for (var temp in result) {
-            if (temp.runtimeType.toString() ==
-                "_InternalLinkedHashMap<String, dynamic>") {
-              tl.add(Map.from(temp));
-            } else {
-              tl.add(temp);
-            }
-          }
-          return tl as T;
-        }
+        // var result = map["data"];
+        // if (result.runtimeType
+        //     .toString()
+        //     .contains("_InternalLinkedHashMap<String, dynamic>")) {
+        //   return Map.from(result) as T;
+        // } else if (result.runtimeType.toString().contains("List")) {
+        //   var tl = [];
+        //   for (var temp in result) {
+        //     if (temp.runtimeType.toString() ==
+        //         "_InternalLinkedHashMap<String, dynamic>") {
+        //       tl.add(Map.from(temp));
+        //     } else {
+        //       tl.add(temp);
+        //     }
+        //   }
+        //   return tl as T;
+        // }
         return map["data"] as T;
       }
     } catch (e) {
