@@ -9,7 +9,9 @@ void monitor(runApp) {
     print(details);
     //print(details.exceptionAsString());
     print('=============  flutter error end   =============');
-    reportError(details);
+
+
+    // reportError(details);
   };
   // ErrorWidget.builder = (FlutterErrorDetails details) {
   //   print("============= CustomErrorWidget =============");

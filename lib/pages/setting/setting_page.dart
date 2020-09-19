@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
-import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
+import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
@@ -80,7 +80,7 @@ class _SettingPageState extends State<SettingPage> {
           FlatButton(
               onPressed: () {
                 XTRouter.pushToPage(
-                  routerName: LiveStreamerStationPage.routerName,
+                  routerName: LiveAnchorStationPage.routerName,
                   context: context,
                 );
               },
@@ -96,6 +96,7 @@ class _SettingPageState extends State<SettingPage> {
                     context: context);
               },
               child: xtText("限时秒杀", 22, Colors.black)),
+
           FlatButton(
             onPressed: () {
               XTRouter.pushToPage(
@@ -113,7 +114,7 @@ class _SettingPageState extends State<SettingPage> {
   void loginOut(BuildContext context) {
     AppConfig.getInstance().userVM.updateUser(UserInfoModel());
     XTMTDChannel.invokeMethod("loginOut");
-    XTRouter.closePage(context: context);
+    XTRouter.pushToPage(routerName: "home", context: context, isNativePage: true);
   }
 
   List<Widget> childItem(BuildContext context) {

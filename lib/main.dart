@@ -94,3 +94,4 @@ class _Home extends State<Home> {
     return SettingPage();
   }
 }
+// flutter attach --debug-uri=http://127.0.0.1:64931/C5cDeMQXcEU=/

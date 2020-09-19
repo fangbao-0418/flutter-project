@@ -2,6 +2,8 @@
 //
 //     final welcome = welcomeFromJson(jsonString);
 
+import 'dart:math';
+
 class UserInfoModel {
   UserInfoModel({
     this.id,
@@ -17,7 +19,7 @@ class UserInfoModel {
     this.count,
     this.idCard,
     this.canAuthen,
-    this.inviteMemberVo,
+    // this.inviteMemberVo,
     this.fansType,
     this.lockFansTime,
     this.tradeLockPowderTime,
@@ -28,7 +30,8 @@ class UserInfoModel {
 
   int id; //用户ID
   String phone; //手机号
-  int memberType; //类型
+  int memberType = 0; //类型
+  int memberTypeLevel;
   int memberTypeTime;
   int parentMemberId; //上层ID
   String headImage = ""; //头像
@@ -39,7 +42,7 @@ class UserInfoModel {
   int count;
   String idCard = "";
   bool canAuthen;
-  InviteMemberVo inviteMemberVo = InviteMemberVo();
+  // InviteMemberVo inviteMemberVo = InviteMemberVo();
   int fansType;
   int lockFansTime;
   int tradeLockPowderTime;
@@ -47,10 +50,18 @@ class UserInfoModel {
   int limitDay;
   int allEarnings;
 
+  /// 自定义参数
+  /// mid (id + 两位随机数)
+  String get mid {
+    return "$id" +
+        Random().nextInt(10).toString() +
+        Random().nextInt(10).toString();
+  }
+
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
-    if (json["inviteMemberVO"] == null) {
-      json["inviteMemberVO"] = {};
-    }
+    // if (json["inviteMemberVO"] == null) {
+    //   json["inviteMemberVO"] = {};
+    // }
     json["id"] = int.parse(json["id"].toString());
     json["memberType"] = int.parse(json["memberType"].toString());
 
@@ -68,7 +79,7 @@ class UserInfoModel {
       count: json["count"],
       idCard: json["idCard"].toString().trim(),
       canAuthen: json["canAuthen"],
-      inviteMemberVo: InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
+      // inviteMemberVo: InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
       fansType: json["fansType"],
       lockFansTime: json["lockFansTime"],
       tradeLockPowderTime: json["tradeLockPowderTime"],
@@ -92,7 +103,7 @@ class UserInfoModel {
         "count": count,
         "idCard": idCard,
         "canAuthen": canAuthen,
-        "inviteMemberVO": inviteMemberVo.toJson(),
+        // "inviteMemberVO": inviteMemberVo.toJson(),
         "fansType": fansType,
         "lockFansTime": lockFansTime,
         "tradeLockPowderTime": tradeLockPowderTime,

@@ -1,6 +1,4 @@
 
-import 'package:flutter/material.dart';
-
 enum SeckillStatus {
   buying,
   end,
@@ -115,7 +113,7 @@ class LimitTimeSeckillProductModel {
 
   /// 自定义参数
   /// 是否已售罄
-  bool get isSellOut => remainInventory == 0;
+  bool get isSellOut => (remainInventory == 0 || inventory == 0);
   /// 已售比例
   double get sellRatio {
     if (inventory == null || remainInventory == null) {
@@ -139,6 +137,13 @@ class LimitTimeSeckillProductModel {
   String get sellCountText {
     if (spuSalesCount != null && spuSalesCount > 0) {
       return "  已抢$spuSalesCount件";
+    }
+    return "";
+  }
+  /// 秒杀价
+  String get buyingPriceText {
+    if (buyingPrice != null && buyingPrice > 0) {
+      return (buyingPrice / 100).toString();
     }
     return "";
   }
@@ -207,7 +212,52 @@ class LimitTimeSeckillProductModel {
           spuSalesCount: json["spuSalesCount"],
           mostEarn: json["mostEarn"],
           isSub: json["isSub"],
-          tagPosition: json["tagPosition"],
-          tagUrl: json["tagUrl"],
+          tagPosition: json["tagPosition"] == null ? 0 : json["tagPosition"],
+          tagUrl: json["tagUrl"] == null ? "" : json["tagUrl"],
           type: json["type"]);
+}
+
+
+class ShareCardInfoModel {
+  ShareCardInfoModel({
+    this.shareType,
+    this.imagerUrl,
+    this.linkUrl,
+    this.host,
+    this.appid,
+    this.miniId,
+  });
+
+  String shareType;
+  String imagerUrl;
+  String linkUrl;
+  String host;
+  String appid;
+  String miniId;
+
+  /// mid
+  String _mid;
+  String get mid => _mid;
+  void setMid(String mid) {
+    this._mid = mid;
+  }
+
+  factory ShareCardInfoModel.fromJson(Map<String, dynamic> json) =>
+      ShareCardInfoModel(
+        shareType: json["shareType"],
+        imagerUrl: json["imagerUrl"],
+        linkUrl: json["linkUrl"],
+        host: json["host"],
+        appid: json["appid"],
+        miniId: json["miniId"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "shareType": shareType, 
+    "imagerUrl": imagerUrl, 
+    "linkUrl": linkUrl, 
+    "host": host,
+    "appid": appid, 
+    "miniId": miniId, 
+  };
 }

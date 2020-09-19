@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:xtflutter/net_work/local/proxy.dart';
+import 'package:xtflutter/utils/Report.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/utils/error/error.dart';
@@ -13,7 +14,7 @@ class HttpRequest {
       bool hideSuccessToast = true, //每一个请求成功之后返回的数据 message 是否要toast
       bool processData = true, //进度
       bool noBase = true, //不需要baseUrl ，默认走配置
-      bool dealData = true, //是否要处理返回数据  默认处理  
+      bool dealData = true, //是否要处理返回数据  默认处理
       Map<String, dynamic> params, //body 体参数
       Map<String, dynamic> queryParameters, //url 后拼接参数
       Interceptor inter}) async {
@@ -33,6 +34,7 @@ class HttpRequest {
       "xt-token": AppConfig.getInstance().token,
       "black-box": AppConfig.getInstance().black,
     });
+
     // 拦截器
     Interceptor dInter = InterceptorsWrapper(onRequest: (options) {
       return options;
@@ -52,7 +54,6 @@ class HttpRequest {
     try {
       Response response = await dio.request(url,
           data: params, queryParameters: queryParameters, options: options);
-      print(response);
 
       if (!dealData) {
         return response.data;
@@ -73,18 +74,33 @@ class HttpRequest {
           print('show message');
           Toast.showToast(msg: map["message"]);
         }
-        print(xtNetError.message);
-        print(xtNetError.data);
 
         return Future.error(xtNetError);
       } else {
         if (!hideToast || !hideSuccessToast) {
           Toast.showToast(msg: map["message"]);
         }
+        // var result = map["data"];
+        // if (result.runtimeType
+        //     .toString()
+        //     .contains("_InternalLinkedHashMap<String, dynamic>")) {
+        //   return Map.from(result) as T;
+        // } else if (result.runtimeType.toString().contains("List")) {
+        //   var tl = [];
+        //   for (var temp in result) {
+        //     if (temp.runtimeType.toString() ==
+        //         "_InternalLinkedHashMap<String, dynamic>") {
+        //       tl.add(Map.from(temp));
+        //     } else {
+        //       tl.add(temp);
+        //     }
+        //   }
+        //   return tl as T;
+        // }
         return map["data"] as T;
       }
     } catch (e) {
-      print("e.toString()-------------------");
+      print("e.toString()--------111111-----------");
       print(e.toString());
       print("e.toString()-------------------");
       XTNetError xtNetError;

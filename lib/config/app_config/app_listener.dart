@@ -20,7 +20,9 @@ class AppListener {
         (name, arguments) {
       //todo
       print("updateFlutterHeader --- start");
-      Map configMode = new Map.from(arguments);
+      Map configMode = Map.from(arguments);
+      print("updateFlutterHeader --- start" + configMode.toString());
+
       AppConfig.updateConfig(configMode["baseURL"], configMode["device"],
           configMode["black"], configMode["token"], configMode["platform"]);
       print("updateFlutterHeader --- end");
@@ -36,8 +38,16 @@ class AppListener {
       // UserInfoVM
       //todo
       print("updateUserInfo --- start");
+
       Map<String, dynamic> configMode = Map.from(arguments);
-      AppConfig().userVM.updateUser(UserInfoModel.fromJson(configMode));
+      print("updateFlutterHeader --- start" + configMode.toString());
+
+      AppConfig.getInstance()
+          .userVM
+          .updateUser(UserInfoModel.fromJson(configMode));
+      // print("updateFlutterHeader --- start" + configMode.toString());
+
+      print(AppConfig.user.toJson().toString());
       print("updateUserInfo --- end");
       return;
     });
@@ -85,7 +95,7 @@ class AppListener {
     Map<String, dynamic> tp =
         Map.from(json.decode(userInfo) as Map<String, dynamic>);
 
-    AppConfig().userVM.updateUser(UserInfoModel.fromJson(tp));
+    AppConfig.getInstance().userVM.updateUser(UserInfoModel.fromJson(tp));
   }
 
   ///埋点统计用信息
@@ -96,4 +106,14 @@ class AppListener {
     AppConfig.updateSoftInfo(
         map["av"], map["dv"], map["md"], map["gid"], map["os"], map["ov"]);
   }
-}
+
+  /// 保存图片
+  static void saveImage(Map<String, dynamic> params) async {
+    var _ = await XTMTDChannel.invokeMethod("saveImg", params);
+  }
+
+  /// 分享微信小程序
+  static void shareWechat(Map<String, dynamic> params) async {
+    var _ = await XTMTDChannel.invokeMethod("shareWechat", params);
+  }
+ }

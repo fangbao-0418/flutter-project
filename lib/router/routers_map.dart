@@ -1,4 +1,5 @@
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/message/message_detail.dart';
@@ -17,7 +18,6 @@ import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:xtflutter/pages/demo_page/page1.dart';
 import 'package:xtflutter/pages/demo_page/page2.dart';
 import 'package:xtflutter/pages/demo_page/page3.dart';
-import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
 
 Map<String, PageBuilder> routeConfigs = {
   'page1': (pageName, params, _) => Testpage1(),
@@ -75,7 +75,7 @@ Map<String, PageBuilder> routeConfigs = {
 
   /// -------------------------  Live  -------------------------
   /// 主播台
-  LiveStreamerStationPage.routerName: (pageName, params, _) => LiveStreamerStationPage(),
+  LiveAnchorStationPage.routerName: (pageName, params, _) => LiveAnchorStationPage(),
 
   // -------------------------- Message ----------------------
   /**
@@ -90,4 +90,6 @@ Map<String, PageBuilder> routeConfigs = {
         pageName: pageName,
         params: params,
       ),
+
+
 };
