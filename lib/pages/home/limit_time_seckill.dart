@@ -499,26 +499,27 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                    Visibility(
-                      visible: (AppConfig.isLogin && AppConfig.user.memberType != null && AppConfig.user.memberType >= 10),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(left: 2, right: 2),
-                            alignment: Alignment.centerLeft,
-                            child: xtText(model.mostEarnText, 10, xtColor_FF6600, alignment: TextAlign.center),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(3)),
-                              border: Border.all(
-                                color: xtColor_FF6600,
-                                width: 0.5
-                              )
-                            ),
+                        Visibility(
+                          visible: (AppConfig.isLogin && AppConfig.user.memberType != null && AppConfig.user.memberType >= 10),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(top: 5),
+                                padding: EdgeInsets.only(left: 2, right: 2),
+                                alignment: Alignment.centerLeft,
+                                child: xtText(model.mostEarnText, 10, xtColor_FF6600, alignment: TextAlign.center),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(3)),
+                                  border: Border.all(
+                                    color: xtColor_FF6600,
+                                    width: 0.5
+                                  )
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Container(
                       height: 30,
