@@ -103,7 +103,7 @@ class UserInfoModel {
         "count": count,
         "idCard": idCard,
         "canAuthen": canAuthen,
-        "inviteMemberVO": inviteMemberVo.toJson(),
+        // "inviteMemberVO": inviteMemberVo.toJson(),
         "fansType": fansType,
         "lockFansTime": lockFansTime,
         "tradeLockPowderTime": tradeLockPowderTime,
