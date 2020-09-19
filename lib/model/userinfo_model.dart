@@ -19,7 +19,7 @@ class UserInfoModel {
     this.count,
     this.idCard,
     this.canAuthen,
-    this.inviteMemberVo,
+    // this.inviteMemberVo,
     this.fansType,
     this.lockFansTime,
     this.tradeLockPowderTime,
@@ -42,7 +42,7 @@ class UserInfoModel {
   int count;
   String idCard = "";
   bool canAuthen;
-  InviteMemberVo inviteMemberVo = InviteMemberVo();
+  // InviteMemberVo inviteMemberVo = InviteMemberVo();
   int fansType;
   int lockFansTime;
   int tradeLockPowderTime;
@@ -59,9 +59,9 @@ class UserInfoModel {
   }
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
-    if (json["inviteMemberVO"] == null) {
-      json["inviteMemberVO"] = {};
-    }
+    // if (json["inviteMemberVO"] == null) {
+    //   json["inviteMemberVO"] = {};
+    // }
     json["id"] = int.parse(json["id"].toString());
     json["memberType"] = int.parse(json["memberType"].toString());
 
@@ -79,7 +79,7 @@ class UserInfoModel {
       count: json["count"],
       idCard: json["idCard"].toString().trim(),
       canAuthen: json["canAuthen"],
-      inviteMemberVo: InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
+      // inviteMemberVo: InviteMemberVo.fromJson(Map.from(json["inviteMemberVO"])),
       fansType: json["fansType"],
       lockFansTime: json["lockFansTime"],
       tradeLockPowderTime: json["tradeLockPowderTime"],
