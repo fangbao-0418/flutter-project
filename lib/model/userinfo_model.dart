@@ -29,7 +29,7 @@ class UserInfoModel {
 
   int id; //用户ID
   String phone; //手机号
-  int memberType; //类型
+  int memberType = 0; //类型
   int memberTypeLevel;
   int memberTypeTime;
   int parentMemberId; //上层ID

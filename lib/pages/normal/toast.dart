@@ -42,7 +42,7 @@ class Toast {
     // });
     // Overlay.of(Global.context).insert(_entry);
 
-    fToast = FT.FToast(Global.context);
+    fToast = FT.FToast();
     fToast.showToast(
       child: toast(msg),
       gravity: FT.ToastGravity.CENTER,
@@ -66,10 +66,11 @@ class Toast {
   }
 
   Toast.cancel() {
-    FT.FToast(Global.context).removeCustomToast();
+    // FT.FToast(Global.context);
+    FT.FToast().removeCustomToast();
   }
 
   Toast.cancelAll() {
-    FT.FToast(Global.context).removeQueuedCustomToasts();
+    FT.FToast().removeQueuedCustomToasts();
   }
 }
