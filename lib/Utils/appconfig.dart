@@ -29,10 +29,10 @@ class AppConfig {
 
   ///添加测试
   ///App 电池栏高度
-  double statusHeight = 20;
+  double statusHeight = 25;
 
-  ///App 导航栏高度（包含电池栏）
-  double navHeight = 64;
+  ///App 导航栏高度（包含电池栏）56+25
+  double navHeight = 81;
 
   ///App 底部安全区域 默认 0  iOS X系列手机 34
   double bottomMargin = 0;

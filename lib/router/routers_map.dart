@@ -1,4 +1,5 @@
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/promotion/promotion.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
@@ -74,4 +75,7 @@ Map<String, PageBuilder> routeConfigs = {
   /// -------------------------  Live  -------------------------
   /// 主播台
   LiveStreamerStationPage.routerName: (pageName, params, _) => LiveStreamerStationPage(),
+
+  ///主播个人页
+  AnchorPersonalPage.routerName : (pageName, params, _) => AnchorPersonalPage(),
 };
