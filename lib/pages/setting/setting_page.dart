@@ -81,26 +81,27 @@ class _SettingPageState extends State<SettingPage> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FlatButton(
-              onPressed: () {
-                XTRouter.pushToPage(
-                  routerName: LiveStationPage.routerName,
-                  context: context,
-                );
-              },
-              child: xtText(
-                "主播台",
-                22,
-                Colors.black,
-              )),
-          FlatButton(
-              onPressed: () {
-                XTRouter.pushToPage(
-                    routerName: LimitTimeSeckillPage.routerName,
-                    context: context);
-              },
-              child: xtText("限时秒杀", 22, Colors.black)),
-
+          Row(
+            children: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    XTRouter.pushToPage(
+                      routerName: LiveStationPage.routerName,
+                      context: context,
+                    );
+                  },
+                  child: xtText(
+                    "主播台",
+                    22,
+                    Colors.black,
+                  )),
+              FlatButton(
+                  onPressed: () {
+                    XTRouter.pushToPage(
+                        routerName: LimitTimeSeckillPage.routerName,
+                        context: context);
+                  },
+                  child: xtText("限时秒杀", 22, Colors.black)),
               FlatButton(
                 onPressed: () {
                   XTRouter.pushToPage(
@@ -112,14 +113,17 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ],
           ),
-          Row(children: <Widget>[
-            FlatButton(
-                onPressed: (){
-                  XTRouter.pushToPage(routerName: AnchorPersonalPage.routerName, context: context);
-                },
-                child: xtText("主播个人页", 22, Colors.black)
-            ),
-          ],)
+          Row(
+            children: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    XTRouter.pushToPage(
+                        routerName: AnchorPersonalPage.routerName,
+                        context: context);
+                  },
+                  child: xtText("主播个人页", 22, Colors.black)),
+            ],
+          )
         ],
       ),
     );
@@ -128,7 +132,8 @@ class _SettingPageState extends State<SettingPage> {
   void loginOut(BuildContext context) {
     AppConfig.getInstance().userVM.updateUser(UserInfoModel());
     XTMTDChannel.invokeMethod("loginOut");
-    XTRouter.pushToPage(routerName: "home", context: context, isNativePage: true);
+    XTRouter.pushToPage(
+        routerName: "home", context: context, isNativePage: true);
   }
 
   List<Widget> childItem(BuildContext context) {
