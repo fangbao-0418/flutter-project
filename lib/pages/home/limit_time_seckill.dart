@@ -421,6 +421,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                       children: <Widget>[
                         RichText(
                           maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             children: [
                               WidgetSpan(
@@ -489,7 +490,10 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                       ),
                                     ),
                                     ClipRRect(
-                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                        bottomRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                      ),
                                       child: Container(
                                         width: 100 * model.sellRatio,
                                         height: 12,
