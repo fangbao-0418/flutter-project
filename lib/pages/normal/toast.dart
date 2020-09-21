@@ -41,13 +41,14 @@ class Toast {
     //   return toast(msg);
     // });
     // Overlay.of(Global.context).insert(_entry);
+    FT.Fluttertoast.showToast(msg: msg, gravity: FT.ToastGravity.CENTER,toastLength: FT.Toast.LENGTH_SHORT);
 
-    fToast = FT.FToast(Global.context);
-    fToast.showToast(
-      child: toast(msg),
-      gravity: FT.ToastGravity.CENTER,
-      toastDuration: Duration(seconds: duration),
-    );
+    // fToast = FT.FToast().init(Global.context);
+    // fToast.showToast(
+    //   child: toast(msg),
+    //   gravity: FT.ToastGravity.CENTER,
+    //   toastDuration: Duration(seconds: duration),
+    // );
   }
 
   then(Function cb) {
@@ -66,10 +67,11 @@ class Toast {
   }
 
   Toast.cancel() {
-    FT.FToast(Global.context).removeCustomToast();
+    // FT.FToast(Global.context);
+    FT.FToast().removeCustomToast();
   }
 
   Toast.cancelAll() {
-    FT.FToast(Global.context).removeQueuedCustomToasts();
+    FT.FToast().removeQueuedCustomToasts();
   }
 }

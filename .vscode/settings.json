@@ -1,9 +1,9 @@
 {
     "editor.rulers": [
-        
         12000
     ],
     "editor.hideCursorInOverviewRuler": true,
     "dart.flutterSdkPath": "/Users/fangbao/Documents/soft/flutter-1.17.5/bin/cache/dart-sdk/",
-    "dart.webDaemonLogFile": null
+    "dart.webDaemonLogFile": null,
+    "editor.formatOnSave": false,
 }

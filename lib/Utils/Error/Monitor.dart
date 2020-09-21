@@ -6,10 +6,12 @@ import 'package:xtflutter/utils/error/error_report.dart';
 void monitor(runApp) {
   FlutterError.onError = (FlutterErrorDetails details) {
     print('=============  flutter error start =============');
-    print(details.context.toString());
-    print(details.exceptionAsString());
+    print(details);
+    //print(details.exceptionAsString());
     print('=============  flutter error end   =============');
-    reportError(details);
+
+
+    // reportError(details);
   };
   // ErrorWidget.builder = (FlutterErrorDetails details) {
   //   print("============= CustomErrorWidget =============");

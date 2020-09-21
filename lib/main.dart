@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
@@ -46,26 +45,28 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        localizationsDelegates: [
-          // ... app-specific localization delegate[s] here
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale.fromSubtags(languageCode: 'zh')
-        ],
-        debugShowCheckedModeBanner: false,
-        color: Colors.black,
-        theme: ThemeData(
-            primaryColor: Colors.white,
-            primaryColorBrightness: Brightness.light,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent),
-        title: appNameStr,
-        builder: FlutterBoost.init(postPush: _onRoutePushed),
-        routes: getRoutes(),
-        home: Wrapper(child: Home()));
+      localizationsDelegates: [
+        // ... app-specific localization delegate[s] here
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [const Locale.fromSubtags(languageCode: 'zh')],
+      debugShowCheckedModeBanner: false,
+      color: Colors.black,
+      theme: ThemeData(
+        primaryColor: Colors.white,
+        primaryColorBrightness: Brightness.light,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      title: appNameStr,
+      builder: FlutterBoost.init(postPush: _onRoutePushed),
+      routes: getRoutes(),
+      home: Wrapper(
+        child: Home(),
+      ),
+    );
   }
 
   void _onRoutePushed(
@@ -93,3 +94,4 @@ class _Home extends State<Home> {
     return SettingPage();
   }
 }
+// flutter attach --debug-uri=http://127.0.0.1:64931/C5cDeMQXcEU=/

@@ -1,6 +1,9 @@
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
+import 'package:xtflutter/pages/message/message_center.dart';
+import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/promotion/promotion.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';
@@ -16,7 +19,6 @@ import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:xtflutter/pages/demo_page/page1.dart';
 import 'package:xtflutter/pages/demo_page/page2.dart';
 import 'package:xtflutter/pages/demo_page/page3.dart';
-import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
 
 Map<String, PageBuilder> routeConfigs = {
   'page1': (pageName, params, _) => Testpage1(),
@@ -74,6 +76,23 @@ Map<String, PageBuilder> routeConfigs = {
 
   /// -------------------------  Live  -------------------------
   /// 主播台
+  LiveAnchorStationPage.routerName: (pageName, params, _) => LiveAnchorStationPage(),
+
+  // -------------------------- Message ----------------------
+  /**
+   * 消息中心页面
+   */
+  MessageCenterPage.routeName: (pageName, params, _) => MessageCenterPage(),
+
+  /**
+   * 消息详情列表页面
+   */
+  MessageDetailPage.routeName: (pageName, params, _) => MessageDetailPage(
+        pageName: pageName,
+        params: params,
+      ),
+
+
   LiveStreamerStationPage.routerName: (pageName, params, _) => LiveStreamerStationPage(),
 
   ///主播个人页

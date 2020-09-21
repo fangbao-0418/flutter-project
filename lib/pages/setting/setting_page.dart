@@ -1,10 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/Live/LiveStreamerStation.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
+import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
+import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
 import 'package:xtflutter/pages/setting/user_info/address_list.dart';
@@ -80,16 +80,33 @@ class _SettingPageState extends State<SettingPage> {
       floatingActionButton: Row(
         children: <Widget>[
           FlatButton(
-            onPressed: (){
-              XTRouter.pushToPage(routerName: LiveStreamerStationPage.routerName, context: context);
-            },
-            child: xtText("主播台", 22, Colors.black)
-          ),
+              onPressed: () {
+                XTRouter.pushToPage(
+                  routerName: LiveAnchorStationPage.routerName,
+                  context: context,
+                );
+              },
+              child: xtText(
+                "主播台",
+                22,
+                Colors.black,
+              )),
           FlatButton(
-            onPressed: (){
-              XTRouter.pushToPage(routerName: LimitTimeSeckillPage.routerName, context: context);
-            }, 
-            child: xtText("限时秒杀", 22, Colors.black)
+              onPressed: () {
+                XTRouter.pushToPage(
+                    routerName: LimitTimeSeckillPage.routerName,
+                    context: context);
+              },
+              child: xtText("限时秒杀", 22, Colors.black)),
+
+          FlatButton(
+            onPressed: () {
+              XTRouter.pushToPage(
+                routerName: MessageCenterPage.routeName,
+                context: context,
+              );
+            },
+            child: xtText("消息中心", 22, Colors.black),
           ),
           FlatButton(
               onPressed: (){
@@ -105,7 +122,7 @@ class _SettingPageState extends State<SettingPage> {
   void loginOut(BuildContext context) {
     AppConfig.getInstance().userVM.updateUser(UserInfoModel());
     XTMTDChannel.invokeMethod("loginOut");
-    XTRouter.closePage(context: context);
+    XTRouter.pushToPage(routerName: "home", context: context, isNativePage: true);
   }
 
   List<Widget> childItem(BuildContext context) {

@@ -4,8 +4,8 @@
 
 import 'dart:convert';
 
-class WelcomeData {
-  WelcomeData({
+class PromotionData {
+  PromotionData({
     this.recordId,
     this.startTime,
     this.endTime,
@@ -19,12 +19,12 @@ class WelcomeData {
   List<ComponentVoList> componentVoList;
   int countDownMills;
 
-  factory WelcomeData.fromJson(Map<String, dynamic> json) => WelcomeData(
+  factory PromotionData.fromJson(Map<String, dynamic> json) => PromotionData(
         recordId: json["recordId"],
         startTime: DateTime.parse(json["startTime"]),
         endTime: DateTime.parse(json["endTime"]),
-        componentVoList: List<ComponentVoList>.from(
-            json["componentVOList"].map((x) => ComponentVoList.fromJson(x))),
+        componentVoList: List<ComponentVoList>.from(json["componentVOList"]
+            .map((x) => ComponentVoList.fromJson(Map.from(x)))),
         countDownMills: json["countDownMills"],
       );
 
@@ -61,7 +61,7 @@ class ComponentVoList {
   List<Datum> data;
   int dataTotal;
   List<String> userLevel;
-  List<Platform> platform;
+  List<String> platform;
   bool isAuchor;
   String auchorName;
 
@@ -77,8 +77,7 @@ class ComponentVoList {
             : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
         dataTotal: json["dataTotal"],
         userLevel: List<String>.from(json["userLevel"].map((x) => x)),
-        platform: List<Platform>.from(
-            json["platform"].map((x) => platformValues.map[x])),
+        platform: List<String>.from(json["platform"].map((x) => x)),
         isAuchor: json["isAuchor"],
         auchorName: json["auchorName"],
       );
@@ -94,8 +93,7 @@ class ComponentVoList {
             : List<dynamic>.from(data.map((x) => x.toJson())),
         "dataTotal": dataTotal,
         "userLevel": List<dynamic>.from(userLevel.map((x) => x)),
-        "platform":
-            List<dynamic>.from(platform.map((x) => platformValues.reverse[x])),
+        "platform": List<dynamic>.from(platform.map((x) => x)),
         "isAuchor": isAuchor,
         "auchorName": auchorName,
       };
@@ -250,14 +248,6 @@ class Area {
         "value": value,
       };
 }
-
-enum Platform { APP, WX_MINI, WX_H5 }
-
-final platformValues = EnumValues({
-  "app": Platform.APP,
-  "wx-h5": Platform.WX_H5,
-  "wx-mini": Platform.WX_MINI
-});
 
 class EnumValues<T> {
   Map<String, T> map;

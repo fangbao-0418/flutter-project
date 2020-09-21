@@ -1,6 +1,4 @@
 
-import 'package:flutter/material.dart';
-
 enum SeckillStatus {
   buying,
   end,
@@ -115,16 +113,36 @@ class LimitTimeSeckillProductModel {
 
   /// 自定义参数
   /// 是否已售罄
-  bool get isSellOut => remainInventory == 0;
+  bool get isSellOut {
+    if (inventory == null) {
+      return true;
+    }
+    int salesCount = spuSalesCount ?? 0;
+    if (salesCount >= inventory || inventory == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   /// 已售比例
   double get sellRatio {
-    if (inventory == null || remainInventory == null) {
-      return 0;
+    if (inventory == null) {
+      return 1.0;
     }
     if (isSellOut) {
-      return 1;
+      return 1.0;
+    } else if (spuSalesCount != null && spuSalesCount > 0) {
+      double ratio = spuSalesCount / inventory;
+      if (ratio > 0 && ratio< 0.01) {
+        ratio = 0.01;
+      } else if (ratio > 0.99 && ratio < 1) {
+        ratio = 0.99;
+      } else if (ratio > 1.0) {
+        ratio = 1.0;
+      }
+      return ratio;
     } else {
-      return ((inventory - remainInventory) / inventory);
+      return 0.0;
     }
   }
   /// 已售xxx%
@@ -133,12 +151,19 @@ class LimitTimeSeckillProductModel {
     if (sealsRatio100 <= 0) {
       return "  已售0%";
     }
-    return "  已售" + sealsRatio100.ceil().toString() + "%";
+    return "  已售" + sealsRatio100.floor().toString() + "%";
   }
   /// 已抢xxx件
   String get sellCountText {
     if (spuSalesCount != null && spuSalesCount > 0) {
       return "  已抢$spuSalesCount件";
+    }
+    return "";
+  }
+  /// 秒杀价
+  String get buyingPriceText {
+    if (buyingPrice != null && buyingPrice > 0) {
+      return (buyingPrice / 100).toString();
     }
     return "";
   }
@@ -207,7 +232,52 @@ class LimitTimeSeckillProductModel {
           spuSalesCount: json["spuSalesCount"],
           mostEarn: json["mostEarn"],
           isSub: json["isSub"],
-          tagPosition: json["tagPosition"],
-          tagUrl: json["tagUrl"],
+          tagPosition: json["tagPosition"] == null ? 0 : json["tagPosition"],
+          tagUrl: json["tagUrl"] == null ? "" : json["tagUrl"],
           type: json["type"]);
+}
+
+
+class ShareCardInfoModel {
+  ShareCardInfoModel({
+    this.shareType,
+    this.imagerUrl,
+    this.linkUrl,
+    this.host,
+    this.appid,
+    this.miniId,
+  });
+
+  String shareType;
+  String imagerUrl;
+  String linkUrl;
+  String host;
+  String appid;
+  String miniId;
+
+  /// mid
+  String _mid;
+  String get mid => _mid;
+  void setMid(String mid) {
+    this._mid = mid;
+  }
+
+  factory ShareCardInfoModel.fromJson(Map<String, dynamic> json) =>
+      ShareCardInfoModel(
+        shareType: json["shareType"],
+        imagerUrl: json["imagerUrl"],
+        linkUrl: json["linkUrl"],
+        host: json["host"],
+        appid: json["appid"],
+        miniId: json["miniId"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "shareType": shareType, 
+    "imagerUrl": imagerUrl, 
+    "linkUrl": linkUrl, 
+    "host": host,
+    "appid": appid, 
+    "miniId": miniId, 
+  };
 }

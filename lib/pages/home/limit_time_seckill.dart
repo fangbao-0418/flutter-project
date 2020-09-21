@@ -5,6 +5,7 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/net_work/home_request.dart';
+import 'package:xtflutter/pages/home/limit_time_seckill_share.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
@@ -12,7 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
 class LimitTimeSeckillPage extends StatefulWidget {
-  static String routerName = "limitTimeSpick";
+  static String routerName = "limitTimeSeckill";
 
   @override
   _LimitTimeSeckillPageState createState() => _LimitTimeSeckillPageState();
@@ -75,6 +76,27 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
     });
   }
 
+  /// 分享 
+  void _shareAction() async{    
+    if (!AppConfig.isLogin) {
+      /// 未登录，跳转登录页
+      XTRouter.pushToPage(routerName: "gotoLogin", context: context, isNativePage: true);
+      return;
+    }
+    Loading.show();
+    String mid = AppConfig.user.mid;
+    ShareCardInfoModel shareModel = await HomeRequest.getCardInfo({"page": "pages/seckill/index", "scene": "mid=" + mid})
+    .whenComplete(() => Loading.hide());
+    shareModel.setMid(mid);
+
+    Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return LimitTimeSeckillSharePage(productList: globlKeys[_lastIndex].currentState.productList, shareModel: shareModel);
+      },
+    ));
+  }
+
   /// 获取时间列表
   List<Widget> _getTimeTabs() {
     List<Widget> childred = [];
@@ -84,8 +106,8 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
           height: 48,
           child: Tab(
             iconMargin: EdgeInsets.only(bottom: 3),
-            icon: Text(e.promotionStartTimeDesc, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-            child: Text(e.desc, style: TextStyle(fontSize: 10)),
+            icon: Text(e.promotionStartTimeDesc, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+            child: Text(e.desc, style: TextStyle(fontSize: 11)),
           ),
         )
       );     
@@ -123,7 +145,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
             ),
             onPressed: () => XTRouter.closePage(context: context),
           ),
-          title: xtText("限时秒杀${AppConfig.bottomH}", 18, Colors.white),
+          title: xtText("限时秒杀", 18, Colors.white),
           bottom: TabBar(
             controller: _tabController,
             labelColor: Colors.white,
@@ -147,7 +169,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
               right: 0,
               child: FlatButton(
                 onPressed: () {
-                  Toast.showToast(msg: "分享");
+                  _shareAction();
                 }, 
                 padding: EdgeInsets.zero,
                 child: Image.asset("images/limit_time_seckill_share.png")
@@ -204,6 +226,9 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   /// 保持当前页面存活
   @override
   bool get wantKeepAlive => true;
+
+  /// 获取商品列表
+  List<LimitTimeSeckillProductModel> get productList => _productList;
 
   @override
   // ignore: must_call_super
@@ -337,70 +362,53 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
         child: Row(
           children: <Widget>[
             SizedBox(width: 8),
-            Stack(
-              children: <Widget>[
-                xtRoundAvatarImage(110, 8, model.coverImage, borderColor: mainF5GrayColor, borderWidth: 0.5),
-                /// 4个角落上的标签
-                Visibility(
-                  visible: model.tagType == TagPositionType.leftTop,
-                  child: Positioned(left: 0, top: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(8))
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: Stack(
+                children: <Widget>[
+                  xtRoundAvatarImage(110, 8, model.coverImage, borderColor: mainF5GrayColor, borderWidth: 0.5),
+                  /// 4个角落上的标签
+                  Visibility(
+                    visible: model.tagType == TagPositionType.leftTop,
+                    child: Positioned(left: 0, top: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: model.tagType == TagPositionType.leftBottom,
+                    child: Positioned(left: 0, bottom: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: model.tagType == TagPositionType.rightTop,
+                    child: Positioned(right: 0, top: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: model.tagType == TagPositionType.rightBottom,
+                    child: Positioned(right: 0, bottom: 0,
+                      child: Image(image: NetworkImage(model.tagUrl), width: 50, height: 30)
+                    )
+                  ),
+                  Visibility(
+                    visible: (model.isSellOut && _status != SeckillStatus.noStart),
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 110,
+                      width: 110,
+                      decoration: xtRoundDecoration(8, bgcolor: Color(0x7D000000)),
+                      child: Image(
+                        width: 68,
+                        height: 68,
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage("images/product-sellOut-small.png"),
                       ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: model.tagType == TagPositionType.leftBottom,
-                  child: Positioned(left: 0, bottom: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))
-                      ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: model.tagType == TagPositionType.rightTop,
-                  child: Positioned(right: 0, top: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(8))
-                      ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: model.tagType == TagPositionType.rightBottom,
-                  child: Positioned(right: 0, bottom: 0,
-                    child: Container(width: 50, height: 30,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(model.tagUrl)),
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(8))
-                      ),
-                    ),
-                  )
-                ),
-                Visibility(
-                  visible: (model.isSellOut && _status != SeckillStatus.noStart),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 110,
-                    width: 110,
-                    decoration: xtRoundDecoration(8, bgcolor: Color(0x7D000000)),
-                    child: Image(
-                      width: 68,
-                      height: 68,
-                      fit: BoxFit.fitWidth,
-                      image: AssetImage("images/product-sellOut-small.png"),
-                    ),
-                  )
-                ),
-              ],
+                    )
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: Container(
@@ -411,9 +419,9 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        // xtText(model.productName, 14, mainBlackColor, maxLines: 2, overflow: TextOverflow.ellipsis),
                         RichText(
                           maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             children: [
                               WidgetSpan(
@@ -468,52 +476,59 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Stack(
-                                alignment: Alignment.centerLeft,
-                                children: <Widget>[
-                                  Container(
-                                    width: 100,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      color: xtColor_4DE60113,
-                                      borderRadius: BorderRadius.all(Radius.circular(6))
+                              ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                child: Stack(
+                                  alignment: Alignment.centerLeft,
+                                  children: <Widget>[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      child: Container(
+                                        width: 100,
+                                        height: 12,
+                                        color: xtColor_4DE60113,
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 100 * model.sellRatio,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      color: mainRedColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(6))
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                        bottomRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                      ),
+                                      child: Container(
+                                        width: 100 * model.sellRatio,
+                                        height: 12,
+                                        color: mainRedColor,
+                                      ),
                                     ),
-                                  ),
-                                  xtText(model.sellText, 9, Colors.white, fontWeight: FontWeight.w500)
-                                ],
+                                    xtText(model.sellText, 9, Colors.white, fontWeight: FontWeight.w500)
+                                  ],
+                                ),
                               ),
                               xtText(model.sellCountText, 10, mainBlackColor)
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                    Visibility(
-                      visible: (AppConfig.isLogin && AppConfig.user.memberType != null && AppConfig.user.memberType >= 10),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(left: 2, right: 2),
-                            alignment: Alignment.centerLeft,
-                            child: xtText(model.mostEarnText, 10, xtColor_FF6600, alignment: TextAlign.center),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(3)),
-                              border: Border.all(
-                                color: xtColor_FF6600,
-                                width: 0.5
-                              )
-                            ),
+                        Visibility(
+                          visible: (AppConfig.isLogin && AppConfig.user.memberType != null && AppConfig.user.memberType >= 10),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(top: 5),
+                                padding: EdgeInsets.only(left: 2, right: 2),
+                                alignment: Alignment.centerLeft,
+                                child: xtText(model.mostEarnText, 10, xtColor_FF6600, alignment: TextAlign.center),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(3)),
+                                  border: Border.all(
+                                    color: xtColor_FF6600,
+                                    width: 0.5
+                                  )
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Container(
                       height: 30,
@@ -531,7 +546,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                 alignment: TextAlign.center
                               ),
                               xtText(
-                                (model.buyingPrice / 100).toString(), 
+                                model.buyingPriceText, 
                                 24, 
                                 _status == SeckillStatus.noStart ? xtColor_33AB33 : mainRedColor, 
                                 fontWeight: FontWeight.w500, 

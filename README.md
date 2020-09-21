@@ -18,7 +18,7 @@ iOS  运行前提条件 安装 Xcode  更新cocopods  具体操作详看 https:/
 
 iOS 项目地址：git@192.168.20.7:ios/xituan.git 
   1. git clone git@192.168.20.7:ios/xituan.git 
-  2. 切到flutter 分支
+  2. 切到 flutter 分支
   3. git submodule update 
   4. xt-flutter-submodule 即是flutter 项目
   5. flutter pub get 
