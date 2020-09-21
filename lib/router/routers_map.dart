@@ -93,8 +93,6 @@ Map<String, PageBuilder> routeConfigs = {
       ),
 
 
-  LiveStreamerStationPage.routerName: (pageName, params, _) => LiveStreamerStationPage(),
-
   ///主播个人页
   AnchorPersonalPage.routerName : (pageName, params, _) => AnchorPersonalPage(),
 };
