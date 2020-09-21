@@ -117,7 +117,7 @@ class LimitTimeSeckillProductModel {
     if (inventory == null) {
       return true;
     }
-    int salesCount = spuSalesCount == null ? 0 : spuSalesCount;
+    int salesCount = spuSalesCount ?? 0;
     if (salesCount >= inventory || inventory == 0) {
       return true;
     } else {
@@ -151,7 +151,7 @@ class LimitTimeSeckillProductModel {
     if (sealsRatio100 <= 0) {
       return "  已售0%";
     }
-    return "  已售" + sealsRatio100.toStringAsFixed(0) + "%";
+    return "  已售" + sealsRatio100.floor().toString() + "%";
   }
   /// 已抢xxx件
   String get sellCountText {
