@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/Utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
@@ -25,7 +28,8 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
   @override
   void initState() {
     // TODO: implement initState
-    print("liveStationHeight:${AppConfig.navH}");
+    debugDumpApp();
+    print("liveStationHeight:${AppConfig.getInstance()}");
     super.initState();
     getAnchorInfoReq();
     getLiveStationInfoReq();
@@ -106,24 +110,9 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                     placeholder: "",
                     image: model.liveCover,
                   ),
-                ) ,
+                ),
               ),
-              Container(
-                  margin: EdgeInsets.all(6),
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      gradient: LinearGradient(
-                          begin:Alignment.topLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            xtColor_00CC88,
-                            xtColor_29D69D
-                          ]
-                      )
-                  ),
-                  child: xtText("待直播",10,whiteColor)
-              )
+              obtainLiveStatusWidget(model)
             ],
           ),
           Expanded(
@@ -142,45 +131,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                     ],
                   ),
                   Spacer(),
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        width: 72,
-                        height: 22,
-                        child: OutlineButton(
-                          borderSide: BorderSide(
-                            color: mainRedColor,
-                          ),
-                          child: xtText("编辑",12, mainRedColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          onPressed: (){
-
-                          },
-                        ),
-                      ),
-                      Container(
-                        width: 72,
-                        height: 22,
-                        margin: EdgeInsets.only(left: 8),
-                        decoration: BoxDecoration(
-                            color: mainRedColor,
-                            borderRadius: BorderRadius.circular(6)
-                        ),
-                        child: FlatButton(
-                          child: xtText("进入直播间",12, whiteColor),
-                          padding: EdgeInsets.all(0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          onPressed: (){
-
-                          },
-                        ),
-                      )
-                    ],
-                  )
+                  obtainLiveActionBtn(model)
                 ],
               ),
             ),
@@ -190,10 +141,106 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
     );
   }
 
+  Widget obtainLiveStatusWidget(LivePlanHistoryModel model){
+    if (model.status != 2){
+      return Container(
+          margin: EdgeInsets.all(6),
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              gradient: LinearGradient(
+                  begin:Alignment.topLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    xtColor_00CC88,
+                    xtColor_29D69D
+                  ]
+              )
+          ),
+          child: xtText(model.getStatusText(),10,whiteColor)
+      );
+    }else{
+      return Container(
+          margin: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: xtColor_80000000,
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.centerRight,
+                          colors: [xtColor_4D88FF, xtColor_6E9EFF])),
+                  child: xtText(model.getStatusText(), 10, whiteColor)
+              ),
+              Container(
+                padding: EdgeInsets.all(3),
+                child: xtText(
+                    "人气" +
+                        (NumUtil.getNumByValueDouble(
+                                model.statistics.popularity / 1000, 2))
+                            .toStringAsFixed(2) +
+                        "W",
+                    10,
+                    whiteColor),
+              )
+            ],
+          ));
+    }
+  }
+
+  // 编辑和进入直播间按钮
+  Widget obtainLiveActionBtn(LivePlanHistoryModel model){
+    return Row(
+      children: <Widget>[
+        Container(
+          width: 72,
+          height: 22,
+          child: OutlineButton(
+            borderSide: BorderSide(
+              color: mainRedColor,
+            ),
+            child: xtText("编辑",12, mainRedColor),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+            onPressed: (){
+              Toast.showToast(msg: "编辑");
+            },
+          ),
+        ),
+        Container(
+          width: 72,
+          height: 22,
+          margin: EdgeInsets.only(left: 8),
+          decoration: BoxDecoration(
+              color: mainRedColor,
+              borderRadius: BorderRadius.circular(6)
+          ),
+          child: FlatButton(
+            child: xtText("进入直播间",12, whiteColor),
+            padding: EdgeInsets.all(0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+            onPressed: (){
+              Toast.showToast(msg: "进入直播间");
+            },
+          ),
+        )
+      ],
+    );
+  }
+
   //滚动列表view
   Widget obtainListViewContainer(){
     return Container(
-        padding: EdgeInsets.only(top: 88),
+        padding: EdgeInsets.only(top: AppConfig.navH),
         child: ListView.builder(
             padding: EdgeInsets.only(top: 0),
             itemCount: livePlan.length + 1 + liveHistory.length + 1,
@@ -250,7 +297,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
 
   Widget obtainLiveAppBar() {
     return Container(
-      height: 88,
+      height: AppConfig.navH,
       child: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
@@ -296,7 +343,8 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
 
   //主播信息
   Widget obtainProfileWidget(){
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(
           children: <Widget>[
@@ -326,16 +374,90 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                     children: <Widget>[
                       Image.asset("images/live_star.png"),
                       Padding(
-                        padding: const EdgeInsets.only(left: 2),
+                        padding: const EdgeInsets.only(left: 2,right: 8),
                         child: xtText("星级主播", 12, whiteColor),
                       ),
+                      Visibility(
+                        visible: anchorModel.fansNum > 0,
+                          child: xtText("${anchorModel.fansNum}粉丝", 12, whiteColor)
+                      )
                     ],
-                  ),
+                  )
                 ],
               ),
             )
           ],
         ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: whiteColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          margin: EdgeInsets.only(top: 10,bottom: 0,left: 12,right: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: xtColor_F7F7F7,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Image.asset("images/live_notify_horn.png"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10,bottom: 10,left: 6,right: 10),
+                      child: xtText("主播分佣制度上线，成为喜团主播有钱赚啦！", 12, xtColor_E60146),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                ),
+                padding: EdgeInsets.only(top: 15,bottom: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        xtText("¥12.45W", 18, mainBlackColor),
+                        Row(
+                          children: <Widget>[
+                            xtText("累计佣金", 12, xtColor_A8A8A8),
+                            Icon(Icons.chevron_right,color: xtColor_A8A8A8,size: 20,)
+                          ],
+                        )
+                      ],
+                    ),
+                    Container(
+                      width: 1,
+                      height: 36,
+                      color: xtColor_F5F5F5,
+                    ),
+                    Column(
+                      children: <Widget>[
+                        xtText("¥12.45W", 18, mainBlackColor),
+                        Row(
+                          children: <Widget>[
+                            xtText("待结算佣金", 12, xtColor_A8A8A8),
+                            Icon(Icons.chevron_right,color: xtColor_A8A8A8,size: 20,)
+                          ],
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
       ],
     );
   }

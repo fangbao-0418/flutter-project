@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
+import 'package:xtflutter/pages/Live/LiveStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
@@ -80,27 +81,25 @@ class _SettingPageState extends State<SettingPage> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    XTRouter.pushToPage(
-                      routerName: LiveAnchorStationPage.routerName,
-                      context: context,
-                    );
-                  },
-                  child: xtText(
-                    "主播台",
-                    22,
-                    Colors.black,
-                  )),
-              FlatButton(
-                  onPressed: () {
-                    XTRouter.pushToPage(
-                        routerName: LimitTimeSeckillPage.routerName,
-                        context: context);
-                  },
-                  child: xtText("限时秒杀", 22, Colors.black)),
+          FlatButton(
+              onPressed: () {
+                XTRouter.pushToPage(
+                  routerName: LiveStationPage.routerName,
+                  context: context,
+                );
+              },
+              child: xtText(
+                "主播台",
+                22,
+                Colors.black,
+              )),
+          FlatButton(
+              onPressed: () {
+                XTRouter.pushToPage(
+                    routerName: LimitTimeSeckillPage.routerName,
+                    context: context);
+              },
+              child: xtText("限时秒杀", 22, Colors.black)),
 
               FlatButton(
                 onPressed: () {

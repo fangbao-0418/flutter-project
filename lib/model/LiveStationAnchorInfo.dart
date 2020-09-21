@@ -1,4 +1,3 @@
-
 ///主播信息模型
 class LiveStationAnchorModel {
   LiveStationAnchorModel(
@@ -54,14 +53,20 @@ class LivePlanHistoryModel {
       this.startTime,
       this.liveCover,
       this.title,
+        //直播公告
       this.bulletin,
+      //直播类型(1: 公开直播, 2: 私密直播)
       this.liveType,
       this.productIds,
+      // 直播标签IDs
       this.labelIds,
       this.labels,
+      //直播贴纸数据
       this.liveDecals,
       this.couponCodes,
+      // 直播状态(0: 未开播, 1: 开播中, 2: 已结束)
       this.status,
+      // 直播指定(0: 未置顶, 1: 置顶)
       this.liveTop,
       this.bizType,
       this.openShare,
@@ -100,6 +105,20 @@ class LivePlanHistoryModel {
   Statistics statistics;
   String statusMessage;
   bool delLabelFlag;
+  String statusText;
+
+  String getStatusText(){
+    String statusString = "";
+    if (status == 0){
+      statusString = "待直播";
+    } else if (status == 1){
+      statusString = "直播中";
+    } else if (status == 2){
+      statusString = "结束";
+    }
+
+    return statusString;
+  }
 
   factory LivePlanHistoryModel.fromJson(Map<String, dynamic> json) {
 //    json["id"] = int.parse(json["id"].toString());
@@ -111,7 +130,9 @@ class LivePlanHistoryModel {
         title: json["title"],
         bulletin: json["bulletin"],
         liveType: json["liveType"],
-        productIds: json["productIds"] != null ? List<int>.from(json["productIds"]) : [],
+        productIds: json["productIds"] != null
+            ? List<int>.from(json["productIds"])
+            : [],
         labelIds: json["labelIds"],
         labels: json["labels"],
         liveDecals: json["liveDecals"],
@@ -126,7 +147,9 @@ class LivePlanHistoryModel {
         endTime: json["endTime"],
         masterProductId: json["masterProductId"],
         stopMessage: json["stopMessage"],
-        statistics: json["statistics"] != null ? Statistics.fromJson(json["statistics"]) : Statistics(),
+        statistics: json["statistics"] != null
+            ? Statistics.fromJson(json["statistics"])
+            : Statistics(),
         statusMessage: json["statusMessage"],
         delLabelFlag: json["delLabelFlag"]);
   }
