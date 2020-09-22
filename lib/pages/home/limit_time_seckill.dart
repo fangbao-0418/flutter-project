@@ -146,7 +146,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
             onPressed: () => XTRouter.closePage(context: context),
           ),
           title: xtText("限时秒杀", 18, Colors.white),
-          bottom: TabBar(
+          bottom: _length > 0 ? TabBar(
             controller: _tabController,
             labelColor: Colors.white,
             unselectedLabelColor: xtColor_B3FFFFFF,
@@ -156,9 +156,9 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
               _lastIndex = index;
             },
             tabs: _getTimeTabs()
-          ),
+          ) : null,
         ),
-        body: Stack(
+        body: _length > 0 ? Stack(
           children: <Widget>[
             TabBarView(
               controller: _tabController,
@@ -176,7 +176,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
               ),
             )
           ],
-        ),
+        ) : Center(child: xtText("暂无限时秒杀商品~", 16, xtColor_969696)),
       ),
     );
   }
@@ -205,6 +205,8 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   int _seckillIndex = 0;
   /// 开抢状态
   SeckillStatus _status = SeckillStatus.buying;
+  /// 是否是第一次加载
+  bool _isFirstLoad = true;
 
   @override
   void initState() {
@@ -233,7 +235,9 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
-    return Container(
+    return (_productList.isEmpty && !_isFirstLoad) ? 
+    Center(child: xtText("该场次暂无限时秒杀商品~", 16, xtColor_969696)) :
+    Container(
       child: _getListView(_productList),
     );
   }
@@ -243,6 +247,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
     if (!(_productList == null || _productList.isEmpty)) {
       return;
     }
+    _isFirstLoad = false;
     getProductListReq();
   }
 
@@ -421,6 +426,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                       children: <Widget>[
                         RichText(
                           maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             children: [
                               WidgetSpan(
@@ -489,7 +495,10 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                       ),
                                     ),
                                     ClipRRect(
-                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                        bottomRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                      ),
                                       child: Container(
                                         width: 100 * model.sellRatio,
                                         height: 12,

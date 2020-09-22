@@ -127,36 +127,37 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
     /// 比例尺寸
     _scale = viewW / 375;
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pop();
-      },
+      onTap: () => Navigator.of(context).pop(),
       child: Container(
         color: Color(0x90000000),
         child: Column(
           children: <Widget>[
             Expanded(
               child: Center(
-                child: RepaintBoundary(
-                  key: _repaintWidgetKey,
-                  child: Container(
-                    width: viewW,
-                    height: viewW * 668 / 375,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Image.asset(_shareBgImgName),
-                        _getShareBgWidget(),
-                        Container(
-                          margin: EdgeInsets.only(top: 490 * _scale, left: 12 * _scale, right: 12 * _scale),
-                          padding: EdgeInsets.only(left: 11 * _scale),
-                          height: 120 * _scale,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(4))
-                          ),
-                          child: _getUserInfoView(),
-                        )
-                      ],
+                child: GestureDetector(
+                  onTap: () {},
+                  child: RepaintBoundary(
+                    key: _repaintWidgetKey,
+                    child: Container(
+                      width: viewW,
+                      height: viewW * 668 / 375,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Image.asset(_shareBgImgName),
+                          _getShareBgWidget(),
+                          Container(
+                            margin: EdgeInsets.only(top: 490 * _scale, left: 12 * _scale, right: 12 * _scale),
+                            padding: EdgeInsets.only(left: 11 * _scale),
+                            height: 120 * _scale,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(4))
+                            ),
+                            child: _getUserInfoView(),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

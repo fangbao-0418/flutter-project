@@ -1,5 +1,6 @@
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
+import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/message/message_detail.dart';
@@ -92,4 +93,6 @@ Map<String, PageBuilder> routeConfigs = {
       ),
 
 
+  ///主播个人页
+  AnchorPersonalPage.routerName : (pageName, params, _) => AnchorPersonalPage(),
 };
