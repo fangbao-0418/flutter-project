@@ -29,6 +29,16 @@ const xtColor_FFD652 = Color(0xFFFFD652);
 const xtColor_E02020 = Color(0xFFE02020);
 const xtColor_6D7278 = Color(0xFF6D7278);
 
+class AppColors {
+  AppColors._();
 
+  static const Color FFFFFFFF = Color(0xFFFFFFFF);
 
+  static const Color FFA8A8A8 = Color(0xFFA8A8A8);
 
+  static const Color FF333333 = Color(0xFF333333);
+
+  static const Color FF4D88FF = Color(0xFF4D88FF);
+
+  static const Color FFF3F3F3 = Color(0xFFF3F3F3);
+}
