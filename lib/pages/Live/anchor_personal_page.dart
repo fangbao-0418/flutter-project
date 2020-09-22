@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:xtflutter/Utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
@@ -17,35 +18,44 @@ class AnchorPersonalPage extends StatefulWidget {
 class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     with SingleTickerProviderStateMixin {
   ScrollController _scrollViewController;
-  double appBarOpacity = 0.0; //appbar透明度
-  bool isAttention = false; //是否关注
-  GlobalKey appBarKey = GlobalKey();
-  GlobalKey tabKey = GlobalKey();
-  bool showStickTabView = false;
-  List<int> liveStates = List();
-  bool isCurrentReplayTab = true; //当前是否是回放tab,默认true
+  double _appBarOpacity = 0.0; //appbar透明度
+  bool _isAttention = false; //是否关注
+  GlobalKey _appBarKey = GlobalKey();
+  GlobalKey _tabKey = GlobalKey();
+  bool _showStickTabView = false;
+  List<int> _liveStates = List();
+  int _currentTab = 1; //默认回放tab
+  TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _scrollViewController = ScrollController(initialScrollOffset: 0.0);
     _scrollViewController.addListener(() {
-      Size size = appBarKey.currentContext.size;
+      Size size = _appBarKey.currentContext.size;
       var opacity = _scrollViewController.offset / size.height;
-      appBarOpacity = opacity <= 1 ? opacity : 1;
-      if (appBarOpacity <= 1) {
+      _appBarOpacity = opacity <= 1 ? opacity : 1;
+      if (_appBarOpacity <= 1) {
         setState(() {});
       }
-      RenderBox tabKeyrenderObject = tabKey.currentContext.findRenderObject();
-      Offset tabKeyOffset = tabKeyrenderObject.localToGlobal(Offset.zero);
-      if (tabKeyOffset.dy - size.height <= 0 && !showStickTabView) {
+      RenderBox _tabKeyrenderObject = _tabKey.currentContext.findRenderObject();
+      Offset _tabKeyOffset = _tabKeyrenderObject.localToGlobal(Offset.zero);
+      if (_tabKeyOffset.dy - size.height <= 0 && !_showStickTabView) {
         setState(() {
-          showStickTabView = true;
+          _showStickTabView = true;
         });
-      } else if (tabKeyOffset.dy - size.height > 0 && showStickTabView) {
+      } else if (_tabKeyOffset.dy - size.height > 0 && _showStickTabView) {
         setState(() {
-          showStickTabView = false;
+          _showStickTabView = false;
         });
+      }
+    });
+
+    _tabController = TabController(initialIndex: 1, length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (_currentTab != _tabController.index) {
+        _currentTab = _tabController.index;
+        setState(() {});
       }
     });
   }
@@ -75,9 +85,9 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     return Column(
       children: <Widget>[
         Opacity(
-          opacity: appBarOpacity,
+          opacity: _appBarOpacity,
           child: Container(
-            key: appBarKey,
+            key: _appBarKey,
             color: Theme.of(context).primaryColor,
             height: AppConfig.navH,
             padding: EdgeInsets.only(top: AppConfig.statusH),
@@ -107,7 +117,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                   ),
                 ),
                 GestureDetector(
-                  child: isAttention
+                  child: _isAttention
                       ? _buildShapeText("已关注", 12, main66GrayColor,
                           main66GrayColor, EdgeInsets.fromLTRB(5, 0, 5, 1),
                           isSold: false)
@@ -116,7 +126,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                           isSold: false),
                   onTap: () {
                     setState(() {
-                      isAttention = !isAttention;
+                      _isAttention = !_isAttention;
                     });
                   },
                 ),
@@ -128,8 +138,8 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
             ),
           ),
         ),
-//        showStickTabView?_buildTabView(true):null,
-        if (showStickTabView)
+//        _showStickTabView?_buildTabView(true):null,
+        if (_showStickTabView)
           _buildTabView(true, null)
       ],
     );
@@ -137,17 +147,40 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
 
   ///页面滑动内容
   _buildContainer() {
-    return ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: 10,
-        controller: _scrollViewController,
-        itemBuilder: (BuildContext ctx, int index) {
-          if (index == 0) {
-            return _buildContainerTopAppBar();
-          } else {
-            return _buildReplayListView(index);
-          }
-        });
+    return CustomScrollView(
+      controller: _scrollViewController,
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: _buildContainerTopAppBar(),
+        ),
+        _buildListItemByType(),
+      ],
+    );
+  }
+
+  _buildListItemByType() {
+    if (_currentTab == 1) {
+      return SliverList(
+          delegate: SliverChildBuilderDelegate(
+                  (BuildContext ctx, int index) {
+                return _buildReplayListView(index);
+              },
+              childCount: 10
+          ));
+    } else {
+      return SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        sliver: SliverStaggeredGrid.countBuilder(
+            crossAxisCount: 4,
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+            staggeredTileBuilder: (index) =>
+//              StaggeredTile.count(2, index==0 ? 2 : 4),
+            StaggeredTile.fit(2),
+            itemBuilder: (context, index) => _buildShowListView(index),
+            itemCount: 10),
+      );
+    }
   }
 
   ///页面滑动内容顶部
@@ -224,14 +257,14 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                             color: whiteColor, shape: xtShapeRound(50)),
                         width: 62,
                         height: 24,
-                        child: isAttention
+                        child: _isAttention
                             ? xtText("已关注", 12, xtColor_FFE60146)
                             : Image.asset(
                                 "images/live_anchor_top_cancel_attention.png"),
                       ),
                       onTap: () {
                         setState(() {
-                          isAttention = !isAttention;
+                          _isAttention = !_isAttention;
                         });
                       },
                     )
@@ -250,10 +283,10 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   _buildContainerTopAppBarBelow() {
     var list = List<Widget>();
     for (int i = 0; i < 3; i++) {
-      liveStates.add(i);
+      _liveStates.add(i);
       list.add(_buildLiveStateView(i));
     }
-    list.add(_buildTabView(false, tabKey));
+    list.add(_buildTabView(false, _tabKey));
     return Container(
       decoration:
           ShapeDecoration(color: mainF5GrayColor, shape: xtShapeRound(12)),
@@ -266,7 +299,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
 
   ///回放,预告,直播状态view
   _buildLiveStateView(int state) {
-    var liveState = liveStates[state];
+    var liveState = _liveStates[state];
     bool isLiving = liveState == 0;
     bool isNotice = liveState == 1;
     bool noNotice = liveState == 2;
@@ -298,7 +331,8 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                         isLiving ? mainRedColor : xtColor_FF29D69D,
                         EdgeInsets.fromLTRB(10, 0, 10, 1),
                         margin: EdgeInsets.only(right: 8)),
-                    xtText("开播时间：2020.12.28 19:00", 12, main99GrayColor)
+                    xtText("开播时间：2020.12.28 19:00", 12, main99GrayColor,
+                        overflow: TextOverflow.ellipsis)
                   ],
                 )
               ],
@@ -320,52 +354,54 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     );
   }
 
-  ///口碑秀和直播回放的tabview
   _buildTabView(bool isStick, Key key) {
-    return Container(
-      decoration: BoxDecoration(
+    return TabBar(
+      key: key,
+      labelPadding: EdgeInsets.zero,
+      controller: _tabController,
+      unselectedLabelColor: xtColor_B3FFFFFF,
+      indicatorColor: Colors.transparent,
+      tabs: <Widget>[
+        _buildSingleTabview(isStick, "口碑秀", 0),
+        _buildSingleTabview(isStick, "直播回放", 1),
+      ],
+    );
+  }
+
+  ///口碑秀和直播回放的tabview
+  _buildSingleTabview(bool isStick, String name, int currentTab) {
+    bool isChecked = _currentTab == currentTab;
+    return Stack(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
           color: isStick ? whiteColor : null,
           border: isStick
               ? Border.symmetric(vertical: BorderSide(color: mainF5GrayColor))
               : null),
-      child: Row(
-        key: key,
-        children: <Widget>[
-          _buildSingleTabview("口碑秀", false),
-          Container(
-            width: 0.5,
-            height: 20,
-            color: xtColor_FFDDDDDD,
-          ),
-          _buildSingleTabview("直播回放", true),
-        ],
-      ),
-    );
-  }
-
-  _buildSingleTabview(String name, bool isReplayTab) {
-    bool isChecked = isCurrentReplayTab == isReplayTab;
-    return Expanded(
-      child: GestureDetector(
-        child: Container(
-          color: Colors.transparent,
           alignment: Alignment.center,
           height: 45,
           child: xtText(
               name, 16, isChecked ? xtColor_FFE20260 : main66GrayColor,
               fontWeight: isChecked ? FontWeight.w600 : FontWeight.normal),
         ),
-        onTap: () {
-          if (!isChecked)
-            setState(() {
-              isCurrentReplayTab = !isCurrentReplayTab;
-            });
-        },
-      ),
+        Visibility(
+          visible: currentTab == 0,
+          child: Container(
+              alignment: Alignment(1, 0),
+              height: 45,
+              child: Container(
+                width: 0.5,
+                height: 20,
+                color: xtColor_FFDDDDDD,
+              )
+          ),
+        )
+      ],
     );
   }
 
-  ///页面滑动内容列表(直播回放或者口碑秀)
+  ///页面滑动内容列表(直播回放)
   _buildReplayListView(int index) {
     return Container(
       margin: EdgeInsets.only(bottom: 8, left: 12, right: 12),
@@ -422,7 +458,56 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     );
   }
 
-  _buildShowListView(int index) {}
+  ///页面滑动内容列表(口碑秀)
+  _buildShowListView(int index) {
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: whiteColor,
+      shape: xtShapeRound(10),
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            child: AspectRatio(
+                aspectRatio: index % 2 == 0 ? 1 : 1440 / 800,
+                child: Image.network(index % 2 == 0
+                    ? "https://assets.hzxituan.com/supplier/77943E5ED2DCA759.jpg"
+                    : "http://yanxuan.nosdn.127.net/65091eebc48899298171c2eb6696fe27.jpg")),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            child: Column(
+              children: <Widget>[
+                xtText(
+                    "强烈推荐抖音爆款超级好吃111，入口会爆水珠", 14, mainBlackColor, maxLines: 2),
+                SizedBox(height: 12,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    xtRoundAvatarImage(16, 50,
+                        "https://assets.hzxituan.com/assets/2020_0104/live_header.png"),
+                    SizedBox(width: 2,),
+                    Expanded(
+                        child: xtText("我是我是我是我是我是我是", 10, main66GrayColor,
+                            overflow: TextOverflow.ellipsis)
+                    ),
+                    SizedBox(width: 18,),
+                    Image.asset(
+                      "images/live_anchor_favorite_red.png", width: 14,
+                      height: 14,),
+                    SizedBox(width: 2,),
+                    xtText("62.43w", 12, main66GrayColor),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
   _buildIconButton(String name, double size, VoidCallback callback) {
     return IconButton(
