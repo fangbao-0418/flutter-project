@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/net_work/home_request.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill_share.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
+import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
 class LimitTimeSeckillPage extends StatefulWidget {
@@ -196,7 +197,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   /// 数据源列表
   List<LimitTimeSeckillProductModel> _productList = [];
   /// 刷新器
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  EasyRefreshController _controller = EasyRefreshController();
   /// 页码
   int _pageIndex = 1;
   /// 营销id
@@ -253,7 +254,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
 
   /// 请求数据
   void getProductListReq({bool isFirst = true}) async {
-    if (_pageIndex == 1) { Loading.show(); }
+    if (isFirst) { Loading.show(); }
     Map<String, dynamic> result = await HomeRequest.getSeckillListReq({"page": _pageIndex, "promotionId": _promotionId})
     .whenComplete(() {
       Loading.hide();
@@ -268,17 +269,18 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
       }
     });
     if (!isFirst) {
-        if (products.length < 10) {
-          _refreshController.loadNoData();
-        } else {
-          _refreshController.loadComplete();
-        }
-      }
+        _controller.finishLoad(noMore: products.length < 10);
+    }
   }
 
   /// 上拉加载
   void _onLoading() {
     _pageIndex ++;
+    getProductListReq(isFirst: false);
+  }
+
+  void _onRefresh() {
+    _pageIndex = 1;
     getProductListReq(isFirst: false);
   }
 
@@ -315,36 +317,10 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
 
   /// 获取列表widget
   Widget _getListView(List<LimitTimeSeckillProductModel> products) {
-    return SmartRefresher(
-      controller: _refreshController,
-      enablePullUp: true,
-      enablePullDown: false,
-      footer: CustomFooter(
-        builder: (BuildContext context,LoadStatus mode){
-          Widget body ;
-          if(mode==LoadStatus.idle){
-            body =  Text("上拉加载");
-          }
-          else if(mode==LoadStatus.loading){
-            body =  CupertinoActivityIndicator();
-          }
-          else if(mode == LoadStatus.failed){
-            body = Text("加载失败，请重试");
-          }
-          else if(mode == LoadStatus.canLoading){
-            body = Text("松开加载");
-          }
-          else{
-            body = xtText("—— 没有更多内容了哦 ——", 12, mainA8GrayColor);
-          }
-          return Container(
-            padding: EdgeInsets.only(bottom: AppConfig.bottomH),
-            height: 55.0 + AppConfig.bottomH,
-            child: Center(child:body),
-          );
-        },
-      ),
-      onLoading: _onLoading,
+    return XtRefresh(
+      controller: _controller,
+      onLoad: _onLoading,
+      onRefresh: _onRefresh,
       child: ListView.builder(
         itemExtent: 145,
         itemCount: products.length,
