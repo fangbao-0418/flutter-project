@@ -279,11 +279,6 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
     getProductListReq(isFirst: false);
   }
 
-  void _onRefresh() {
-    _pageIndex = 1;
-    getProductListReq(isFirst: false);
-  }
-
   /// 点击操作
   void _clickAction(LimitTimeSeckillProductModel model) async {
     switch (_status) {
@@ -320,7 +315,6 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
     return XtRefresh(
       controller: _controller,
       onLoad: _onLoading,
-      onRefresh: _onRefresh,
       child: ListView.builder(
         itemExtent: 145,
         itemCount: products.length,
