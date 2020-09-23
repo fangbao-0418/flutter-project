@@ -30,3 +30,34 @@ class MessageBriefModel {
     return map;
   }
 }
+
+class MessageListDetailModel {
+
+  String content;
+	String id;
+	String jumpUrl;
+	int    time;
+	String title;
+
+	MessageListDetailModel({this.content, this.id, this.jumpUrl, this.time, this.title});
+
+	factory MessageListDetailModel.fromJson(Map<String, dynamic> json) {
+		return MessageListDetailModel(
+			content: json['content'],
+			id: json['id'],
+			jumpUrl: json['jumpUrl'],
+			time: json['time'],
+			title: json['title'],
+		);
+	}
+
+	Map<String, dynamic> toJson() {
+		final Map<String, dynamic> data = new Map<String, dynamic>();
+		data['content'] = this.content;
+		data['id'] = this.id;
+		data['jumpUrl'] = this.jumpUrl;
+		data['time'] = this.time;
+		data['title'] = this.title;
+		return data;
+	}
+}

@@ -11,6 +11,7 @@ import 'package:xtflutter/net_work/message_request.dart';
 import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/router/router.dart';
+import 'package:xtflutter/widget/scrollview/DefaultBehavior.dart';
 
 // 消息中心页面
 // create by yuanl at 2020/09/17
@@ -23,6 +24,30 @@ class MessageCenterPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _MessageCenterState();
+
+  static emptyWidget(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Image.asset(
+              "images/img_message_empty.png",
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+            xtText(
+              "主人，暂时没有收到任何消息哦～ ",
+              13,
+              AppColors.FFA8A8A8,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _MessageCenterState extends State<MessageCenterPage> {
@@ -59,23 +84,24 @@ class _MessageCenterState extends State<MessageCenterPage> {
             future: _future,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return ListView.builder(
-                  itemCount: snapshot?.data?.length,
-                  itemBuilder: (context, index) {
-                    final model = snapshot.data[index];
-                    return _MessageItemWidget(
-                      model: model,
-                    );
-                  },
-                );
+                if (snapshot.data != null && snapshot.data.length > 0) {
+                  return ScrollConfiguration(
+                    behavior: DefaultBehavior(),
+                    child: ListView.builder(
+                      itemCount: snapshot?.data?.length,
+                      itemBuilder: (context, index) {
+                        final model = snapshot.data[index];
+                        return _MessageItemWidget(
+                          model: model,
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return MessageCenterPage.emptyWidget(context);
+                }
               } else if (snapshot.connectionState == ConnectionState.none) {
-                return Center(
-                  child: xtText(
-                    "暂无数据~",
-                    22,
-                    xtColor_F9F9F9,
-                  ),
-                );
+                return MessageCenterPage.emptyWidget(context);
               }
               return Center(
                 child: CircularProgressIndicator(),
@@ -132,7 +158,7 @@ class _MessageItemWidget extends StatelessWidget {
                   xtText(
                     model.title ?? "还没有消息哦",
                     11,
-                    Colors.grey,
+                    AppColors.FFA8A8A8,
                     alignment: TextAlign.left,
                   )
                 ],
@@ -156,9 +182,5 @@ class _MessageItemWidget extends StatelessWidget {
       context: context,
       params: model.toJson(),
     );
-    // Navigator.of(context).pushNamed(
-    //   MessageDetailPage.routeName,
-    //   arguments: jsonEncode(model.toJson()),
-    // );
   }
 }

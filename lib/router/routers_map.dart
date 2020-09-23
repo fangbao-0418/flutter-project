@@ -1,6 +1,5 @@
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
-import 'package:xtflutter/pages/Live/LiveStationPage.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
@@ -78,7 +77,6 @@ Map<String, PageBuilder> routeConfigs = {
   /// -------------------------  Live  -------------------------
   /// 主播台
   LiveAnchorStationPage.routerName: (pageName, params, _) => LiveAnchorStationPage(),
-  LiveStationPage.routerName: (pageName, params, _) => LiveStationPage(),
 
   // -------------------------- Message ----------------------
   /**

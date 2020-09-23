@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
-import 'package:xtflutter/pages/Live/LiveStationPage.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
@@ -86,7 +85,7 @@ class _SettingPageState extends State<SettingPage> {
               FlatButton(
                   onPressed: () {
                     XTRouter.pushToPage(
-                      routerName: LiveStationPage.routerName,
+                      routerName: LiveAnchorStationPage.routerName,
                       context: context,
                     );
                   },

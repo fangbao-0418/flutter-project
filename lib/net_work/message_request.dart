@@ -9,14 +9,29 @@ class MessageRequest {
     final path = "/msg/groups/briefly";
     Future<List> future = HttpRequest.request<List>(
       path,
-      queryParameters: <String, dynamic>{
-        "memberType": AppConfig.user.memberType,
+      queryParameters: <String, String>{
+        "memberType": "${AppConfig.user?.memberType ?? 0}",
       },
     );
     return future.then((value) {
       final list = List<MessageBriefModel>();
       value.forEach((element) {
         list.add(MessageBriefModel.fromJson(element));
+      });
+      return list;
+    });
+  }
+
+  static Future<List<MessageListDetailModel>> getMessageDetailList(
+      String group) {
+    final path = "/msg/$group/l";
+    Future<List> future = HttpRequest.request(
+      path,
+    );
+    return future.then((value) {
+      final list = List<MessageListDetailModel>();
+      value.forEach((element) {
+        list.add(MessageListDetailModel.fromJson(element));
       });
       return list;
     });
