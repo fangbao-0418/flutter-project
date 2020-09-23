@@ -17,4 +17,12 @@ class LiveRequest {
     print(result);
     return result;
   }
+
+  /// 获取主播信息
+  static Future<dynamic> getSettleInfoData() async {
+    final url = "/cweb/member/settlement/v1/queryLiveWorkbenchAmount";
+    final result = await HttpRequest.request(url);
+    print(result);
+    return result;
+  }
 }

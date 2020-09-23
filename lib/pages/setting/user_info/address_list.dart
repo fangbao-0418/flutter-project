@@ -153,20 +153,31 @@ class _AddressListPageState extends State<AddressListPage> {
               buildCheckBox(model, model.defaultAddress == 1),
               xtText("默认地址", 14, Colors.black),
               Spacer(),
-              FlatButton.icon(
-                  onPressed: () {
-                    XTRouter.pushToPage(
-                      routerName: AddAddressPage.routerName,
-                      params: model.toJson(),
-                      context: context,
-                    );
-                  },
-                  icon: ImageIcon(
-                    AssetImage('images/my_address_list_edit.png'),
-                    color: Colors.black,
+
+              GestureDetector(
+                onTap: () {
+                  XTRouter.pushToPage(
+                    routerName: AddAddressPage.routerName,
+                    params: model.toJson(),
+                    context: context,
+                  );
+                },
+                child: Container(
+                  color: whiteColor,
+                  margin: EdgeInsets.only(right: 16),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                          width: 14,
+                          height: 14,
+                          margin: EdgeInsets.only(right: 10),
+                          child: Image.asset("images/my_address_list_edit.png")
+                      ),
+                      xtText("编辑", 14, Colors.black)
+                    ],
                   ),
-                  label: xtText("编辑", 14, Colors.black)
-              )
+                ),
+              ),
             ],
           ),
         ],

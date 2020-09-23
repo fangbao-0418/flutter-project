@@ -10,15 +10,29 @@ class LiveStationAnchorModel {
       this.coverUrl,
       this.bizScope});
 
-  int id = 0;
-  String nickName = "null";
-  int level = 0;
-  int type = 0;
-  String label = "";
-  int fansNum = 0;
-  String coverUrl =
-      "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1600340832019&di=23b16b29163d4a3571f84c9e09f7c5ee&imgtype=0&src=http%3A%2F%2Fa1.att.hudong.com%2F05%2F00%2F01300000194285122188000535877.jpg";
+  int id;
+  String nickName;
+  int level;
+  int type;
+  String label;
+  int fansNum;
+  String coverUrl;
   int bizScope;
+
+
+  String get avatarUrl {
+    return coverUrl ?? "";
+  }
+
+  String get nickNameText {
+    return nickName ?? "";
+  }
+
+  int get fansNumber {
+    return fansNum ?? 0;
+  }
+
+
 
   factory LiveStationAnchorModel.fromJson(Map<String, dynamic> json) {
     return LiveStationAnchorModel(
@@ -28,8 +42,8 @@ class LiveStationAnchorModel {
       type: json["type"],
       label: json["label"],
       fansNum: json["fansNum"],
-      coverUrl: json["coverUrl"],
       bizScope: json["bizScope"],
+      coverUrl: json["coverUrl"] != null ? json["coverUrl"] : '',
     );
   }
 
@@ -106,17 +120,66 @@ class LivePlanHistoryModel {
   String statusMessage;
   bool delLabelFlag;
   String statusText;
+  bool isHistoryModel = false; //是否是历史直播
+  bool isEditBtn(){
+    bool isEdit = false;
+    if (isHistoryModel == false){
+      isEdit = status != 3;
+    }else{
+      isEdit = status == 0 || status == 3;
+    }
+    return isEdit;
+  }              //当前状态对应的按钮是查看还是重新编辑
 
   String getStatusText(){
     String statusString = "";
-    if (status == 0){
-      statusString = "待直播";
-    } else if (status == 1){
-      statusString = "直播中";
-    } else if (status == 2){
-      statusString = "结束";
+    if (isHistoryModel == false){
+      switch (status){
+        case -1:{
+          statusString = "草稿";
+        }
+        break;
+        case 0:{
+          statusString = "待审核";
+        }
+        break;
+        case 1:{
+          statusString = "待开播";
+        }
+        break;
+        case 2:{
+          statusString = "未过审";
+        }
+        break;
+        case 3:{
+          statusString = "直播中";
+        }
+        break;
+      }
+    }else{
+      switch (status){
+        case 0:{
+          statusString = "过期";
+        }
+        break;
+        case 1:{
+          statusString = "回放";
+        }
+        break;
+        case 2:{
+          statusString = "禁播";
+        }
+        break;
+        case 3:{
+          statusString = "未过审";
+        }
+        break;
+        case 4:{
+          statusString = "预告停播";
+        }
+        break;
+      }
     }
-
     return statusString;
   }
 

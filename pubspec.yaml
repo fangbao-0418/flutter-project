@@ -113,6 +113,7 @@ flutter:
 
   assets:
     - images/SettingImg/
+    - images/
     - images/empty_name.png
     - images/empty.png
     - images/header_realname.png
