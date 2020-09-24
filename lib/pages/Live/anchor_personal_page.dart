@@ -5,6 +5,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:xtflutter/Utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
+import 'package:xtflutter/model/member_info_model.dart';
+import 'package:xtflutter/net_work/userinfo_request.dart';
+import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
@@ -12,51 +15,59 @@ import 'package:xtflutter/router/router.dart';
 class AnchorPersonalPage extends StatefulWidget {
   static String routerName = "AnchorPersonalPage";
 
+  /// 传过来的参数
+  final Map<String, dynamic> params;
+
+  AnchorPersonalPage({this.params});
+
   @override
   _AnchorPersonalPageState createState() => _AnchorPersonalPageState();
 }
 
 class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     with SingleTickerProviderStateMixin {
+  String _memberId;
+  MemberInfoModel _memberInfoModel;
+
   ScrollController _scrollViewController;
-  double _appBarOpacity = 0.0; //appbar透明度
   bool _isAttention = false; //是否关注
-  GlobalKey _appBarKey = GlobalKey();
+  GlobalKey<_AnchorAppBarState> _appBarKey = GlobalKey();
   GlobalKey _tabKey = GlobalKey();
   bool _showStickTabView = false;
   List<int> _liveStates = List();
-  int _currentTab = 1; //默认回放tab
+  int _currentTab = 0; //默认回放tab
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _memberId = widget.params["memberId"] ?? "3816861";
+    getMemberInfo();
+
     _scrollViewController = ScrollController(initialScrollOffset: 0.0);
     _scrollViewController.addListener(() {
       Size size = _appBarKey.currentContext.size;
       var opacity = _scrollViewController.offset / size.height;
-      _appBarOpacity = opacity <= 1 ? opacity : 1;
+      double _appBarOpacity = opacity >= 1 ? 1 : opacity <= 0 ? 0 : opacity;
       if (_appBarOpacity <= 1) {
-        setState(() {});
+        _AnchorAppBarState currentState = _appBarKey.currentState;
+        currentState.appBarOpacity = _appBarOpacity;
+        currentState.setState(() {});
       }
-      RenderBox _tabKeyrenderObject = _tabKey.currentContext.findRenderObject();
-      Offset _tabKeyOffset = _tabKeyrenderObject.localToGlobal(Offset.zero);
-      if (_tabKeyOffset.dy - size.height <= 0 && !_showStickTabView) {
-        setState(() {
-          _showStickTabView = true;
-        });
-      } else if (_tabKeyOffset.dy - size.height > 0 && _showStickTabView) {
-        setState(() {
-          _showStickTabView = false;
-        });
-      }
-    });
-
-    _tabController = TabController(initialIndex: 1, length: 2, vsync: this);
-    _tabController.addListener(() {
-      if (_currentTab != _tabController.index) {
-        _currentTab = _tabController.index;
-        setState(() {});
+      //主播端才有回放
+      if (_memberInfoModel != null && _memberInfoModel.isAnchor) {
+        RenderBox _tabKeyrenderObject =
+            _tabKey.currentContext.findRenderObject();
+        Offset _tabKeyOffset = _tabKeyrenderObject.localToGlobal(Offset.zero);
+        if (_tabKeyOffset.dy - size.height <= 0 && !_showStickTabView) {
+          setState(() {
+            _showStickTabView = true;
+          });
+        } else if (_tabKeyOffset.dy - size.height > 0 && _showStickTabView) {
+          setState(() {
+            _showStickTabView = false;
+          });
+        }
       }
     });
   }
@@ -67,81 +78,39 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     super.dispose();
   }
 
+  ///请求个人信息
+  void getMemberInfo() {
+    Loading.show(context: context);
+    XTUserInfoRequest.getMemberInfo(_memberId).then((value) {
+      _memberInfoModel = value;
+      //TODO 测试用
+      _memberInfoModel.isSelf = false;
+      _memberInfoModel.isAnchor = true;
+      _isAttention = _memberInfoModel.isFocus;
+      setState(() {});
+      _appBarKey.currentState.isAttention = _isAttention;
+      _appBarKey.currentState.setState(() {});
+    }).whenComplete(() => Loading.hide());
+  }
+
   @override
   Widget build(BuildContext context) {
 //    print("高度===${MediaQueryData.fromWindow(window).padding.top}");
     return Scaffold(
       backgroundColor: mainF5GrayColor,
-      body: Stack(
-        children: <Widget>[
-          _buildContainer(),
-          _buildTopBar(),
-        ],
-      ),
+      body: Stack(children: <Widget>[
+        _buildContainer(),
+        _buildTopBarAndStickTab(),
+      ]),
     );
   }
 
   ///顶部下滑后的显示的appbar
-  _buildTopBar() {
+  _buildTopBarAndStickTab() {
     return Column(
       children: <Widget>[
-        Opacity(
-          opacity: _appBarOpacity,
-          child: Container(
-            key: _appBarKey,
-            color: Theme.of(context).primaryColor,
-            height: AppConfig.navH,
-            padding: EdgeInsets.only(top: AppConfig.statusH),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    size: 22,
-                  ),
-                  onPressed: () {
-                    XTRouter.closePage(context: context);
-                  },
-                ),
-                xtRoundAvatarImage(30, 100,
-                    "https://assets.hzxituan.com/assets/2020_0104/live_header.png"),
-                SizedBox(
-                  width: 5,
-                ),
-                Expanded(
-                  child: FractionallySizedBox(
-                    alignment: Alignment.topLeft,
-                    widthFactor: 0.55,
-                    child: xtText(
-                        "我是我说我是我是谁我是我说我是我是谁我是我说我是我是谁", 14, mainBlackColor,
-                        overflow: TextOverflow.ellipsis),
-                  ),
-                ),
-                GestureDetector(
-                  child: _isAttention
-                      ? _buildShapeText("已关注", 12, main66GrayColor,
-                          main66GrayColor, EdgeInsets.fromLTRB(5, 0, 5, 1),
-                          isSold: false)
-                      : _buildShapeText("+ 关注", 12, xtColor_FFE60113,
-                          xtColor_FFE60113, EdgeInsets.fromLTRB(5, 0, 5, 1),
-                          isSold: false),
-                  onTap: () {
-                    setState(() {
-                      _isAttention = !_isAttention;
-                    });
-                  },
-                ),
-                _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22,
-                    () {
-                  Toast.showToast(msg: "点击了分享");
-                })
-              ],
-            ),
-          ),
-        ),
-//        _showStickTabView?_buildTabView(true):null,
-        if (_showStickTabView)
-          _buildTabView(true, null)
+        AnchorAppBar(_memberInfoModel, _appBarKey),
+        if (_showStickTabView) _buildTabView(true, null)
       ],
     );
   }
@@ -162,12 +131,9 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   _buildListItemByType() {
     if (_currentTab == 1) {
       return SliverList(
-          delegate: SliverChildBuilderDelegate(
-                  (BuildContext ctx, int index) {
-                return _buildReplayListView(index);
-              },
-              childCount: 10
-          ));
+          delegate: SliverChildBuilderDelegate((BuildContext ctx, int index) {
+        return _buildReplayListView(index);
+      }, childCount: 10));
     } else {
       return SliverPadding(
         padding: EdgeInsets.symmetric(horizontal: 12),
@@ -177,7 +143,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
             crossAxisSpacing: 8.0,
             staggeredTileBuilder: (index) =>
 //              StaggeredTile.count(2, index==0 ? 2 : 4),
-            StaggeredTile.fit(2),
+                StaggeredTile.fit(2),
             itemBuilder: (context, index) => _buildShowListView(index),
             itemCount: 10),
       );
@@ -189,7 +155,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     return Stack(
       children: <Widget>[
         Container(
-          height: 211,
+          height: 207,
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(R.imagesLiveLiveAnchorTopBg),
@@ -206,8 +172,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                     _buildIconButton(R.imagesLiveLiveAnchorTopBack, 22, () {
                       XTRouter.closePage(context: context);
                     }),
-                    _buildIconButton(R.imagesLiveLiveAnchorTopShare, 22,
-                        () {
+                    _buildIconButton(R.imagesLiveLiveAnchorTopShare, 22, () {
                       Toast.showToast(msg: "点击了分享");
                     })
                   ],
@@ -217,58 +182,44 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 50,
+                      height: 55,
                     ),
-                    xtRoundAvatarImage(36, 100,
-                        "https://assets.hzxituan.com/assets/2020_0104/live_header.png"),
+                    _buildHeadView(36,_memberInfoModel),
                     SizedBox(
                       height: 10,
                     ),
-                    xtText("我是我说我是我是谁", 16, whiteColor, maxLines: 1),
+                    xtText(_memberInfoModel?.nickName ?? "", 16, whiteColor,
+                        maxLines: 1),
                     SizedBox(
                       height: 6,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        xtText("TA的关注 19280", 14, whiteColor),
+                        xtText("TA的关注 ${_memberInfoModel?.focusTotal ?? 0}", 14,
+                            whiteColor),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           width: 1.5,
                           height: 14,
                           color: mainA8GrayColor,
                         ),
-                        xtText("粉丝 19280", 14, whiteColor),
+                        xtText("粉丝 ${_memberInfoModel?.fansTotal ?? 0}", 14,
+                            whiteColor),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           width: 1.5,
                           height: 14,
                           color: mainA8GrayColor,
                         ),
-                        xtText("获赞 19280", 14, whiteColor),
+                        xtText("获赞 ${_memberInfoModel?.likeTotal ?? 0}", 14,
+                            whiteColor),
                       ],
                     ),
                     SizedBox(
-                      height: 8,
+                      height: 12,
                     ),
-                    GestureDetector(
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: ShapeDecoration(
-                            color: whiteColor, shape: xtShapeRound(50)),
-                        width: 62,
-                        height: 24,
-                        child: _isAttention
-                            ? xtText("已关注", 12, xtColor_FFE60146)
-                            : Image.asset(
-                                R.imagesLiveLiveAnchorTopCancelAttention),
-                      ),
-                      onTap: () {
-                        setState(() {
-                          _isAttention = !_isAttention;
-                        });
-                      },
-                    )
+                    _buildContainerTopBarIsSelf()
                   ],
                 ),
               )
@@ -280,18 +231,67 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     );
   }
 
+  _buildContainerTopBarIsSelf() {
+    if (_memberInfoModel == null) {
+      return Container();
+    } else if (_memberInfoModel.isSelf) {
+      return GestureDetector(
+        child: Image.asset(
+          R.imagesLiveAnchorGoSetting,
+          width: 99,
+          height: 24,
+        ),
+        onTap: () {
+          Toast.showToast(msg: "去设置页面");
+        },
+      );
+    } else {
+      return GestureDetector(
+        child: Container(
+          alignment: Alignment.center,
+          decoration:
+              ShapeDecoration(color: whiteColor, shape: xtShapeRound(50)),
+          width: 62,
+          height: 24,
+          child: _isAttention
+              ? xtText("已关注", 12, xtColor_FFE60146)
+              : Image.asset(R.imagesLiveLiveAnchorTopCancelAttention),
+        ),
+        onTap: () {
+          setState(() {
+            _isAttention = !_isAttention;
+            _appBarKey.currentState.isAttention = _isAttention;
+            _appBarKey.currentState.setState(() {});
+          });
+        },
+      );
+    }
+  }
+
   ///页面appBar下面的内容,包含直播状态和tabview
   _buildContainerTopAppBarBelow() {
     var list = List<Widget>();
-    for (int i = 0; i < 3; i++) {
-      _liveStates.add(i);
-      list.add(_buildLiveStateView(i));
+    if (_memberInfoModel == null) return Container();
+
+    if (_memberInfoModel.isAnchor) {
+      for (int i = 0; i < 3; i++) {
+        _liveStates.add(i);
+        list.add(_buildLiveStateView(i));
+      }
+      list.add(_buildTabView(false, _tabKey));
     }
-    list.add(_buildTabView(false, _tabKey));
+    if (list.isEmpty)
+      list.add(Container(
+        height: (12),
+      ));
     return Container(
-      decoration:
-          ShapeDecoration(color: mainF5GrayColor, shape: xtShapeRound(12)),
-      margin: EdgeInsets.only(top: 191),
+      decoration: ShapeDecoration(
+          color: mainF5GrayColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12)))),
+      margin: EdgeInsets.only(top: 196),
       child: Column(
         children: list,
       ),
@@ -356,6 +356,20 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   }
 
   _buildTabView(bool isStick, Key key) {
+    if (_tabController == null) {
+      _tabController = TabController(
+          initialIndex:
+              !_memberInfoModel.isSelf && _memberInfoModel.isAnchor ? 1 : 0,
+          length: 2,
+          vsync: this);
+      _currentTab = _tabController.index;
+      _tabController.addListener(() {
+        if (_currentTab != _tabController.index) {
+          _currentTab = _tabController.index;
+          setState(() {});
+        }
+      });
+    }
     return TabBar(
       key: key,
       labelPadding: EdgeInsets.zero,
@@ -376,10 +390,11 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
-          color: isStick ? whiteColor : null,
-          border: isStick
-              ? Border.symmetric(vertical: BorderSide(color: mainF5GrayColor))
-              : null),
+              color: isStick ? whiteColor : null,
+              border: isStick
+                  ? Border.symmetric(
+                      vertical: BorderSide(color: mainF5GrayColor))
+                  : null),
           alignment: Alignment.center,
           height: 45,
           child: xtText(
@@ -395,8 +410,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 width: 0.5,
                 height: 20,
                 color: xtColor_FFDDDDDD,
-              )
-          ),
+              )),
         )
       ],
     );
@@ -481,24 +495,33 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
             child: Column(
               children: <Widget>[
-                xtText(
-                    "强烈推荐抖音爆款超级好吃111，入口会爆水珠", 14, mainBlackColor, maxLines: 2),
-                SizedBox(height: 12,),
+                xtText("强烈推荐抖音爆款超级好吃111，入口会爆水珠", 14, mainBlackColor,
+                    maxLines: 2),
+                SizedBox(
+                  height: 12,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     xtRoundAvatarImage(16, 50,
                         "https://assets.hzxituan.com/assets/2020_0104/live_header.png"),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Expanded(
                         child: xtText("我是我是我是我是我是我是", 10, main66GrayColor,
-                            overflow: TextOverflow.ellipsis)
+                            overflow: TextOverflow.ellipsis)),
+                    SizedBox(
+                      width: 18,
                     ),
-                    SizedBox(width: 18,),
                     Image.asset(
-                      R.imagesLiveLiveAnchorFavoriteRed, width: 14,
-                      height: 14,),
-                    SizedBox(width: 2,),
+                      R.imagesLiveLiveAnchorFavoriteRed,
+                      width: 14,
+                      height: 14,
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
                     xtText("62.43w", 12, main66GrayColor),
                   ],
                 ),
@@ -509,28 +532,130 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       ),
     );
   }
+}
 
-  _buildIconButton(String name, double size, VoidCallback callback) {
-    return IconButton(
-        icon: Image.asset(name), iconSize: size, onPressed: callback);
+class AnchorAppBar extends StatefulWidget {
+  final MemberInfoModel _memberInfoModel;
+
+  AnchorAppBar(this._memberInfoModel, Key appbarKey) : super(key: appbarKey);
+
+  @override
+  _AnchorAppBarState createState() => _AnchorAppBarState();
+}
+
+class _AnchorAppBarState extends State<AnchorAppBar> {
+  bool _isAttention = false; //是否关注
+  double _appBarOpacity = 0.0; //appbar透明度
+
+  set isAttention(bool value) {
+    _isAttention = value;
+    setState(() {});
   }
 
-  _buildShapeText(String text, double fontSize, Color textColor,
-      Color shapeColor, EdgeInsets padding,
-      {EdgeInsets margin = EdgeInsets.zero, bool isSold = true}) {
-    return Container(
-      margin: margin,
-      padding: padding,
-      decoration: isSold
-          ? ShapeDecoration(color: shapeColor, shape: xtShapeRound(50))
-          : BoxDecoration(
-              border: Border.all(
-                color: shapeColor,
-                width: 1,
+  set appBarOpacity(double value) {
+    _appBarOpacity = value;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: _appBarOpacity,
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        height: AppConfig.navH,
+        padding: EdgeInsets.only(top: AppConfig.statusH),
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                size: 22,
               ),
-              borderRadius: BorderRadius.all(Radius.circular(50)),
+              onPressed: () {
+                XTRouter.closePage(context: context);
+              },
             ),
-      child: xtText(text, fontSize, textColor),
+            _buildHeadView(30,widget._memberInfoModel),
+            SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              child: widget._memberInfoModel?.nickName != null
+                  ? FractionallySizedBox(
+                      alignment: Alignment.topLeft,
+                      widthFactor: 0.55,
+                      child: xtText(
+                          widget._memberInfoModel?.nickName, 14, mainBlackColor,
+                          overflow: TextOverflow.ellipsis),
+                    )
+                  : Container(),
+            ),
+            if ((widget._memberInfoModel != null &&
+                !widget._memberInfoModel.isSelf))
+              GestureDetector(
+                child: _isAttention
+                    ? _buildShapeText("已关注", 12, main66GrayColor,
+                        main66GrayColor, EdgeInsets.fromLTRB(5, 0, 5, 1),
+                        isSold: false)
+                    : _buildShapeText("+ 关注", 12, xtColor_FFE60113,
+                        xtColor_FFE60113, EdgeInsets.fromLTRB(5, 0, 5, 1),
+                        isSold: false),
+                onTap: () {
+                  setState(() {
+                    _isAttention = !_isAttention;
+                  });
+                },
+              ),
+            _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22, () {
+              Toast.showToast(msg: "点击了分享");
+            })
+          ],
+        ),
+      ),
     );
   }
+}
+
+_buildHeadView(double imageWidth,MemberInfoModel _memberInfoModel) {
+  var headImage = _memberInfoModel?.headImage;
+  if (headImage != null) {
+    headImage = headImage.contains("tximg")
+        ? "https://sh-tximg.hzxituan.com/$headImage"
+        : "https://assets.hzxituan.com/$headImage";
+    return xtRoundAvatarImage(imageWidth, 100, "$headImage");
+  } else {
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(100)),
+      child: Image.asset(
+        R.imagesDefaultHeaderImg,
+        width: imageWidth,
+        height: imageWidth,
+      ),
+    );
+  }
+}
+
+_buildIconButton(String name, double size, VoidCallback callback) {
+  return IconButton(
+      icon: Image.asset(name), iconSize: size, onPressed: callback);
+}
+
+_buildShapeText(String text, double fontSize, Color textColor, Color shapeColor,
+    EdgeInsets padding,
+    {EdgeInsets margin = EdgeInsets.zero, bool isSold = true}) {
+  return Container(
+    margin: margin,
+    padding: padding,
+    decoration: isSold
+        ? ShapeDecoration(color: shapeColor, shape: xtShapeRound(50))
+        : BoxDecoration(
+            border: Border.all(
+              color: shapeColor,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(50)),
+          ),
+    child: xtText(text, fontSize, textColor),
+  );
 }

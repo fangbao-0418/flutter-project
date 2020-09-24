@@ -94,5 +94,5 @@ Map<String, PageBuilder> routeConfigs = {
 
 
   ///主播个人页
-  AnchorPersonalPage.routerName : (pageName, params, _) => AnchorPersonalPage(),
+  AnchorPersonalPage.routerName : (pageName, params, _) => AnchorPersonalPage(params: params),
 };

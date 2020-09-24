@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/model/member_info_model.dart';
 import '../model/userinfo_model.dart';
 import 'http_request.dart';
 
@@ -241,5 +242,12 @@ class XTUserInfoRequest {
   static Future<bool> saveWechatInfoReq(Map<String, String> params) async {
     final url = "/ncweb/user/modify/wx/v1";
     return HttpRequest.request(url, method: "post", params: params, hideToast: false);
+  }
+
+  ///获取用户个人页信息
+  static Future<MemberInfoModel> getMemberInfo(String memberId) async{
+    final url = "/ncweb/octupus/member/info";
+    final result = await HttpRequest.request(url,queryParameters: {"memberId":memberId});
+    return MemberInfoModel.fromJson(result);
   }
 }
