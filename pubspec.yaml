@@ -110,8 +110,9 @@ flutter:
     iosBundleIdentifier: com.example.xtflutter
 
   assets:
-    - images/SettingImg/
     - images/
+    - images/SettingImg/
+    - images/Live
     - images/empty_name.png
     - images/empty.png
     - images/header_realname.png
