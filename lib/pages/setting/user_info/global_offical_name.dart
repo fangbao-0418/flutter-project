@@ -4,6 +4,7 @@ import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
@@ -291,7 +292,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
         children: <Widget>[
           Container(
               padding: EdgeInsets.only(top: 60, bottom: 20),
-              child: Image.asset("images/empty_name.png")),
+              child: Image.asset(R.imagesEmptyName)),
           Container(
             padding: EdgeInsets.only(bottom: 10),
             child: xtText("您还没有实名认证信息哦～", 14, main99GrayColor,
@@ -329,7 +330,7 @@ class _GlobalOfficalNameState extends State<GlobalOfficalName> {
                         // fit: StackFit.expand,
                         children: <Widget>[
                           Image.asset(
-                            "images/header_realname.png",
+                            R.imagesHeaderRealname,
                             fit: BoxFit.fill,
                             // alignment: Alignment.center,
                             width: double.maxFinite,

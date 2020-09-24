@@ -5,6 +5,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 
 class CustomErrorWidget extends StatelessWidget {
@@ -27,7 +28,7 @@ class CustomErrorWidget extends StatelessWidget {
             height: 225,
             decoration: xtRoundDecoration(10.0,
                 image: DecorationImage(
-                  image: AssetImage("images/empty.png"),
+                  image: AssetImage(R.imagesEmpty),
                   fit: BoxFit.cover,
                 )),
           ),

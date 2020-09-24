@@ -10,6 +10,7 @@ import 'package:xtflutter/pages/home/limit_time_seckill_share.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
@@ -173,7 +174,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
                   _shareAction();
                 }, 
                 padding: EdgeInsets.zero,
-                child: Image.asset("images/limit_time_seckill_share.png")
+                child: Image.asset(R.imagesLimitTimeSeckillShare)
               ),
             )
           ],
@@ -378,7 +379,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                         width: 68,
                         height: 68,
                         fit: BoxFit.fitWidth,
-                        image: AssetImage("images/product-sellOut-small.png"),
+                        image: AssetImage(R.imagesProductSellOutSmall),
                       ),
                     )
                   ),
@@ -406,7 +407,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Image(
-                                        image: AssetImage("images/pintuan_two.png"),
+                                        image: AssetImage(R.imagesPintuanTwo),
                                         height: 15,
                                       ),
                                       SizedBox(width: 2)

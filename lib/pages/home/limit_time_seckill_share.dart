@@ -9,6 +9,7 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
 enum SeckillShareType {
@@ -90,13 +91,13 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
   String get _shareBgImgName {
     switch (_shareType) {
       case SeckillShareType.twoPro:
-        return "images/limit_time_seckill_shareBg_two.png";
+        return R.imagesLimitTimeSeckillShareBgTwo;
         break;
       case SeckillShareType.sixPro:
-        return "images/limit_time_seckill_shareBg.png";
+        return R.imagesLimitTimeSeckillShareBg;
         break;
       default:
-        return "images/limit_time_seckill_shareBg_none.png";
+        return R.imagesLimitTimeSeckillShareBgNone;
     }
   }
 
@@ -184,7 +185,7 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Image(
-                          image: AssetImage("images/share_wechat.png"),
+                          image: AssetImage(R.imagesShareWechat),
                           width: 45,
                           height: 45,
                         ),
@@ -202,7 +203,7 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Image(
-                          image: AssetImage("images/share_save_img.png"),
+                          image: AssetImage(R.imagesShareSaveImg),
                           width: 45,
                           height: 45,
                         ),

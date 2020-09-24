@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
+import 'package:xtflutter/r.dart';
 
 class XTRefresh extends StatefulWidget {
   XTRefresh({
@@ -482,7 +483,7 @@ class XTCustomHeaderWidgetState extends State<XTCustomHeaderWidget>
       Image(
         width: 55,
         fit: BoxFit.cover,
-        image: AssetImage('images/tuanzi_refresh_header.gif'),
+        image: AssetImage(R.imagesTuanziRefreshHeader),
         repeat: ImageRepeat.repeat,
       ),
       Text(

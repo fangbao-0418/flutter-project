@@ -1,5 +1,6 @@
 
 import 'package:common_utils/common_utils.dart';
+import 'package:xtflutter/r.dart';
 
 enum SeckillStatus {
   buying,
@@ -209,9 +210,9 @@ class LimitTimeSeckillProductModel {
   /// 商品类型图标路径
   String get productImgName {
     if (type == 10) {
-      return "images/product_tag_abroad_s.png";
+      return R.imagesProductTagAbroadS;
     } else if (type == 20) {
-      return "images/product_tag_global_s.png";
+      return R.imagesProductTagGlobalS;
     } else {
       return "";
     }

@@ -3,6 +3,7 @@ import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
@@ -171,7 +172,7 @@ class _AddressListPageState extends State<AddressListPage> {
                           width: 14,
                           height: 14,
                           margin: EdgeInsets.only(right: 10),
-                          child: Image.asset("images/my_address_list_edit.png")
+                          child: Image.asset(R.imagesMyAddressListEdit)
                       ),
                       xtText("编辑", 14, Colors.black)
                     ],

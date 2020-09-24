@@ -10,6 +10,7 @@ import 'package:xtflutter/model/message_model.dart';
 import 'package:xtflutter/net_work/message_request.dart';
 import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/widget/scrollview/DefaultBehavior.dart';
 
@@ -33,7 +34,7 @@ class MessageCenterPage extends StatefulWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Image.asset(
-              "images/img_message_empty.png",
+              R.imagesImgMessageEmpty,
               width: 200,
               height: 200,
               fit: BoxFit.cover,

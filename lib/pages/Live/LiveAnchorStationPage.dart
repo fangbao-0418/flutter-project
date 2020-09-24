@@ -1,5 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
@@ -169,7 +170,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                         width: 48,
                         height: 48,
                         margin: EdgeInsets.only(bottom: 10),
-                        child: Image.asset("images/live_station_xituan_logo_selected.png")
+                        child: Image.asset(R.imagesLiveLiveStationXituanLogoSelected)
                     ),
                     xtText("喜团优选直播", 14, mainRedColor)
                   ],
@@ -180,7 +181,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                         width: 48,
                         height: 48,
                         margin: EdgeInsets.only(bottom: 10),
-                        child: Image.asset("images/live_station_maicai_logo_normal.png")
+                        child: Image.asset(R.imagesLiveLiveStationXituanLogoNormal)
                     ),
                     xtText("喜团买菜直播", 14, xtColor_39B54A)
                   ],
@@ -221,7 +222,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                       topLeft: Radius.circular(10),
                       bottomLeft: Radius.circular(10)),
                   child: FadeInImage(
-                    placeholder: AssetImage("images/empty.png"),
+                    placeholder: AssetImage(R.imagesEmpty),
                     image: NetworkImage(model.liveCover),
                   ),
                 ),
@@ -458,7 +459,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                                 Container(
                                     width: 12,
                                     height: 12,
-                                    child: Image.asset("images/live_station_arrow_right.png")
+                                    child: Image.asset(R.imagesLiveLiveStationArrowRight)
                                 )
                               ],
                             ),
@@ -480,7 +481,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
     return Container(
         width: double.infinity,
         child: Image(
-          image: AssetImage("images/live_station_top_bg.png"),
+          image: AssetImage(R.imagesLiveLiveStationTopBg),
           fit: BoxFit.fitWidth,
         ));
   }
@@ -510,7 +511,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
               Container(
                 width: 10,
                 height: 8,
-                child: Image.asset("images/live_station_arrow_down.png"),
+                child: Image.asset(R.imagesLiveLiveStationArrowDown),
                 margin: EdgeInsets.only(left: 5),
               ),
               Spacer(flex: 2),
@@ -548,7 +549,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
               child: CircleAvatar(
                   radius: 24,
                   child: FadeInImage(
-                      placeholder: AssetImage("images/empty.png"),
+                      placeholder: AssetImage(R.imagesEmpty),
                       image: NetworkImage(model.avatarUrl)
                   )
               ),
@@ -568,7 +569,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                       Container(
                           width: 14,
                           height: 14,
-                          child: Image.asset(anchorModel.level > 0 ? "images/live_anchor_level_10.png" : "images/live_anchor_level_0.png")
+                          child: Image.asset(anchorModel.level > 0 ? R.imagesLiveLiveAnchorLevel10 : R.imagesLiveLiveAnchorLevel0)
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 2, right: 8),
@@ -608,7 +609,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                       width: 22,
                       height: 22,
                       padding: EdgeInsets.only(left: 10),
-                      child: Image.asset("images/live_notify_horn.png"),
+                      child: Image.asset(R.imagesLiveLiveNotifyHorn),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(

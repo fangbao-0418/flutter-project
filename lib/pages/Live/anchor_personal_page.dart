@@ -6,6 +6,7 @@ import 'package:xtflutter/Utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 
 class AnchorPersonalPage extends StatefulWidget {
@@ -130,7 +131,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                     });
                   },
                 ),
-                _buildIconButton("images/live_anchor_top_white_share.png", 22,
+                _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22,
                     () {
                   Toast.showToast(msg: "点击了分享");
                 })
@@ -191,7 +192,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
           height: 211,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("images/live_anchor_top_bg.png"),
+                image: AssetImage(R.imagesLiveLiveAnchorTopBg),
                 fit: BoxFit.fill),
           ),
           child: Stack(
@@ -202,10 +203,10 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    _buildIconButton("images/live_anchor_top_back.png", 22, () {
+                    _buildIconButton(R.imagesLiveLiveAnchorTopBack, 22, () {
                       XTRouter.closePage(context: context);
                     }),
-                    _buildIconButton("images/live_anchor_top_share.png", 22,
+                    _buildIconButton(R.imagesLiveLiveAnchorTopShare, 22,
                         () {
                       Toast.showToast(msg: "点击了分享");
                     })
@@ -260,7 +261,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                         child: _isAttention
                             ? xtText("已关注", 12, xtColor_FFE60146)
                             : Image.asset(
-                                "images/live_anchor_top_cancel_attention.png"),
+                                R.imagesLiveLiveAnchorTopCancelAttention),
                       ),
                       onTap: () {
                         setState(() {
@@ -447,7 +448,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 "https://sh-tximg.hzxituan.com/tximg/app-upload/test/image/30393791-0454-44df-8ac3-47d3efaf672b.png",
               ),
               Image.asset(
-                "images/live_icon_play.png",
+                R.imagesLiveLiveIconPlay,
                 width: 38,
                 height: 38,
               )
@@ -495,7 +496,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                     ),
                     SizedBox(width: 18,),
                     Image.asset(
-                      "images/live_anchor_favorite_red.png", width: 14,
+                      R.imagesLiveLiveAnchorFavoriteRed, width: 14,
                       height: 14,),
                     SizedBox(width: 2,),
                     xtText("62.43w", 12, main66GrayColor),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
@@ -36,7 +37,7 @@ class _AboutXituanPageState extends State<AboutXituanPage> {
           height: 80.0,
           decoration: xtRoundDecoration(10,
               image: DecorationImage(
-                image: AssetImage("images/xituan_logo.png"),
+                image: AssetImage(R.imagesXituanLogo),
                 fit: BoxFit.cover,
               )),
         ),
