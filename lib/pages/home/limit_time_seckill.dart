@@ -174,7 +174,11 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
                   _shareAction();
                 }, 
                 padding: EdgeInsets.zero,
-                child: Image.asset(R.imagesLimitTimeSeckillShare)
+                child: Image(
+                  image: AssetImage(R.imagesLimitTimeSeckillShare),
+                  width: 90,
+                  height: 87,
+                )
               ),
             )
           ],
