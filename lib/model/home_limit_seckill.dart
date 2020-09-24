@@ -1,4 +1,6 @@
 
+import 'package:common_utils/common_utils.dart';
+
 enum SeckillStatus {
   buying,
   end,
@@ -163,21 +165,21 @@ class LimitTimeSeckillProductModel {
   /// 秒杀价
   String get buyingPriceText {
     if (buyingPrice != null && buyingPrice > 0) {
-      return (buyingPrice / 100).toString();
+      return MoneyUtil.changeF2Y(buyingPrice, format: MoneyFormat.END_INTEGER);
     }
     return "";
   }
   /// 划线价
   String get marketPriceText {
     if (marketPrice != null && marketPrice > 0) {
-      return (marketPrice / 100).toString();
+      return MoneyUtil.changeF2Y(marketPrice, format: MoneyFormat.END_INTEGER);
     }
     return "";
   }
   /// 分享赚
   String get mostEarnText {
     if (mostEarn != null && mostEarn > 0) {
-      return "分享赚" + (mostEarn / 100).toString() + "元";
+      return "分享赚" + MoneyUtil.changeF2Y(mostEarn, format: MoneyFormat.END_INTEGER) + "元";
     }
     return "";
   }
