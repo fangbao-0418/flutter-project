@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 
-class XtRefresh extends StatefulWidget {
-  XtRefresh({
+class XTRefresh extends StatefulWidget {
+  XTRefresh({
     @required this.child,
     @required this.controller,
     this.onRefresh,
@@ -21,10 +21,10 @@ class XtRefresh extends StatefulWidget {
   final Widget child;
 
   @override
-  _XtRefreshState createState() => _XtRefreshState();
+  _XTRefreshState createState() => _XTRefreshState();
 }
 
-class _XtRefreshState extends State<XtRefresh> {
+class _XTRefreshState extends State<XTRefresh> {
 
   @override
   Widget build(BuildContext context) {

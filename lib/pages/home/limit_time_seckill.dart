@@ -312,7 +312,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
 
   /// 获取列表widget
   Widget _getListView(List<LimitTimeSeckillProductModel> products) {
-    return XtRefresh(
+    return XTRefresh(
       controller: _controller,
       onLoad: _onLoading,
       child: ListView.builder(
