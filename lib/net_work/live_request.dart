@@ -6,9 +6,9 @@ import 'package:xtflutter/net_work/http_request.dart';
 class LiveRequest {
 
   /// 获取直播信息
-  static Future<dynamic> getLiveInfoData() async {
+  static Future<dynamic> getLiveInfoData(Map para) async {
     final url = "/live/list/station";
-    final result = await HttpRequest.request(url, queryParameters:{"type":1});
+    final result = await HttpRequest.request(url, queryParameters:para);
     print(result);
     return result;
   }
