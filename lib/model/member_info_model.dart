@@ -48,9 +48,9 @@ class MemberInfoModel {
 }
 
 class AnchorBean {
-  String id;
-  String status;
-  String type;
+  int id;
+  int status;
+  int type;
 
   AnchorBean({this.id, this.status, this.type});
 
