@@ -10,6 +10,7 @@ import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:intl/intl.dart';
+import 'package:xtflutter/utils/event_bus.dart';
 
 class LiveAnchorStationPage extends StatefulWidget {
   static String routerName = "LiveAnchorStationPage";
@@ -18,9 +19,12 @@ class LiveAnchorStationPage extends StatefulWidget {
   _LiveAnchorStationPageState createState() => _LiveAnchorStationPageState();
 }
 
-class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
-  String navTitle = "喜团优选直播";
+const String dialogCallBackName = "dialogCallBack";
 
+class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
+  //直播类型 1.喜团优选 2 买菜直播
+  int liveType = 1;
+  String navTitle = "喜团优选直播";
   //主播信息模型
   LiveStationAnchorModel anchorModel;
   //直播计划数组
@@ -87,7 +91,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
   void getLiveStationInfoReq() async {
     Loading.show(context: context, showShade: true);
     Map<String, dynamic> result =
-        await LiveRequest.getLiveInfoData().whenComplete(() {
+        await LiveRequest.getLiveInfoData(Map<String, dynamic>.from({"type":liveType})).whenComplete(() {
       Loading.hide();
     });
 
@@ -145,64 +149,6 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
     ));
   }
 
-  Widget obtainLiveAlertDialog(){
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: 270,
-        height: 210,
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.circular(12)
-        ),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 20,bottom: 20),
-              child: xtTextWithStyle("请选择直播业务", TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Container(
-                        width: 48,
-                        height: 48,
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: Image.asset(R.imagesLiveLiveStationXituanLogoSelected)
-                    ),
-                    xtText("喜团优选直播", 14, mainRedColor)
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                        width: 48,
-                        height: 48,
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: Image.asset(R.imagesLiveLiveStationXituanLogoNormal)
-                    ),
-                    xtText("喜团买菜直播", 14, xtColor_39B54A)
-                  ],
-                )
-              ],
-            ),
-            Container(
-              height: 1,
-              margin: EdgeInsets.only(top: 24),
-              color: xtColor_F5F5F5,),
-            Container(
-              alignment: Alignment.center,
-              width: double.infinity,
-              height: 44,
-              child: xtText("取消", 14, mainBlackColor),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   //直播信息cell
   Widget obtainLiveStationCell(LivePlanHistoryModel model) {
@@ -356,7 +302,8 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.centerRight,
                                 colors: [mainRedColor, xtColor_FFEB2D3C])),
-                        child: xtText("禁播", 10, whiteColor)),
+                        child: xtText("禁播", 10, whiteColor)
+                    ),
                     Container(
                       width: 12,
                       height: 12,
@@ -518,8 +465,20 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
             ],
           ),
           onTap: () {
-            showDialog(context: context,child: obtainLiveAlertDialog());
-            Toast.showToast(msg: "切换直播类型", context: context);
+            showDialog(context: context,child: LiveAlertDialog(liveType,(index){
+              if(index != liveType){
+                liveType = index;
+                if (liveType == 1){
+                  navTitle = "喜团优选直播";
+                }
+                if (liveType == 2){
+                  navTitle = "喜团买菜直播";
+                }
+                setState(() {
+
+                });
+              }
+            }));
           },
         ),
         actions: <Widget>[
@@ -688,6 +647,113 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
           ),
         )
       ],
+    );
+  }
+}
+
+class LiveAlertDialog extends StatefulWidget {
+
+  final int liveType;
+  final ValueChanged<int> onTap;
+
+  LiveAlertDialog(this.liveType,this.onTap);
+
+  @override
+  _LiveAlertDialogState createState() => _LiveAlertDialogState();
+}
+
+class _LiveAlertDialogState extends State<LiveAlertDialog> {
+
+  int type;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    type = widget.liveType;
+  }
+
+  void _liveTypeClick(int currentType){
+    if (widget.onTap != null) {
+      if (currentType != type){
+        widget.onTap(currentType);
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: 270,
+        height: 210,
+        decoration: BoxDecoration(
+          color: whiteColor,
+          borderRadius: BorderRadius.circular(12)
+        ),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 20,bottom: 20),
+              child: xtTextWithStyle("请选择直播业务", TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                GestureDetector(
+                  onTap:(){
+                    _liveTypeClick(1);
+                  },
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                          width: 48,
+                          height: 48,
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: Image.asset(type == 1 ?  R.imagesLiveLiveStationXituanLogoSelected : R.imagesLiveLiveStationXituanLogoNormal)
+                      ),
+                      xtText("喜团优选直播", 14, type == 1 ? mainRedColor : main99GrayColor)
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    _liveTypeClick(2);
+                  },
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                          width: 48,
+                          height: 48,
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: Image.asset(type == 2 ? R.imagesLiveLiveStationMaicaiLogoSelected : R.imagesLiveLiveStationMaicaiLogoNormal)
+                      ),
+                      xtText("喜团买菜直播", 14,  type == 2 ? xtColor_39B54A : main99GrayColor)
+                    ],
+                  ),
+                )
+              ],
+            ),
+            Container(
+              height: 1,
+              margin: EdgeInsets.only(top: 24),
+              color: xtColor_F5F5F5,),
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                height: 44,
+                child: xtText("取消", 14, mainBlackColor),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
