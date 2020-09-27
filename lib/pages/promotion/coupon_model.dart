@@ -3,47 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/r.dart';
 
-
-class CouponModel {
-
-  static CouponModel getData() => CouponModel.fromJson(couponData);
-
-  static List<CouponItemDataModel> getDataLis() => List<CouponItemDataModel>.from(couponDataList.map((e) => CouponItemDataModel.fromJson(e)));
-
-  CouponModel({this.dataList});
-  
-  List<CouponItemModel> dataList;
-
-  factory CouponModel.fromJson(Map<String, dynamic> json) {
-    return CouponModel(
-      dataList: List<CouponItemModel>.from(json["dataList"].map((e) => CouponItemModel.fromJson(e)))
-    );
-  }
-
-}
-
-class CouponItemModel {
-
-  CouponItemModel({
-    this.config,
-  });
-  
-  CouponItemConfigModel config;
-
-  factory CouponItemModel.fromJson(Map<String, dynamic> json) {
-    return CouponItemModel(
-      config: CouponItemConfigModel.fromJson(json["config"])
-    );
-  }
-
-}
-
 enum CouponItemStyleType {
   rowOne,   /// 一行一个
   rowTwo,   /// 一行二个  
   rowThree, /// 一行三个
 }
 
+enum CouponStatusType {
+  normal,   /// 立即领取
+  geted,    /// 已领取
+  gone      /// 已领完
+}
+
+/// 优惠券样式配置model
 class CouponItemConfigModel {
 
   CouponItemConfigModel({
@@ -207,6 +179,22 @@ class CouponItemConfigModel {
   }
   /// 面额颜色
   Color get couponFaceColor {
+    if (couponStyle == 2) {
+      return statusType == CouponStatusType.gone ? xtColor_FFCCCCCC : mainRedColor;
+    } else {
+      return couponHaveStyleFaceColor;
+    }
+  }
+  /// 满足条件颜色
+  Color get couponFaceDescColor {
+    if (couponStyle == 2) {
+      return statusType == CouponStatusType.gone ? xtColor_FFCCCCCC : AppColors.FF333333;
+    } else {
+      return couponHaveStyleFaceColor;
+    }
+  }
+  /// couponStyle==1 有样式时面额颜色
+  Color get couponHaveStyleFaceColor {
     if (statusType == CouponStatusType.gone) {
       /// 已领完
       switch (selectCorlor) {
@@ -234,14 +222,112 @@ class CouponItemConfigModel {
       }
     }
   }
+  /// 优惠券名称颜色
+  Color get couponNameColor {
+    if (statusType == CouponStatusType.gone) {
+      /// 已领完
+      switch (selectCorlor) {
+        case 4:
+          return Colors.white;
+          break;
+        default:
+          return main99GrayColor;
+      }
+    } else {
+      /// 已领取
+      /// 可领
+      switch (selectCorlor) {
+        case 1:
+          return xtColor_FFFF4D6A;
+          break;
+        case 3:
+          return xtColor_FF0091FF;
+          break;
+        case 4:
+          return Colors.white;
+          break;
+        case 6:
+          return xtColor_39B54A;
+          break;
+        default:
+          return mainRedColor;
+      }
+    }
+  }
+  /// 立即领取按钮颜色
+  List<Color> get couponGetNowColors {
+    switch (selectCorlor) {
+      case 0:
+        return [mainRedColor, Colors.white];
+        break;
+      case 1:
+        return [xtColor_FFFF4D6A, Colors.white];
+        break;
+      case 2:
+        return [xtColor_FFFF4461, xtColor_FFFFED55];
+        break;
+      case 3:
+        return [xtColor_FF0086FA, Colors.white];
+        break;
+      case 4:
+        return [Colors.white, xtColor_FFFF6C22];
+        break;
+      case 5:
+        return [xtColor_FFEE071F, Colors.white];
+        break;
+      case 6:
+        return [xtColor_FF10AC48, Colors.white];
+        break;
+      default:
+        return [];
+    }
+  }
+  /// rowTwo && rowThree模式下 领取状态文案
+  String get rowTGetText {
+    switch (statusType) {
+      case CouponStatusType.gone:
+        return "已领完";
+        break;
+      case CouponStatusType.geted:
+        return "已领取";
+        break;
+      default:
+        if (style == CouponItemStyleType.rowThree) {
+          return "点击领取";
+        } else {
+          return "点击\n领取";
+        }
+    }
+  }
+  /// rowTwo && rowThree模式下 领取状态文案颜色
+  Color get rowTGetTextColor {
+    switch (statusType) {
+      case CouponStatusType.gone:
+        if (couponStyle == 2) {
+          /// 无样式
+          return xtColor_FFCCCCCC;
+        }
+        if (selectCorlor == 4) {
+          return main66GrayColor;
+        } else {
+          return main99GrayColor;
+        }
+        break;
+      case CouponStatusType.geted:
+        return main66GrayColor;
+        break;
+      default:
+        if (couponStyle == 2) {
+          /// 无样式
+          return mainRedColor;
+        } else {
+          return couponNameColor;
+        } 
+    }
+  }
 }
 
-enum CouponStatusType {
-  normal,
-  geted,
-  gone
-}
-
+/// 优惠券样式数据model
 class CouponItemDataModel {
 
   static CouponItemDataModel getData() => CouponItemDataModel.fromJson(couponData);
@@ -311,7 +397,37 @@ class CouponItemDataModel {
 }
 
 
+/// ----------------------------------------- 测试 -----------------------------------------
 
+/// 测试数据model
+class CouponModel {
+  static CouponModel getData() => CouponModel.fromJson(couponData);
+  static List<CouponItemDataModel> getDataLis() => List<CouponItemDataModel>.from(couponDataList.map((e) => CouponItemDataModel.fromJson(e)));
+  CouponModel({this.dataList});
+  List<CouponItemModel> dataList;
+  factory CouponModel.fromJson(Map<String, dynamic> json) {
+    return CouponModel(
+      dataList: List<CouponItemModel>.from(json["dataList"].map((e) => CouponItemModel.fromJson(e)))
+    );
+  }
+}
+
+/// 
+class CouponItemModel {
+
+  CouponItemModel({
+    this.config,
+  });
+  
+  CouponItemConfigModel config;
+
+  factory CouponItemModel.fromJson(Map<String, dynamic> json) {
+    return CouponItemModel(
+      config: CouponItemConfigModel.fromJson(json["config"])
+    );
+  }
+
+}
 
 
 const Map<String, dynamic> couponData = {
@@ -492,7 +608,7 @@ const List<Map<String, dynamic>> couponDataList = [
       "code": "hzXHf4CY",
       "id": 1133,
       "couponId": 1133,
-      "name": "倪阳指定活动券勿动",
+      "name": "倪阳指定活动券勿动奥利给卡是空格键拉十多个",
       "faceValue": "30000:4000",
       "faceValueDesc": "满300减40",
       "couponTypeDesc": "自营商品券",
@@ -502,7 +618,7 @@ const List<Map<String, dynamic>> couponDataList = [
       "code": "8eTH7PfR",
       "id": 1132,
       "couponId": 1132,
-      "name": "倪阳指定商品券勿动",
+      "name": "倪阳指定商品券勿动埃里克森按理说看过",
       "faceValue": "30000:3000",
       "faceValueDesc": "满300减30",
       "couponTypeDesc": "自营商品券",
@@ -512,7 +628,7 @@ const List<Map<String, dynamic>> couponDataList = [
       "code": "53iU6agq",
       "id": 1146,
       "couponId": 1146,
-      "name": "测试999",
+      "name": "测试999我打了阿哥AKG华为卡会受到安徽科技馆卡视角读后感氨基酸读后感",
       "faceValue": "2000:1000",
       "faceValueDesc": "满20减10",
       "couponTypeDesc": "自营通用券",

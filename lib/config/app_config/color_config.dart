@@ -43,6 +43,14 @@ const xtColor_FFE60113 = Color(0xFFE60113);
 const xtColor_FFEB2D3C = Color(0xFFEB2D3C);
 const xtColor_FFE20260 = Color(0xFFE20260);
 const xtColor_FFFF4D6A = Color(0xFFFF4D6A);
+const xtColor_FF0091FF = Color(0xFF0091FF);
+const xtColor_FFFFED55 = Color(0xFFFFED55);
+const xtColor_FFFF4461 = Color(0xFFFF4461);
+const xtColor_FF0086FA = Color(0xFF0086FA);
+const xtColor_FFFF6C22 = Color(0xFFFF6C22);
+const xtColor_FFEE071F = Color(0xFFEE071F);
+const xtColor_FF10AC48 = Color(0xFF10AC48);
+const xtColor_FFCCCCCC = Color(0xFFCCCCCC);
 
 class AppColors {
   AppColors._();
