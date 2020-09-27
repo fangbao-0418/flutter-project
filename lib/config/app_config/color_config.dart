@@ -42,6 +42,7 @@ const xtColor_FFE60146 = Color(0xFFE60146);
 const xtColor_FFE60113 = Color(0xFFE60113);
 const xtColor_FFEB2D3C = Color(0xFFEB2D3C);
 const xtColor_FFE20260 = Color(0xFFE20260);
+const xtColor_FFFF4D6A = Color(0xFFFF4D6A);
 
 class AppColors {
   AppColors._();
