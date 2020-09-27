@@ -58,6 +58,10 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
 
     if (result != null){
       anchorModel = LiveStationAnchorModel.fromJson(result);
+      if (anchorModel.bizScope != 3){
+        liveType = anchorModel.bizScope;
+        setState(() {});
+      }
     }
     print("anchorModel:" + anchorModel.toString());
     setState(() {});
@@ -242,80 +246,93 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
         ],
       );
     } else {
-      return Container(
-          margin: EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: xtColor_80000000,
-          ),
-          child: Stack(
-            children: <Widget>[
-              Visibility(
-                visible: model.status == 1,
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.centerRight,
-                                colors: [xtColor_4D88FF, xtColor_6E9EFF])),
-                        child: xtText(model.getStatusText(), 10, whiteColor)),
-                    Container(
-                      padding: EdgeInsets.all(3),
-                      child: xtText(
-                          "人气" +
-                              (NumUtil.getNumByValueDouble(
-                                      model.statistics.popularity / 1000, 2))
-                                  .toStringAsFixed(2) +
-                              "W",
-                          10,
-                          whiteColor),
-                    )
-                  ],
-                ),
+      return Stack(
+        children: <Widget>[
+          Visibility(
+            visible: model.status == 1,
+            child: Container(
+              margin: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: xtColor_80000000,
               ),
-              //过期
-              Visibility(
-                visible: !(model.status == 0 || model.status == 1),
-                child: Container(
-                    margin: EdgeInsets.all(6),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.centerRight,
+                              colors: [xtColor_4D88FF, xtColor_6E9EFF])),
+                      child: xtText(model.getStatusText(), 10, whiteColor)),
+                  Container(
                     padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: xtColor_80000000,
-                    ),
-                    child: xtText(model.getStatusText(), 10, whiteColor)),
+                    child: xtText(
+                        model.getPVString(),
+                        10,
+                        whiteColor),
+                  )
+                ],
               ),
-              //禁播 未过审
-              Visibility(
-                visible: model.status == 1,
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.centerRight,
-                                colors: [mainRedColor, xtColor_FFEB2D3C])),
-                        child: xtText("禁播", 10, whiteColor)
-                    ),
-                    Container(
-                      width: 12,
-                      height: 12,
-                      padding: EdgeInsets.all(3),
-                      decoration: BoxDecoration(shape: BoxShape.circle),
-                      child: xtText("!", 10, whiteColor),
-                    )
-                  ],
+            ),
+          ),
+          //过期
+          Visibility(
+            visible: model.status == 0,
+            child: Container(
+                margin: EdgeInsets.all(6),
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: xtColor_80000000,
                 ),
+                child: xtText(model.getStatusText(), 10, whiteColor)),
+          ),
+          //禁播 未过审
+          Visibility(
+            visible: model.status == 2 || model.status == 3,
+            child: Container(
+              margin: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.centerRight,
+                    colors: [mainRedColor, xtColor_FFEB2D3C]),
               ),
-            ],
-          ));
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.centerRight,
+                              colors: [mainRedColor, xtColor_FFEB2D3C]
+                          )
+                      ),
+                      child: xtText(model.getStatusText(), 10, whiteColor)
+                  ),
+                  Container(
+                    width: 14,
+                    height: 14,
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(left: 2,right: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7),
+                      border: Border.all(color: whiteColor,width: 1)
+                    ),
+                    child: xtText("!", 10, whiteColor),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
     }
   }
 
@@ -331,13 +348,13 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
             borderSide: BorderSide(
               color: mainRedColor,
             ),
-            child: xtText(model.isEditBtn() ? "重新编辑" : "查看", 12, mainRedColor),
+            child: xtText(model.isEditBtn() ? "编辑" : "查看", 12, mainRedColor),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6),
             ),
             onPressed: () {
               if (model.isEditBtn()) {
-                Toast.showToast(msg: "重新编辑");
+                Toast.showToast(msg: "编辑");
               } else {
                 Toast.showToast(msg: "查看");
               }
@@ -455,16 +472,23 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
             children: <Widget>[
               Spacer(flex: 2),
               xtText(navTitle, 18, whiteColor),
-              Container(
-                width: 10,
-                height: 8,
-                child: Image.asset(R.imagesLiveLiveStationArrowDown),
-                margin: EdgeInsets.only(left: 5),
+              Visibility(
+                visible: anchorModel.bizScope == 3,
+                child: Container(
+                  width: 10,
+                  height: 8,
+                  child: Image.asset(R.imagesLiveLiveStationArrowDown),
+                  margin: EdgeInsets.only(left: 5),
+                ),
               ),
               Spacer(flex: 2),
             ],
           ),
           onTap: () {
+            if (anchorModel.bizScope != 3){
+              return ;
+            }
+
             showDialog(context: context,child: LiveAlertDialog(liveType,(index){
               if(index != liveType){
                 liveType = index;
