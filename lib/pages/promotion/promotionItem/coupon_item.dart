@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
-import 'package:xtflutter/pages/promotion/coupon_model.dart';
+import 'package:xtflutter/model/coupon_model.dart';
 import 'package:xtflutter/router/router.dart';
 
 /// 优惠券组件
@@ -56,11 +56,11 @@ class _CouponItemsState extends State<CouponItems> {
 
 
 class CouponItem extends StatefulWidget {
-
+  /// 构造方法
   CouponItem({this.itemConfigModel, this.itemDataModel});
-
+  /// 样式模型
   final CouponItemConfigModel itemConfigModel;
-
+  /// 数据模型
   final CouponItemDataModel itemDataModel;
 
   @override
