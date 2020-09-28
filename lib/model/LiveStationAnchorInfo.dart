@@ -143,6 +143,15 @@ class LivePlanHistoryModel {
     return pvString;
   }
 
+  String getTimeText(){
+    String timeText = DateUtil.formatDateMs( startTime,format:"yyyy.MM.dd HH:mm:ss");
+    if (endTime != null) {
+      timeText = DateUtil.formatDateMs( startTime,format:"yyyy.MM.dd HH:mm:ss") + "-\n" +
+          DateUtil.formatDateMs( endTime,format:"yyyy.MM.dd HH:mm:ss");
+    }
+    return timeText;
+  }
+
   String getStatusText(){
     String statusString = "";
     if (isHistoryModel == false){

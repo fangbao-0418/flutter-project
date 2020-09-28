@@ -21,7 +21,7 @@ class LiveRequest {
     return result;
   }
 
-  /// 获取主播信息
+  /// 获取结算信息
   static Future<dynamic> getSettleInfoData() async {
     final url = "/cweb/member/settlement/v1/queryLiveWorkbenchAmount";
     final result = await HttpRequest.request(url);
@@ -41,6 +41,14 @@ class LiveRequest {
       });
       return list;
     });
+  }
+
+  ///获取主播历史直播列表
+  static Future<dynamic> getLiveHistoryList(Map para) async {
+    final url = "/live/list/station/history";
+    final result = await HttpRequest.request(url, queryParameters:para);
+    print(result);
+    return result;
   }
 
   ///获取主播个人页回放列表

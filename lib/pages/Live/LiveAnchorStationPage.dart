@@ -10,7 +10,7 @@ import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:intl/intl.dart';
-import 'package:xtflutter/utils/event_bus.dart';
+import 'LiveHistoryListPage.dart';
 
 class LiveAnchorStationPage extends StatefulWidget {
   static String routerName = "LiveAnchorStationPage";
@@ -192,13 +192,17 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       xtText(model.title, 14, mainBlackColor, maxLines: 2),
-                      xtText(
-                          "直播时间：" +
-                              DateFormat("yyyy.MM.dd HH:mm:ss").format(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      model.startTime)),
-                          12,
-                          main99GrayColor),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          xtText("直播时间：", 12, main99GrayColor),
+                          xtText(
+                              model.getTimeText(),
+                              12,
+                              main99GrayColor,
+                              maxLines: 2),
+                        ],
+                      ),
                     ],
                   ),
                   Spacer(),
@@ -393,7 +397,7 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
         padding: EdgeInsets.only(top: AppConfig.navH,bottom: 56 + AppConfig.bottomH),
         child: ListView.builder(
             padding: EdgeInsets.only(top: 0),
-            itemCount: livePlan.length + 1 + liveHistory.length + 1,
+            itemCount: livePlan.length + 1 + liveHistory.length + 1 + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return anchorModel != null ? obtainProfileWidget(anchorModel) : Container();
@@ -411,28 +415,49 @@ class _LiveAnchorStationPageState extends State<LiveAnchorStationPage> {
                             child: xtText("历史数据", 14, Colors.black)),
                         xtText("过期数据保存3个月，结束保存N个月", 12, main99GrayColor),
                         Spacer(),
-                        GestureDetector(
-                          onTap: (){
-                            Toast.showToast(msg: "更多历史数据");
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(right: 12),
-                            child: Row(
-                              children: <Widget>[
-                                xtText("更多", 12, main99GrayColor),
-                                Container(
-                                    width: 12,
-                                    height: 12,
-                                    child: Image.asset(R.imagesLiveLiveStationArrowRight)
-                                )
-                              ],
+                        Visibility(
+                          visible: liveHistory.length >= 10,
+                          child: GestureDetector(
+                            onTap: (){
+                              XTRouter.pushToPage(
+                                routerName: LiveHistoryListPage.routerName,
+                                params: {"liveType":liveType},
+                                context: context,
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(right: 12),
+                              child: Row(
+                                children: <Widget>[
+                                  xtText("更多", 12, main99GrayColor),
+                                  Container(
+                                      width: 12,
+                                      height: 12,
+                                      child: Image.asset(R.imagesLiveLiveStationArrowRight)
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         )
                       ],
                     ),
                   );
-                } else {
+                } else if (index == livePlan.length + 1 + liveHistory.length + 1 ) {
+                  return Visibility(
+                    visible: liveHistory.length >= 10,
+                    child: FlatButton(
+                        onPressed: (){
+                          XTRouter.pushToPage(
+                            routerName: LiveHistoryListPage.routerName,
+                            params: {"liveType":liveType},
+                            context: context,
+                          );
+                        },
+                        child: xtText("查看更多历史数据>>", 12, main99GrayColor)
+                    ),
+                  );
+                }else {
                   final model = liveHistory[index - livePlan.length - 2];
                   return obtainLiveStationCell(model);
                 }
