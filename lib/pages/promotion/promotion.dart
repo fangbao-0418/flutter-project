@@ -10,6 +10,7 @@ import 'package:xtflutter/pages/demo_page/scroller.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/area.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/banner.dart';
+import 'package:xtflutter/pages/promotion/promotionItem/coupon_item.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/goods.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/nav_bar_titles.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/player.dart';
@@ -43,7 +44,7 @@ class _PromotionState extends State<Promotion> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
-  Map<String, List<CouponModel>> coupons = {};
+  Map<String, List<CouponItemDataModel>> coupons = {};
   List<String> couponIds = [];
   int couponCount = 0;
 
@@ -197,38 +198,17 @@ class _PromotionState extends State<Promotion> {
   void getCouponsData() {
     for (var ids in couponIds) {
       PromotionRequest.promotionMgicData(ids, 1).then((value) {
-        List<CouponModel> list = [];
+        List<CouponItemDataModel> list = [];
         for (var item in value["list"]) {
-          CouponModel temp = CouponModel.fromJson(Map.from(item));
-          // print(item.toString());
-          list.add(temp);
-        }
-        print("list.length--------------");
-        coupons[ids] = list;
-      }).whenComplete(() {
-        couponCount++;
-        if (couponCount == couponIds.length) {
-          print("--------------couponCountfinish--------------");
-          print("--------------刷新优惠券--------------");
-        }
-      });
-    }
-  }
-
-  void getGoodsData() {
-    for (var ids in couponIds) {
-      PromotionRequest.promotionMgicData(ids, 1).then((value) {
-        List<CouponModel> list = [];
-        for (var item in value["list"]) {
-          CouponModel temp = CouponModel.fromJson(Map.from(item));
-          // print(item.toString());
+          CouponItemDataModel temp =
+              CouponItemDataModel.fromJson(Map.from(item));
           list.add(temp);
         }
         coupons[ids] = list;
       }).whenComplete(() {
         couponCount++;
         if (couponCount == couponIds.length) {
-          print("--------------刷新优惠券--------------");
+          setState(() {});
         }
       });
     }
@@ -312,13 +292,13 @@ class _PromotionState extends State<Promotion> {
         } else if (model.type == "area") {
           return AreaAttach(model);
         } else if (model.type == "coupon") {
-          return GestureDetector(
-            child: Container(
-              child: xtText("优惠券", 15, main66GrayColor),
-              width: 100,
-              height: 20,
-              color: Colors.yellow,
-            ),
+          return Container(
+            height: model.couponConfig
+                .gridHeight(coupons[model.id.toString()].length, context),
+            color: Colors.yellow,
+            child: CouponItems(
+                itemConfigModel: model.couponConfig,
+                dataList: coupons[model.id.toString()]),
           );
         } else {
           return GestureDetector(

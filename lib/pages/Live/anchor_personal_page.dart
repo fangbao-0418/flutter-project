@@ -2,7 +2,9 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:common_utils/common_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:xtflutter/Utils/appconfig.dart';
@@ -15,10 +17,12 @@ import 'package:xtflutter/model/video_replay_model.dart';
 import 'package:xtflutter/net_work/live_request.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
+import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
+import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/utils/numberUtils.dart';
+import 'package:xtflutter/utils/number_utils.dart';
 
 class AnchorPersonalPage extends StatefulWidget {
   static String routerName = "AnchorPersonalPage";
@@ -44,17 +48,24 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   GlobalKey<_AnchorAppBarState> _appBarKey = GlobalKey();
   GlobalKey _tabKey = GlobalKey();
   bool _showStickTabView = false;
-  int _currentTab = 0; //默认回放tab
+  int _currentTab; //默认0为口碑秀tab,1为回放tab,
   TabController _tabController;
-  int _currentPage = 1;
+  int _commentCurrentPage = 1;
   bool haveRequestComment = false;
+  int _repalyCurrentPage = 1;
   bool haveRequestReplay = false;
+  bool _canPublish = false;
+
+  /// 刷新器
+  EasyRefreshController _controller = EasyRefreshController();
 
   @override
   void initState() {
     super.initState();
-    _memberId = widget.params["memberId"] ?? "7839523";
-    getMemberInfo();
+//    _memberId = widget.params["memberId"] ?? "7839523";
+    _memberId = widget.params["memberId"] ?? "7839695";
+    _currentTab = (widget.params["type"] ?? 0) == 1 ? 0 : 1; //不传值则默认回放
+    getMemberInfo(false);
 
     _scrollViewController = ScrollController(initialScrollOffset: 0.0);
     _scrollViewController.addListener(() {
@@ -88,36 +99,37 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   void dispose() {
     _scrollViewController.dispose();
     _tabController?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   ///请求个人信息
-  void getMemberInfo() {
-    Loading.show(context: context);
+  void getMemberInfo(bool isRefresh) {
+    if (!isRefresh) Loading.show(context: context);
     XTUserInfoRequest.getMemberInfo(_memberId).then((value) {
       _memberInfoModel = value;
-      //TODO 测试用
-//      _memberInfoModel.isSelf = false;
-//      _memberInfoModel.isAnchor = true;
       _isAttention = _memberInfoModel.isFocus;
-      _currentTab =
-          !_memberInfoModel.isSelf && _memberInfoModel.isAnchor ? 1 : 0;
       _appBarKey.currentState.isAttention = _isAttention;
-      setState(() {});
+      _controller.finishRefresh();
+      canPublish();
       getAnchorPlanList(_memberInfoModel.anchor.id.toString());
       getInfoByTab();
-    }).whenComplete(() => Loading.hide());
+    }).whenComplete(() {
+      if (!isRefresh) Loading.hide();
+    });
   }
 
+  ///依据当前页面请求页面列表信息
   getInfoByTab() {
     if (_currentTab == 1) {
       if (!haveRequestReplay) {
-        getVideoReplayList(_memberInfoModel.anchor.id.toString(), _currentPage);
+        getVideoReplayList(
+            _memberInfoModel.anchor.id.toString(), _repalyCurrentPage);
       }
       haveRequestReplay = true;
     } else {
       if (!haveRequestComment) {
-        getCommentShowList(_currentPage);
+        getCommentShowList(_commentCurrentPage);
       }
       haveRequestComment = true;
     }
@@ -134,7 +146,13 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   ///获取主播个人页回放列表
   void getVideoReplayList(String anchorId, int currentPage) {
     LiveRequest.getVideoReplayList(anchorId, currentPage).then((value) {
-      _videoReplayList = value;
+      if (_repalyCurrentPage == 1) {
+        _videoReplayList = value;
+        _controller.finishLoad(noMore: value.length == 0);
+      } else {
+        _videoReplayList.addAll(value);
+        _controller.finishLoad(noMore: value.length < 10);
+      }
       setState(() {});
     });
   }
@@ -142,9 +160,120 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   ///获取主播个人页口碑秀列表
   void getCommentShowList(int currentPage) {
     LiveRequest.getCommentShowList(_memberId, currentPage).then((value) {
-      _commentShowList = value;
+      if (_commentCurrentPage == 1) {
+        _commentShowList = value;
+        _controller.finishLoad(noMore: value.length == 0);
+      } else {
+        _commentShowList.addAll(value);
+        _controller.finishLoad(noMore: value.length < 10);
+      }
       setState(() {});
     });
+  }
+
+  ///点赞或者取消点赞
+  void likeOrCancelLike(int materialId) {
+    LiveRequest.likeOrCancelLike(materialId);
+  }
+
+  ///关注或者取消关注
+  void attentionRequest() {
+    if (_isAttention) {
+      //已关注弹框二次确认
+      showCupertinoDialog(
+          context: context,
+          builder: (ctx) {
+            return CupertinoAlertDialog(
+              content: xtText("确认不再关注?", 14, mainBlackColor),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: xtText("取消", 14, mainBlackColor),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: xtText("确定", 14, mainBlackColor),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    LiveRequest.cancelAttentionRequest(int.parse(_memberId), 1)
+                        .then((value) {
+                      if (value) {
+                        _isAttention = !_isAttention;
+                        _appBarKey.currentState.isAttention = _isAttention;
+                        setState(() {});
+                        Toast.showToast(msg: "取消关注主播成功~");
+                      }
+                    });
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      LiveRequest.attentionRequest(int.parse(_memberId), 1, 1, 0).then((value) {
+        if (value) {
+          _isAttention = !_isAttention;
+          _appBarKey.currentState.isAttention = _isAttention;
+          setState(() {});
+          Toast.showToast(msg: "关注主播成功~");
+        }
+      });
+    }
+  }
+
+  ///取消或者订阅提醒
+  void checkOnOffNotice(LiveAnchorPlanModel planModel) {
+    var openNotice = planModel.liveInfo.openNotice;
+    LiveRequest.checkOnOffNotice(
+            openNotice, planModel.liveInfo.id, planModel.anchor.id)
+        .then((value) {
+      Toast.showToast(msg: value);
+      planModel.liveInfo.openNotice = !openNotice;
+      setState(() {});
+    });
+  }
+
+  ///是否可以发布
+  void canPublish() {
+    LiveRequest.canPublish().then((value) {
+      if (value) {
+        _canPublish = true;
+        setState(() {});
+      }
+    });
+  }
+
+  ///去发布页面
+  void goCommentPublish() {
+    XTRouter.pushToPage(
+        routerName:
+            "goPublish?logtype1=profilepublish&memberId1=$_memberId&source1=profile",
+//            "https://testing.hzxituan.com/index.html?v=202009281026/#/goods/comment/release?logtype=profilepublish&memberId=$_memberId&source=profile",
+        context: context,
+        isNativePage: true);
+  }
+
+  ///刷新
+  void refreshPage() {
+    haveRequestReplay = false;
+    haveRequestComment = false;
+    _repalyCurrentPage = 1;
+    _commentCurrentPage = 1;
+    _controller.resetLoadState();
+    getMemberInfo(true);
+  }
+
+  ///加载更多
+  void loadMore() {
+    if (_currentTab == 0) {
+      _commentCurrentPage++;
+      getCommentShowList(_commentCurrentPage);
+    } else {
+      _repalyCurrentPage++;
+      getVideoReplayList(
+          _memberInfoModel.anchor.id.toString(), _repalyCurrentPage);
+    }
   }
 
   @override
@@ -156,6 +285,19 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
         _buildContainer(),
         _buildTopBarAndStickTab(),
       ]),
+      floatingActionButton: Visibility(
+        visible: _canPublish && (_memberInfoModel?.isSelf ?? false),
+        child: FloatingActionButton(
+          backgroundColor: mainRedColor,
+          child: Icon(
+            Icons.add,
+            size: 40,
+          ),
+          onPressed: () {
+            goCommentPublish();
+          },
+        ),
+      ),
     );
   }
 
@@ -163,7 +305,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   _buildTopBarAndStickTab() {
     return Column(
       children: <Widget>[
-        AnchorAppBar(_memberInfoModel, _appBarKey),
+        AnchorAppBar(_memberInfoModel, _appBarKey, attentionRequest),
         if (_showStickTabView) _buildTabView(true, null)
       ],
     );
@@ -171,14 +313,19 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
 
   ///页面滑动内容
   _buildContainer() {
-    return CustomScrollView(
-      controller: _scrollViewController,
-      slivers: <Widget>[
-        SliverToBoxAdapter(
-          child: _buildContainerTopAppBar(),
-        ),
-        _buildListItemByType(),
-      ],
+    return XTRefresh(
+      controller: _controller,
+      onRefresh: refreshPage,
+      onLoad: loadMore,
+      child: CustomScrollView(
+        controller: _scrollViewController,
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: _buildContainerTopAppBar(),
+          ),
+          _buildListItemByType(),
+        ],
+      ),
     );
   }
 
@@ -274,7 +421,8 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
           height: 24,
         ),
         onTap: () {
-          Toast.showToast(msg: "去设置页面");
+          XTRouter.pushToPage(
+              routerName: SettingPage.routerName, context: context);
         },
       );
     } else {
@@ -291,9 +439,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
         ),
         onTap: () {
           setState(() {
-            _isAttention = !_isAttention;
-            _appBarKey.currentState.isAttention = _isAttention;
-            _appBarKey.currentState.setState(() {});
+            attentionRequest();
           });
         },
       );
@@ -336,59 +482,87 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     var liveState = liveInfo?.status; //3:直播中  1:预告
     bool isLiving = liveState == 3;
     bool openNotice = liveInfo.openNotice;
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-      margin: EdgeInsets.fromLTRB(12, 10, 12, 0),
-      width: double.infinity,
-      decoration: ShapeDecoration(color: whiteColor, shape: xtShapeRound(10)),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                xtText(liveInfo?.title ?? "", 16, mainBlackColor,
-                    fontWeight: FontWeight.w600,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildShapeText(
-                        isLiving ? "直播中" : "预告",
-                        12,
-                        whiteColor,
-                        isLiving ? mainRedColor : xtColor_FF29D69D,
-                        EdgeInsets.fromLTRB(10, 0, 10, 1),
-                        margin: EdgeInsets.only(right: 8)),
-                    xtText(
-                        isLiving
-                            ? "人气 ${planModel?.statistics?.popularity ?? "0"}"
-                            : "开播时间: ${DateUtil.formatDateMs(liveInfo?.startTime, format: "yyyy.MM.dd HH:mm")}",
-                        12,
-                        main99GrayColor,
-                        overflow: TextOverflow.ellipsis)
-                  ],
-                )
-              ],
+    return GestureDetector(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+        margin: EdgeInsets.fromLTRB(12, 10, 12, 0),
+        width: double.infinity,
+        decoration: ShapeDecoration(color: whiteColor, shape: xtShapeRound(10)),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  xtText(liveInfo?.title ?? "", 16, mainBlackColor,
+                      fontWeight: FontWeight.w600,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      _buildShapeText(
+                          isLiving ? "直播中" : "预告",
+                          12,
+                          whiteColor,
+                          isLiving ? mainRedColor : xtColor_FF29D69D,
+                          EdgeInsets.fromLTRB(10, 0, 10, 1),
+                          margin: EdgeInsets.only(right: 8)),
+                      xtText(
+                          isLiving
+                              ? "人气 ${planModel?.statistics?.popularity ?? "0"}"
+                              : "开播时间: ${DateUtil.formatDateMs(liveInfo?.startTime, format: "yyyy.MM.dd HH:mm")}",
+                          12,
+                          main99GrayColor,
+                          overflow: TextOverflow.ellipsis)
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-          _buildShapeText(
-              isLiving ? "前往观看" : openNotice ? "取消提醒" : "开播提醒",
-              12,
-              isLiving
-                  ? mainRedColor
-                  : openNotice ? main66GrayColor : xtColor_FF29D69D,
-              isLiving
-                  ? mainRedColor
-                  : openNotice ? main66GrayColor : xtColor_FF29D69D,
-              EdgeInsets.fromLTRB(16, 4, 16, 5),
-              isSold: false),
-        ],
+            GestureDetector(
+              child: _buildShapeText(
+                  isLiving ? "前往观看" : openNotice ? "取消提醒" : "开播提醒",
+                  12,
+                  isLiving
+                      ? mainRedColor
+                      : openNotice ? main66GrayColor : xtColor_FF29D69D,
+                  isLiving
+                      ? mainRedColor
+                      : openNotice ? main66GrayColor : xtColor_FF29D69D,
+                  EdgeInsets.fromLTRB(16, 4, 16, 5),
+                  isSold: false),
+              onTap: () {
+                if (isLiving) {
+                  XTRouter.pushToPage(
+                      routerName:
+                          "live-room-audience?id=${planModel.liveInfo.id}",
+                      context: context,
+                      isNativePage: true);
+                } else {
+                  checkOnOffNotice(planModel);
+                }
+              },
+            ),
+          ],
+        ),
       ),
+      onTap: () {
+        if (isLiving) {
+          XTRouter.pushToPage(
+              routerName: "live-room-audience?id=${planModel.liveInfo.id}",
+              context: context,
+              isNativePage: true);
+        } else {
+          XTRouter.pushToPage(
+              routerName: "live_end?id=${planModel.liveInfo.id}",
+              context: context,
+              isNativePage: true);
+        }
+      },
     );
   }
 
@@ -526,21 +700,30 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
               SizedBox(
                 height: 20,
               ),
-              xtText(_memberInfoModel.isSelf ? "暂无内容，赶快发布口碑秀积攒人气吧～" : "暂无口碑秀内容",
-                  14, main99GrayColor),
+              xtText(
+                  _memberInfoModel.isSelf && _canPublish
+                      ? "暂无内容，赶快发布口碑秀积攒人气吧～"
+                      : "暂无口碑秀内容",
+                  14,
+                  main99GrayColor),
               SizedBox(
                 height: 20,
               ),
               Visibility(
-                  visible: _memberInfoModel.isSelf,
-                  child: _buildShapeText(
-                      "发布口碑秀",
-                      16,
-                      mainRedColor,
-                      mainRedColor,
-                      EdgeInsets.symmetric(vertical: 13, horizontal: 50),
-                      isSold: false,
-                      radius: 8))
+                  visible: _memberInfoModel.isSelf && _canPublish,
+                  child: GestureDetector(
+                    child: _buildShapeText(
+                        "发布口碑秀",
+                        16,
+                        mainRedColor,
+                        mainRedColor,
+                        EdgeInsets.symmetric(vertical: 13, horizontal: 50),
+                        isSold: false,
+                        radius: 8),
+                    onTap: () {
+                      goCommentPublish();
+                    },
+                  ))
             ],
           ),
         );
@@ -553,65 +736,74 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     var replayModel = _videoReplayList[index];
     var liveInfo = replayModel?.liveInfo;
     var statistics = replayModel?.statistics;
-    return Container(
-      margin: EdgeInsets.only(bottom: 8, left: 12, right: 12),
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-      width: double.infinity,
-      decoration: ShapeDecoration(color: whiteColor, shape: xtShapeRound(10)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                  child: Column(
-                children: <Widget>[
-                  xtText("${liveInfo?.title ?? ""}", 16, mainBlackColor,
-                      fontWeight: FontWeight.w600),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      _buildShapeText("回放", 12, whiteColor, xtColor_4D88FF,
-                          EdgeInsets.fromLTRB(10, 0, 10, 1),
-                          margin: EdgeInsets.only(right: 8)),
-                      xtText(
-                          "人气 ${NumberUtils.getStrToWan(statistics?.popularity ?? 0)} | ${liveInfo?.productIds?.length ?? "0"}商品",
-                          12,
-                          main99GrayColor)
-                    ],
-                  )
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-              )),
-              xtText(
-                  DateUtil.formatDateMs(liveInfo.startTime ?? "0",
-                      format: "MM.dd"),
-                  12,
-                  main99GrayColor)
-            ],
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              xtRoundAvatarImage(
-                200,
-                6,
-                liveInfo?.liveCover ?? "",
-              ),
-              Image.asset(
-                R.imagesLiveLiveIconPlay,
-                width: 38,
-                height: 38,
-              )
-            ],
-          )
-        ],
+    return GestureDetector(
+      child: Container(
+        margin: EdgeInsets.only(bottom: 8, left: 12, right: 12),
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+        width: double.infinity,
+        decoration: ShapeDecoration(color: whiteColor, shape: xtShapeRound(10)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: Column(
+                  children: <Widget>[
+                    xtText("${liveInfo?.title ?? ""}", 16, mainBlackColor,
+                        fontWeight: FontWeight.w600),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        _buildShapeText("回放", 12, whiteColor, xtColor_4D88FF,
+                            EdgeInsets.fromLTRB(10, 0, 10, 1),
+                            margin: EdgeInsets.only(right: 8)),
+                        xtText(
+                            "人气 ${NumberUtils.getStrToWan(statistics?.popularity ?? 0)} | ${liveInfo?.productIds?.length ?? "0"}商品",
+                            12,
+                            main99GrayColor)
+                      ],
+                    )
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                )),
+                xtText(
+                    DateUtil.formatDateMs(liveInfo.startTime ?? "0",
+                        format: "MM.dd"),
+                    12,
+                    main99GrayColor)
+              ],
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                xtRoundAvatarImage(
+                  200,
+                  6,
+                  liveInfo?.liveCover ?? "",
+                ),
+                Image.asset(
+                  R.imagesLiveLiveIconPlay,
+                  width: 38,
+                  height: 38,
+                )
+              ],
+            )
+          ],
+        ),
       ),
+      onTap: () {
+        //todo 看不懂直播状态字段,分不清回放还是无回放结束,先统一跳回放
+        XTRouter.pushToPage(
+            routerName: "live-replay?id=${replayModel.liveInfo.id}",
+            context: context,
+            isNativePage: true);
+      },
     );
   }
 
@@ -630,92 +822,109 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       url = commentShowModel.pictureUrlList[0].url;
       size = commentShowModel.pictureUrlList[0].size;
     }
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.zero,
-      color: whiteColor,
-      shape: xtShapeRound(10),
-      child: Column(
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-            child: Stack(
-              children: <Widget>[
-                _buildVideoOrPicItem(url, isVideo, commentShowModel),
-                if (isVideo)
-                  Image.asset(
-                    R.imagesLiveLiveIconPlay,
-                    width: 38,
-                    height: 38,
-                  )
-              ],
-              alignment: Alignment.center,
-            ),
+    return GestureDetector(
+      child: Card(
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        color: whiteColor,
+        shape: xtShapeRound(10),
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+              child: Stack(
+                children: <Widget>[
+                  _buildVideoOrPicItem(url, isVideo, commentShowModel),
+                  if (isVideo)
+                    Image.asset(
+                      R.imagesLiveLiveIconPlay,
+                      width: 38,
+                      height: 38,
+                    )
+                ],
+                alignment: Alignment.center,
+              ),
 //            child: AspectRatio(
 //                aspectRatio: index % 2 == 0 ? 1 : 1440 / 800,
 //                child: Image.network(index % 2 == 0
 //                    ? "https://assets.hzxituan.com/supplier/77943E5ED2DCA759.jpg"
 //                    : "http://yanxuan.nosdn.127.net/65091eebc48899298171c2eb6696fe27.jpg")),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                xtText(commentShowModel?.content ?? "", 14, mainBlackColor,
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
-                SizedBox(
-                  height: 12,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildHeadView(16, commentShowModel?.authorImage),
-                    SizedBox(
-                      width: 2,
-                    ),
-                    Expanded(
-                        child: xtText(
-                            commentShowModel?.author ?? "", 10, main66GrayColor,
-                            overflow: TextOverflow.ellipsis)),
-                    SizedBox(
-                      width: 18,
-                    ),
-                    GestureDetector(
-                      child: Row(
-                        children: <Widget>[
-                          Image.asset(
-                            commentShowModel.like
-                                ? R.imagesLiveLiveAnchorFavoriteRed
-                                : R.imagesLiveLiveAnchorFavoriteGray,
-                            width: 14,
-                            height: 14,
-                          ),
-                          SizedBox(
-                            width: 2,
-                          ),
-                          xtText(
-                              commentShowModel.like
-                                  ? NumberUtils.getStrToWan(
-                                      commentShowModel.likeUv)
-                                  : "点赞",
-                              12,
-                              main66GrayColor),
-                        ],
-                      ),
-                      onTap: () {
-                        commentShowModel.like = !commentShowModel.like;
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
-              ],
             ),
-          )
-        ],
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  xtText(commentShowModel?.content ?? "", 14, mainBlackColor,
+                      maxLines: 2, overflow: TextOverflow.ellipsis),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      _buildHeadView(16, commentShowModel?.authorImage),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Expanded(
+                          child: xtText(commentShowModel?.author ?? "", 10,
+                              main66GrayColor,
+                              overflow: TextOverflow.ellipsis)),
+                      SizedBox(
+                        width: 18,
+                      ),
+                      GestureDetector(
+                        child: Row(
+                          children: <Widget>[
+                            Image.asset(
+                              commentShowModel.like
+                                  ? R.imagesLiveLiveAnchorFavoriteRed
+                                  : R.imagesLiveLiveAnchorFavoriteGray,
+                              width: 14,
+                              height: 14,
+                            ),
+                            SizedBox(
+                              width: 2,
+                            ),
+                            xtText(
+                                commentShowModel.like
+                                    ? NumberUtils.getStrToWan(
+                                        commentShowModel.likeUv)
+                                    : "点赞",
+                                12,
+                                main66GrayColor),
+                          ],
+                        ),
+                        onTap: () {
+                          likeOrCancelLike(commentShowModel.id);
+                          commentShowModel.like = !commentShowModel.like;
+                          if (commentShowModel.like) {
+                            commentShowModel.likeUv =
+                                commentShowModel.likeUv + 1;
+                          } else {
+                            commentShowModel.likeUv =
+                                commentShowModel.likeUv - 1;
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
+      onTap: () {
+        XTRouter.pushToPage(
+            routerName:
+                "goods_comment_detail?id1=${commentShowModel.id}&logtype1=profilepublish&productId1=${commentShowModel.productId}&content1=${commentShowModel.content}",
+            context: context,
+            isNativePage: true);
+      },
     );
   }
 }
@@ -756,8 +965,10 @@ _buildVideoOrPicItem(
 
 class AnchorAppBar extends StatefulWidget {
   final MemberInfoModel _memberInfoModel;
+  final Function clickAttention;
 
-  AnchorAppBar(this._memberInfoModel, Key appbarKey) : super(key: appbarKey);
+  AnchorAppBar(this._memberInfoModel, Key appbarKey, this.clickAttention)
+      : super(key: appbarKey);
 
   @override
   _AnchorAppBarState createState() => _AnchorAppBarState();
@@ -822,9 +1033,7 @@ class _AnchorAppBarState extends State<AnchorAppBar> {
                         xtColor_FFE60113, EdgeInsets.fromLTRB(5, 0, 5, 1),
                         isSold: false),
                 onTap: () {
-                  setState(() {
-                    _isAttention = !_isAttention;
-                  });
+                  widget.clickAttention();
                 },
               ),
             _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22, () {

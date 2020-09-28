@@ -1,5 +1,6 @@
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
+import 'package:xtflutter/pages/Live/LiveHistoryListPage.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
@@ -78,6 +79,8 @@ Map<String, PageBuilder> routeConfigs = {
   /// 主播台
   LiveAnchorStationPage.routerName: (pageName, params, _) => LiveAnchorStationPage(),
 
+  LiveHistoryListPage.routerName: (pageName, params, _) => LiveHistoryListPage(params: params),
+
   // -------------------------- Message ----------------------
   /**
    * 消息中心页面
@@ -95,4 +98,6 @@ Map<String, PageBuilder> routeConfigs = {
 
   ///主播个人页
   AnchorPersonalPage.routerName : (pageName, params, _) => AnchorPersonalPage(params: params),
+
+
 };

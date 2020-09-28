@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:xtflutter/Utils/XtLogger.dart';
+import 'package:xtflutter/Utils/logger_utils.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/message_model.dart';
@@ -12,7 +12,7 @@ import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/widget/scrollview/DefaultBehavior.dart';
+import 'package:xtflutter/widget/scrollview/scroll_behaviors.dart';
 
 // 消息中心页面
 // create by yuanl at 2020/09/17

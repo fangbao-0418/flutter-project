@@ -116,4 +116,9 @@ class AppListener {
   static void shareWechat(Map<String, dynamic> params) async {
     var _ = await XTMTDChannel.invokeMethod("shareWechat", params);
   }
+
+  ///获取推送token
+  static Future<String> getPushToken() async{
+    return await XTMTDChannel.invokeMethod("getPushToken");
+  }
  }

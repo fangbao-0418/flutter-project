@@ -20,5 +20,12 @@ class PromotionRequest {
     });
   }
 
-  // ncweb/yx/magic/getMagicData
+  /// 领取优惠券
+  static Future<Map<String, dynamic>> couponReceiveReq(Map<String, dynamic> params) async {
+    const url = "/cweb/coupon/receiveByCode";
+    final result = await HttpRequest.request(url, method: "post", params: params, hideErrorToast: false);
+    bool isReceive = result["nc"] == null ? false : result["nc"];
+    String msg = result["msg"] == null ? "" : result["msg"];
+    return {"isReceive": isReceive, "msg": msg};
+  }
 }
