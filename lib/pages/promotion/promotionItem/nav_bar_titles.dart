@@ -16,7 +16,6 @@ class TitlesNavBar extends StatefulWidget {
       {this.barTitleSelectColor = mainRedColor,
       this.barTitleNormalColor = mainBlackColor,
       this.barbackColor = mainF5GrayColor,
-      this.selectIndex = 0,
       this.onTap});
   final List<String> auchorNames;
   final List<int> auchorids;
@@ -24,7 +23,6 @@ class TitlesNavBar extends StatefulWidget {
   final Color barTitleNormalColor;
   final Color barTitleSelectColor;
   final ValueChanged<int> onTap;
-  final selectIndex;
 
   @override
   _TitlesNavBarState createState() => _TitlesNavBarState();
@@ -46,22 +44,25 @@ class _TitlesNavBarState extends State<TitlesNavBar>
 
   double spacing = 20;
   OverlayEntry _overlay;
-
+  int selectIndex = 0;
   @override
   void initState() {
     super.initState();
 
     print("widget.auchorNames.length" + widget.auchorNames.length.toString());
     tabC = TabController(
-        initialIndex: widget.selectIndex,
+        initialIndex: selectIndex,
         length: widget.auchorNames.length,
         vsync: this);
 
-    // bus.on(TitlesNavBar.busName, (arg) {
-    //   print("-------arg ------------" + arg.toString());
-    //   selectIndex = (arg as List<int>).first;
-    //   setState(() {});
-    // });
+    bus.on(TitlesNavBar.busName, (arg) {
+      print("-------arg ------------" + arg.toString());
+      int index = (arg as List<int>).first;
+      if (selectIndex != index) {
+        selectIndex = (arg as List<int>).first;
+        setState(() {});
+      }
+    });
   }
 
   void showAlert() {
@@ -78,7 +79,7 @@ class _TitlesNavBarState extends State<TitlesNavBar>
   }
 
   Widget item(index) {
-    return index == widget.selectIndex
+    return index == selectIndex
         ? FlatButton.icon(
             padding: EdgeInsets.only(left: 0, right: 0),
             disabledColor: widget.barbackColor,
@@ -159,15 +160,10 @@ class _TitlesNavBarState extends State<TitlesNavBar>
               tabs: items(),
               controller: tabC,
               onTap: (index) {
-                // selectIndex = index;
-                // tabC.index = selectIndex;
+                selectIndex = index;
+                tabC.index = selectIndex;
                 _handleTap(index);
-
-                // Future.delayed(Duration(milliseconds: 300), () {
-                //   bus.emit(TitlesNavBar.busName, [index]);
-
-                //   print('延时1s执行');
-                // });
+                setState(() {});
               },
             )),
       ),
@@ -205,7 +201,7 @@ class _TitlesNavBarState extends State<TitlesNavBar>
                   return GestureDetector(
                     child: ItemTags(
                       key: Key(index.toString()),
-                      active: widget.selectIndex == index,
+                      active: selectIndex == index,
                       index: index,
                       title: item,
                       pressEnabled: true,
@@ -218,7 +214,7 @@ class _TitlesNavBarState extends State<TitlesNavBar>
                           color: clearColor, width: 0, style: BorderStyle.none),
                       borderRadius: BorderRadius.all(Radius.circular(0)),
                       combine: ItemTagsCombine.withTextAfter,
-                      icon: widget.selectIndex == index
+                      icon: selectIndex == index
                           ? ItemTagsIcon(
                               icon: Icons.location_on,
                             )

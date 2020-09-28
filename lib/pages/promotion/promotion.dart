@@ -70,29 +70,31 @@ class _PromotionState extends State<Promotion> {
 
     promotionInfo();
     itemPositionsListener.itemPositions.addListener(() {
-      bool contain = checkNavTitleBar();
-      var max = itemPositionsListener.itemPositions.value
-          .where((ItemPosition position) => position.itemLeadingEdge < 1)
-          .reduce((ItemPosition max, ItemPosition position) =>
-              position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
-          .index;
-      print("-------------------" + max.toString());
-      print("-------------------" + currentIndex.toString());
+      print("--------addListeneraddListener-----------");
 
-      itemPositionsListener.itemPositions.value.forEach((element) {
-        element.index == currentIndex;
-      });
+      // bool contain = checkNavTitleBar();
+      // var max = itemPositionsListener.itemPositions.value
+      //     .where((ItemPosition position) => position.itemLeadingEdge < 1)
+      //     .reduce((ItemPosition max, ItemPosition position) =>
+      //         position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
+      //     .index;
+      // print("-------------------" + max.toString());
+      // print("-------------------" + currentIndex.toString());
 
-      if (currentIndex != max) {
-        currentIndex = max;
-        print("-----------111111--------" + currentIndex.toString());
-        if (!contain) {
-          Future.delayed(Duration(milliseconds: 300), () {
-            bus.emit(TitlesNavBar.busName, [currentIndex]);
-            print('延时1s执行');
-          });
-        }
-      }
+      // itemPositionsListener.itemPositions.value.forEach((element) {
+      //   element.index == currentIndex;
+      // });
+
+      // if (currentIndex != max) {
+      //   currentIndex = max;
+      //   print("-----------111111--------" + currentIndex.toString());
+      //   if (!contain) {
+      //     Future.delayed(Duration(milliseconds: 300), () {
+      //       bus.emit(TitlesNavBar.busName, [currentIndex]);
+      //       print('延时1s执行');
+      //     });
+      //   }
+      // }
     });
   }
 
@@ -244,9 +246,8 @@ class _PromotionState extends State<Promotion> {
 
   void jumpTo(int index) {
     currentIndex = index;
-    // setState(() {});
     itemScrollController.jumpTo(index: index, alignment: 0);
-    checkNavTitleBar();
+    // checkNavTitleBar();
   }
 
   Widget list() {
@@ -260,7 +261,6 @@ class _PromotionState extends State<Promotion> {
         if (model.type == "tab") {
           navBarIndex = index;
           TitlesNavBar bar = TitlesNavBar(auchorNames, auchorids,
-              selectIndex: currentIndex,
               barbackColor: model.config.bgColor != null
                   ? HexColor(model.config.bgColor)
                   : mainF5GrayColor,
@@ -311,8 +311,8 @@ class _PromotionState extends State<Promotion> {
           // return palyer(model);
         } else if (model.type == "area") {
           return AreaAttach(model);
-        }else if (model.type == "coupon") {
-          return   GestureDetector(
+        } else if (model.type == "coupon") {
+          return GestureDetector(
             child: Container(
               child: xtText("优惠券", 15, main66GrayColor),
               width: 100,
@@ -348,7 +348,6 @@ class _PromotionState extends State<Promotion> {
           maintainAnimation: true, // 隐藏后是否维持子组件中的动画
           visible: flowNavBarShow,
           child: TitlesNavBar(auchorNames, auchorids,
-              selectIndex: currentIndex,
               barbackColor: tabNav.config.bgColor != null
                   ? HexColor(tabNav.config.bgColor)
                   : mainF5GrayColor,
@@ -368,14 +367,9 @@ class _PromotionState extends State<Promotion> {
           }),
         );
         flowStage = offstage;
-        return Stack(alignment: Alignment.topCenter, children: <Widget>[
-          list(),
-          Positioned(
-              child: Offstage(
-            offstage: !flowNavBarShow,
-            child: flowStage,
-          ))
-        ]);
+        return Stack(
+            alignment: Alignment.topCenter,
+            children: <Widget>[list(), Positioned(child: offstage)]);
       } else {
         return list();
       }
@@ -390,11 +384,12 @@ class _PromotionState extends State<Promotion> {
       appBar: xtBackBar(
           title: "活动", back: () => XTRouter.closePage(context: context)),
       body: Container(
-        color: bodyConfig == null
-            ? whiteColor
-            : HexColor(bodyConfig.config.bgColor),
-        child: list(), //ScrollablePositionedListPage() //showWidgetFilter() //
-      ),
+          color: bodyConfig == null
+              ? whiteColor
+              : HexColor(bodyConfig.config.bgColor),
+          child: showWidgetFilter()
+          //showWidgetFilter() //list(),// ScrollablePositionedListPage()
+          ),
 
       // xtText("活动页呀" + widget.params["id"], 20, mainRedColor),
     );

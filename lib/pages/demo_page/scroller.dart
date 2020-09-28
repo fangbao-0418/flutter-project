@@ -59,6 +59,17 @@ class _ScrollablePositionedListPageState
         numberOfItems,
         (int _) =>
             Color(colorGenerator.nextInt(pow(2, 32) - 1)).withOpacity(1));
+
+    itemPositionsListener.itemPositions.addListener(() {
+      print("--------addListeneraddListener-----------");
+      List arr = List.from(itemPositionsListener.itemPositions.value);
+
+      for (var i = 0; i < arr.length; i++) {
+        // print(arr[i].toString());
+        ItemPosition position = arr[i];
+        print(position.toString());
+      }
+    });
   }
 
   @override
