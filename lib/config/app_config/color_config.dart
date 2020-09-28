@@ -9,6 +9,7 @@ const mainF5GrayColor = Color(0xFFF5F5F5);
 const mainA8GrayColor = Color(0xFFA8A8A8);
 const mainDDColor = Color(0xFFDDDDDD);
 const whiteColor = Color(0xFFFFFFFF);
+const clearColor = Color(0x00FFFFFF);
 const xtColor_B3FFFFFF = Color(0xB3FFFFFF);
 
 const xtColor_F9F9F9 = Color(0xFFF9F9F9);
@@ -28,7 +29,3 @@ const xtColor_4C4C4C = Color(0xFF4C4C4C);
 const xtColor_FFD652 = Color(0xFFFFD652);
 const xtColor_E02020 = Color(0xFFE02020);
 const xtColor_6D7278 = Color(0xFF6D7278);
-
-
-
-

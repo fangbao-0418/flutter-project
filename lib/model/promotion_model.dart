@@ -102,6 +102,8 @@ class ComponentVoList {
 class Config {
   Config({
     this.bgColor,
+    this.videoUrl,
+    this.backgroundColor,
     this.title,
     this.styleType,
     this.padding,
@@ -112,7 +114,8 @@ class Config {
     this.buttonBgColor,
     this.data,
   });
-
+  String backgroundColor;
+  String videoUrl;
   String bgColor;
   String title;
   int styleType;
@@ -125,7 +128,10 @@ class Config {
   ConfigData data;
 
   factory Config.fromJson(Map<String, dynamic> json) => Config(
+        videoUrl: json["videoUrl"] == null ? null : json["videoUrl"],
         bgColor: json["bgColor"] == null ? null : json["bgColor"],
+        backgroundColor:
+            json["backgroundColor"] == null ? null : json["backgroundColor"],
         title: json["title"] == null ? null : json["title"],
         styleType: json["styleType"] == null ? null : json["styleType"],
         padding: json["padding"] == null
@@ -143,7 +149,9 @@ class Config {
       );
 
   Map<String, dynamic> toJson() => {
+        "videoUrl": videoUrl == null ? null : videoUrl,
         "bgColor": bgColor == null ? null : bgColor,
+        "backgroundColor": bgColor == null ? null : backgroundColor,
         "title": title == null ? null : title,
         "styleType": styleType == null ? null : styleType,
         "padding":
