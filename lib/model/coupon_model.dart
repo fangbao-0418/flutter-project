@@ -4,27 +4,21 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/r.dart';
 
 enum CouponItemStyleType {
-  rowOne,
-
   /// 一行一个
-  rowTwo,
-
+  rowOne,
   /// 一行二个
-  rowThree,
-
+  rowTwo,
   /// 一行三个
+  rowThree,
 }
 
 enum CouponStatusType {
-  normal,
-
   /// 立即领取
-  geted,
-
+  normal,
   /// 已领取
-  gone
-
+  geted,
   /// 已领完
+  gone
 }
 
 /// 优惠券样式配置model
@@ -37,11 +31,17 @@ class CouponItemConfigModel {
 
   factory CouponItemConfigModel.fromJson(Map<String, dynamic> json) {
     return CouponItemConfigModel(
-      couponStyle: json["couponStyle"],
-      selectCorlor: json["selectCorlor"],
-      styleType: json["styleType"],
+      couponStyle: json["couponStyle"] == null ? 2 : json["couponStyle"],
+      selectCorlor: json["selectCorlor"] == null ? 0 : json["selectCorlor"],
+      styleType: json["styleType"] == null ? 1 : json["styleType"],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "couponStyle": couponStyle,
+    "styleType": styleType,
+    "selectCorlor": selectCorlor,
+  };
 
   Color get bgColor {
     return couponStyle == 2 ? Colors.orange : mainF5GrayColor;
@@ -94,19 +94,19 @@ class CouponItemConfigModel {
     switch (style) {
       case CouponItemStyleType.rowOne:
         double itemHeight = itemWidth(ctx) / childRatio;
-        return count * itemHeight + (count - 1) * 8 + 24;
+        return count * itemHeight + (count - 1) * 8 + 8;
         break;
       case CouponItemStyleType.rowTwo:
         double itemHeight = itemWidth(ctx) / childRatio;
         return (count / 2).ceil() * itemHeight +
             ((count / 2).ceil() - 1) * 8 +
-            24;
+            8;
         break;
       case CouponItemStyleType.rowThree:
         double itemHeight = itemWidth(ctx) / childRatio;
         return (count / 3).ceil() * itemHeight +
             ((count / 3).ceil() - 1) * 8 +
-            24;
+            8;
         break;
       default:
         return 0.0;

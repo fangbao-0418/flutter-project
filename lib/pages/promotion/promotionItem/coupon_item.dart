@@ -19,39 +19,31 @@ class CouponItems extends StatefulWidget {
 }
 
 class _CouponItemsState extends State<CouponItems> {
-  CouponItemConfigModel _itemConfigModel;
-  List<CouponItemDataModel> _dataList;
-
-  @override
-  void initState() {
-    super.initState();
-    _itemConfigModel = widget.itemConfigModel;
-    _dataList = widget.dataList;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: _itemConfigModel.gridHeight(widget.dataList.length, context),
-      color: _itemConfigModel.bgColor,
+      height: widget.itemConfigModel.gridHeight(widget.dataList.length, context),
+      color: widget.itemConfigModel.bgColor,
       child: GridView.builder(
-        padding: EdgeInsets.only(left: 12, top: 12, right: 12),
+        padding: EdgeInsets.only(left: 12, top: 4, right: 12),
         itemCount: widget.dataList.length,
         controller: ScrollController(
           keepScrollOffset: false
         ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: _itemConfigModel.styleType,
-          crossAxisSpacing: _itemConfigModel.crossAxisSpacing,
+          crossAxisCount: widget.itemConfigModel.styleType,
+          crossAxisSpacing: widget.itemConfigModel.crossAxisSpacing,
           mainAxisSpacing: 8,
-          childAspectRatio: _itemConfigModel.childRatio
+          childAspectRatio: widget.itemConfigModel.childRatio
         ), 
         itemBuilder: (BuildContext ctx, int index) {
-          return CouponItem(itemConfigModel: _itemConfigModel, itemDataModel: _dataList[index]);
+          return CouponItem(itemConfigModel: widget.itemConfigModel, itemDataModel: widget.dataList[index]);
         }
       )
     );
   }
+
 }
 
 
@@ -71,14 +63,6 @@ class _CouponItemState extends State<CouponItem> {
   CouponItemConfigModel _itemConfigModel;
   CouponItemDataModel _itemDataModel;
 
-  @override
-  void initState() {
-    super.initState();
-    _itemConfigModel = widget.itemConfigModel;
-    _itemDataModel = widget.itemDataModel;
-    _itemConfigModel.setStatusType(_itemDataModel.statusType);
-  }
-
   /// 优惠券立即领取
   void _couponGetNow() {
     if (_itemDataModel.statusType == CouponStatusType.normal) {
@@ -88,6 +72,9 @@ class _CouponItemState extends State<CouponItem> {
 
   @override
   Widget build(BuildContext context) {
+    _itemConfigModel = widget.itemConfigModel;
+    _itemDataModel = widget.itemDataModel;
+    _itemConfigModel.setStatusType(_itemDataModel.statusType);
     return Container(
       child: Stack(
         children: <Widget>[
@@ -143,7 +130,8 @@ class _CouponItemState extends State<CouponItem> {
                           margin: EdgeInsets.only(right: 25, top: 10),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: _itemConfigModel.couponGetNowColors.first,
+                            // color: _itemConfigModel.couponGetNowColors.first,
+                            color: Colors.red,
                             borderRadius: BorderRadius.all(Radius.circular(11))
                           ),
                           child: xtText("点击领取", 12, _itemConfigModel.couponGetNowColors.last, fontWeight: FontWeight.w500),
