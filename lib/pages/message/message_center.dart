@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:xtflutter/Utils/XtLogger.dart';
+import 'package:xtflutter/Utils/logger_utils.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/message_model.dart';

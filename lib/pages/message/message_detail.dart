@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:xtflutter/Utils/DateUtils.dart';
-import 'package:xtflutter/Utils/StringUtils.dart';
+import 'package:xtflutter/Utils/date_utils.dart';
+import 'package:xtflutter/Utils/string_utils.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/message_model.dart';
