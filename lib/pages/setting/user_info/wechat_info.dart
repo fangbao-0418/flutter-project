@@ -9,6 +9,7 @@ import 'package:xtflutter/config/extension/string_extension.dart';
 import 'package:xtflutter/model/userinfo_model.dart';
 import 'package:xtflutter/net_work/userinfo_request.dart';
 import 'package:xtflutter/pages/setting/user_info/wechat_info_edit.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/utils/event_bus.dart';
 
@@ -260,7 +261,7 @@ class _WeChatInfoPageState extends State<WeChatInfoPage> {
                                         child: Image(
                                           image: _state == WeChatInfoState.none
                                               ? AssetImage(
-                                                  "images/SettingImg/wx_info_upload.jpg")
+                                                  R.imagesWxInfoUpload)
                                               : NetworkImage(_wechatQrImgUrl),
                                           width: 80,
                                           height: 80,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
@@ -67,7 +68,7 @@ class _PageState extends State<Testpage1> {
                                   child: new Image(
                                       width: double.infinity,
                                       fit: BoxFit.fitWidth,
-                                      image: new AssetImage('images/joy.gif')),
+                                      image: new AssetImage(R.imagesJoy)),
                                 ),
                                 Wrap(
                                   children: <Widget>[

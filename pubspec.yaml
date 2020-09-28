@@ -43,13 +43,21 @@ dependencies:
   flutter_picker: ^1.1.5
   sqflite: ^1.3.0
   flutter_swiper : ^1.1.6
-  
+
   video_player: '>=0.10.12+2 <2.0.0'
 
   convex_bottom_bar: '<=2.3.0'
+
   pull_to_refresh: ^1.6.1
   scrollable_positioned_list: ^0.1.7
   flutter_tags: "^0.4.9"
+
+  flutter_easyrefresh: ^2.1.5
+
+  common_utils: ^1.2.1
+  flutter_staggered_grid_view: "^0.3.2"
+  video_thumbnail: ^0.2.2
+
 
 dev_dependencies:
   flutter_test:
@@ -109,26 +117,104 @@ flutter:
     iosBundleIdentifier: com.example.xtflutter
 
   assets:
-    - images/SettingImg/
-    - images/empty_name.png
+  # assets-generator-begin
+  # images/Coupon/*
+    - images/Coupon/coupon_bg_one_color0.png
+    - images/Coupon/coupon_bg_one_color1.png
+    - images/Coupon/coupon_bg_one_color2.png
+    - images/Coupon/coupon_bg_one_color3.png
+    - images/Coupon/coupon_bg_one_color4.png
+    - images/Coupon/coupon_bg_one_color5.png
+    - images/Coupon/coupon_bg_one_color6.png
+    - images/Coupon/coupon_bg_one_color_get0.png
+    - images/Coupon/coupon_bg_one_color_get1.png
+    - images/Coupon/coupon_bg_one_color_get2.png
+    - images/Coupon/coupon_bg_one_color_get3.png
+    - images/Coupon/coupon_bg_one_color_get4.png
+    - images/Coupon/coupon_bg_one_color_get5.png
+    - images/Coupon/coupon_bg_one_color_get6.png
+    - images/Coupon/coupon_bg_one_color_gone0.png
+    - images/Coupon/coupon_bg_one_color_gone1.png
+    - images/Coupon/coupon_bg_one_color_gone2.png
+    - images/Coupon/coupon_bg_one_color_gone3.png
+    - images/Coupon/coupon_bg_one_color_gone4.png
+    - images/Coupon/coupon_bg_one_color_gone5.png
+    - images/Coupon/coupon_bg_one_color_gone6.png
+    - images/Coupon/coupon_bg_one_none.png
+    - images/Coupon/coupon_bg_three_color0.png
+    - images/Coupon/coupon_bg_three_color1.png
+    - images/Coupon/coupon_bg_three_color2.png
+    - images/Coupon/coupon_bg_three_color3.png
+    - images/Coupon/coupon_bg_three_color4.png
+    - images/Coupon/coupon_bg_three_color5.png
+    - images/Coupon/coupon_bg_three_color6.png
+    - images/Coupon/coupon_bg_three_color_gone0.png
+    - images/Coupon/coupon_bg_three_color_gone1.png
+    - images/Coupon/coupon_bg_three_color_gone2.png
+    - images/Coupon/coupon_bg_three_color_gone3.png
+    - images/Coupon/coupon_bg_three_color_gone4.png
+    - images/Coupon/coupon_bg_three_color_gone5.png
+    - images/Coupon/coupon_bg_three_color_gone6.png
+    - images/Coupon/coupon_bg_three_none.png
+    - images/Coupon/coupon_bg_two_color0.png
+    - images/Coupon/coupon_bg_two_color1.png
+    - images/Coupon/coupon_bg_two_color2.png
+    - images/Coupon/coupon_bg_two_color3.png
+    - images/Coupon/coupon_bg_two_color4.png
+    - images/Coupon/coupon_bg_two_color5.png
+    - images/Coupon/coupon_bg_two_color6.png
+    - images/Coupon/coupon_bg_two_color_gone0.png
+    - images/Coupon/coupon_bg_two_color_gone1.png
+    - images/Coupon/coupon_bg_two_color_gone2.png
+    - images/Coupon/coupon_bg_two_color_gone3.png
+    - images/Coupon/coupon_bg_two_color_gone4.png
+    - images/Coupon/coupon_bg_two_color_gone5.png
+    - images/Coupon/coupon_bg_two_color_gone6.png
+    - images/Coupon/coupon_bg_two_none.png
+  # images/Live/*
+    - images/Live/live_anchor_favorite_gray.png
+    - images/Live/live_anchor_favorite_red.png
+    - images/Live/live_anchor_level_0.png
+    - images/Live/live_anchor_level_10.png
+    - images/Live/live_anchor_top_back.png
+    - images/Live/live_anchor_top_bg.png
+    - images/Live/live_anchor_top_cancel_attention.png
+    - images/Live/live_anchor_top_share.png
+    - images/Live/live_anchor_top_white_share.png
+    - images/Live/live_icon_play.png
+    - images/Live/live_notify_horn.png
+    - images/Live/live_station_arrow_down.png
+    - images/Live/live_station_arrow_right.png
+    - images/Live/live_station_maicai_logo_normal.png
+    - images/Live/live_station_maicai_logo_selected.png
+    - images/Live/live_station_top_bg.png
+    - images/Live/live_station_xituan_logo_normal.png
+    - images/Live/live_station_xituan_logo_selected.png
+  # images/*
+    - images/default_header_img.png
+    - images/edit_phone_icon.png
     - images/empty.png
+    - images/empty_name.png
     - images/header_realname.png
-    - images/my_address_list_edit.png
-    - images/edit-phone-icon.png
-    - images/xituan_logo.png
-    - images/loading.gif
+    - images/img_message_empty.png
     - images/joy.gif
-    - images/live_station_arrow_down.png
-    - images/live_station_top_bg.png
-    - images/live_star.png
-    - images/live_station_arrow_right.png
     - images/limit_time_seckill_share.png
-    - images/product-sellOut-small.png
-    - images/product_tag_abroad_s.png
-    - images/product_tag_global_s.png
-    - images/pintuan_two.png
     - images/limit_time_seckill_shareBg.png
     - images/limit_time_seckill_shareBg_none.png
     - images/limit_time_seckill_shareBg_two.png
-    - images/share_wechat.png
+    - images/live_anchor_go_setting.png
+    - images/loading.png
+    - images/loading_round.gif
+    - images/my_address_list_edit.png
+    - images/pintuan_two.png
+    - images/product_sellOut_small.png
+    - images/product_tag_abroad_s.png
+    - images/product_tag_global_s.png
     - images/share_save_img.png
+    - images/share_wechat.png
+    - images/tuanzi_refresh_header.gif
+    - images/wx_info_upload.jpg
+    - images/xituan_logo.png
+  # assets-generator-end
+
+

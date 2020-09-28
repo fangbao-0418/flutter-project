@@ -9,6 +9,7 @@ import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
 enum SeckillShareType {
@@ -90,13 +91,13 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
   String get _shareBgImgName {
     switch (_shareType) {
       case SeckillShareType.twoPro:
-        return "images/limit_time_seckill_shareBg_two.png";
+        return R.imagesLimitTimeSeckillShareBgTwo;
         break;
       case SeckillShareType.sixPro:
-        return "images/limit_time_seckill_shareBg.png";
+        return R.imagesLimitTimeSeckillShareBg;
         break;
       default:
-        return "images/limit_time_seckill_shareBg_none.png";
+        return R.imagesLimitTimeSeckillShareBgNone;
     }
   }
 
@@ -127,36 +128,37 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
     /// 比例尺寸
     _scale = viewW / 375;
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pop();
-      },
+      onTap: () => Navigator.of(context).pop(),
       child: Container(
         color: Color(0x90000000),
         child: Column(
           children: <Widget>[
             Expanded(
               child: Center(
-                child: RepaintBoundary(
-                  key: _repaintWidgetKey,
-                  child: Container(
-                    width: viewW,
-                    height: viewW * 668 / 375,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Image.asset(_shareBgImgName),
-                        _getShareBgWidget(),
-                        Container(
-                          margin: EdgeInsets.only(top: 490 * _scale, left: 12 * _scale, right: 12 * _scale),
-                          padding: EdgeInsets.only(left: 11 * _scale),
-                          height: 120 * _scale,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(4))
-                          ),
-                          child: _getUserInfoView(),
-                        )
-                      ],
+                child: GestureDetector(
+                  onTap: () {},
+                  child: RepaintBoundary(
+                    key: _repaintWidgetKey,
+                    child: Container(
+                      width: viewW,
+                      height: viewW * 668 / 375,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Image.asset(_shareBgImgName),
+                          _getShareBgWidget(),
+                          Container(
+                            margin: EdgeInsets.only(top: 490 * _scale, left: 12 * _scale, right: 12 * _scale),
+                            padding: EdgeInsets.only(left: 11 * _scale),
+                            height: 120 * _scale,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(4))
+                            ),
+                            child: _getUserInfoView(),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -183,7 +185,7 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Image(
-                          image: AssetImage("images/share_wechat.png"),
+                          image: AssetImage(R.imagesShareWechat),
                           width: 45,
                           height: 45,
                         ),
@@ -201,7 +203,7 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Image(
-                          image: AssetImage("images/share_save_img.png"),
+                          image: AssetImage(R.imagesShareSaveImg),
                           width: 45,
                           height: 45,
                         ),
@@ -259,10 +261,6 @@ class _LimitTimeSeckillSharePageState extends State<LimitTimeSeckillSharePage> {
 
   Widget _getGridCellView(LimitTimeSeckillProductModel model, bool isTwo) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: mainF5GrayColor, width: 0.5),
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

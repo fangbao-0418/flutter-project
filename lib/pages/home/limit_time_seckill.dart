@@ -1,19 +1,21 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/home_limit_seckill.dart';
 import 'package:xtflutter/net_work/home_request.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill_share.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
+import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
+import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 
 class LimitTimeSeckillPage extends StatefulWidget {
-  static String routerName = "limitTimeSpick";
+  static String routerName = "limitTimeSeckill";
 
   @override
   _LimitTimeSeckillPageState createState() => _LimitTimeSeckillPageState();
@@ -77,7 +79,12 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
   }
 
   /// 分享 
-  void _shareAction() async{
+  void _shareAction() async{    
+    if (!AppConfig.isLogin) {
+      /// 未登录，跳转登录页
+      XTRouter.pushToPage(routerName: "gotoLogin", context: context, isNativePage: true);
+      return;
+    }
     Loading.show();
     String mid = AppConfig.user.mid;
     ShareCardInfoModel shareModel = await HomeRequest.getCardInfo({"page": "pages/seckill/index", "scene": "mid=" + mid})
@@ -141,7 +148,7 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
             onPressed: () => XTRouter.closePage(context: context),
           ),
           title: xtText("限时秒杀", 18, Colors.white),
-          bottom: TabBar(
+          bottom: _length > 0 ? TabBar(
             controller: _tabController,
             labelColor: Colors.white,
             unselectedLabelColor: xtColor_B3FFFFFF,
@@ -151,9 +158,9 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
               _lastIndex = index;
             },
             tabs: _getTimeTabs()
-          ),
+          ) : null,
         ),
-        body: Stack(
+        body: _length > 0 ? Stack(
           children: <Widget>[
             TabBarView(
               controller: _tabController,
@@ -167,11 +174,15 @@ class _LimitTimeSeckillPageState extends State<LimitTimeSeckillPage> with Single
                   _shareAction();
                 }, 
                 padding: EdgeInsets.zero,
-                child: Image.asset("images/limit_time_seckill_share.png")
+                child: Image(
+                  image: AssetImage(R.imagesLimitTimeSeckillShare),
+                  width: 90,
+                  height: 87,
+                )
               ),
             )
           ],
-        ),
+        ) : Center(child: xtText("暂无限时秒杀商品~", 16, xtColor_969696)),
       ),
     );
   }
@@ -191,7 +202,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   /// 数据源列表
   List<LimitTimeSeckillProductModel> _productList = [];
   /// 刷新器
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  EasyRefreshController _controller = EasyRefreshController();
   /// 页码
   int _pageIndex = 1;
   /// 营销id
@@ -200,6 +211,8 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   int _seckillIndex = 0;
   /// 开抢状态
   SeckillStatus _status = SeckillStatus.buying;
+  /// 是否是第一次加载
+  bool _isFirstLoad = true;
 
   @override
   void initState() {
@@ -228,7 +241,9 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
-    return Container(
+    return (_productList.isEmpty && !_isFirstLoad) ? 
+    Center(child: xtText("该场次暂无限时秒杀商品~", 16, xtColor_969696)) :
+    Container(
       child: _getListView(_productList),
     );
   }
@@ -238,12 +253,13 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
     if (!(_productList == null || _productList.isEmpty)) {
       return;
     }
+    _isFirstLoad = false;
     getProductListReq();
   }
 
   /// 请求数据
   void getProductListReq({bool isFirst = true}) async {
-    if (_pageIndex == 1) { Loading.show(); }
+    if (isFirst) { Loading.show(); }
     Map<String, dynamic> result = await HomeRequest.getSeckillListReq({"page": _pageIndex, "promotionId": _promotionId})
     .whenComplete(() {
       Loading.hide();
@@ -258,12 +274,8 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
       }
     });
     if (!isFirst) {
-        if (products.length < 10) {
-          _refreshController.loadNoData();
-        } else {
-          _refreshController.loadComplete();
-        }
-      }
+        _controller.finishLoad(noMore: products.length < 10);
+    }
   }
 
   /// 上拉加载
@@ -305,36 +317,9 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
 
   /// 获取列表widget
   Widget _getListView(List<LimitTimeSeckillProductModel> products) {
-    return SmartRefresher(
-      controller: _refreshController,
-      enablePullUp: true,
-      enablePullDown: false,
-      footer: CustomFooter(
-        builder: (BuildContext context,LoadStatus mode){
-          Widget body ;
-          if(mode==LoadStatus.idle){
-            body =  Text("上拉加载");
-          }
-          else if(mode==LoadStatus.loading){
-            body =  CupertinoActivityIndicator();
-          }
-          else if(mode == LoadStatus.failed){
-            body = Text("加载失败，请重试");
-          }
-          else if(mode == LoadStatus.canLoading){
-            body = Text("松开加载");
-          }
-          else{
-            body = xtText("—— 没有更多内容了哦 ——", 12, mainA8GrayColor);
-          }
-          return Container(
-            padding: EdgeInsets.only(bottom: AppConfig.bottomH),
-            height: 55.0 + AppConfig.bottomH,
-            child: Center(child:body),
-          );
-        },
-      ),
-      onLoading: _onLoading,
+    return XTRefresh(
+      controller: _controller,
+      onLoad: _onLoading,
       child: ListView.builder(
         itemExtent: 145,
         itemCount: products.length,
@@ -398,7 +383,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                         width: 68,
                         height: 68,
                         fit: BoxFit.fitWidth,
-                        image: AssetImage("images/product-sellOut-small.png"),
+                        image: AssetImage(R.imagesProductSellOutSmall),
                       ),
                     )
                   ),
@@ -416,6 +401,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                       children: <Widget>[
                         RichText(
                           maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             children: [
                               WidgetSpan(
@@ -425,7 +411,7 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Image(
-                                        image: AssetImage("images/pintuan_two.png"),
+                                        image: AssetImage(R.imagesPintuanTwo),
                                         height: 15,
                                       ),
                                       SizedBox(width: 2)
@@ -484,7 +470,10 @@ class _LimitTimeSeckillListPageState extends State<LimitTimeSeckillListPage> wit
                                       ),
                                     ),
                                     ClipRRect(
-                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                        bottomRight: Radius.circular(model.sellRatio >= 0.2 ? 6 : 0),
+                                      ),
                                       child: Container(
                                         width: 100 * model.sellRatio,
                                         height: 12,

@@ -1,4 +1,7 @@
 
+import 'package:common_utils/common_utils.dart';
+import 'package:xtflutter/r.dart';
+
 enum SeckillStatus {
   buying,
   end,
@@ -113,16 +116,36 @@ class LimitTimeSeckillProductModel {
 
   /// 自定义参数
   /// 是否已售罄
-  bool get isSellOut => (remainInventory == 0 || inventory == 0);
+  bool get isSellOut {
+    if (inventory == null) {
+      return true;
+    }
+    int salesCount = spuSalesCount ?? 0;
+    if (salesCount >= inventory || inventory == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   /// 已售比例
   double get sellRatio {
-    if (inventory == null || remainInventory == null) {
-      return 0;
+    if (inventory == null) {
+      return 1.0;
     }
     if (isSellOut) {
-      return 1;
+      return 1.0;
+    } else if (spuSalesCount != null && spuSalesCount > 0) {
+      double ratio = spuSalesCount / inventory;
+      if (ratio > 0 && ratio< 0.01) {
+        ratio = 0.01;
+      } else if (ratio > 0.99 && ratio < 1) {
+        ratio = 0.99;
+      } else if (ratio > 1.0) {
+        ratio = 1.0;
+      }
+      return ratio;
     } else {
-      return ((inventory - remainInventory) / inventory);
+      return 0.0;
     }
   }
   /// 已售xxx%
@@ -131,7 +154,7 @@ class LimitTimeSeckillProductModel {
     if (sealsRatio100 <= 0) {
       return "  已售0%";
     }
-    return "  已售" + sealsRatio100.ceil().toString() + "%";
+    return "  已售" + sealsRatio100.floor().toString() + "%";
   }
   /// 已抢xxx件
   String get sellCountText {
@@ -143,21 +166,21 @@ class LimitTimeSeckillProductModel {
   /// 秒杀价
   String get buyingPriceText {
     if (buyingPrice != null && buyingPrice > 0) {
-      return (buyingPrice / 100).toString();
+      return MoneyUtil.changeF2Y(buyingPrice, format: MoneyFormat.END_INTEGER);
     }
     return "";
   }
   /// 划线价
   String get marketPriceText {
     if (marketPrice != null && marketPrice > 0) {
-      return (marketPrice / 100).toString();
+      return MoneyUtil.changeF2Y(marketPrice, format: MoneyFormat.END_INTEGER);
     }
     return "";
   }
   /// 分享赚
   String get mostEarnText {
     if (mostEarn != null && mostEarn > 0) {
-      return "分享赚" + (mostEarn / 100).toString() + "元";
+      return "分享赚" + MoneyUtil.changeF2Y(mostEarn, format: MoneyFormat.END_INTEGER) + "元";
     }
     return "";
   }
@@ -187,9 +210,9 @@ class LimitTimeSeckillProductModel {
   /// 商品类型图标路径
   String get productImgName {
     if (type == 10) {
-      return "images/product_tag_abroad_s.png";
+      return R.imagesProductTagAbroadS;
     } else if (type == 20) {
-      return "images/product_tag_global_s.png";
+      return R.imagesProductTagGlobalS;
     } else {
       return "";
     }
