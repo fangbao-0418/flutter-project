@@ -23,16 +23,16 @@ enum CouponStatusType {
 
 /// 优惠券样式配置model
 class CouponItemConfigModel {
-  CouponItemConfigModel({this.couponStyle, this.selectCorlor, this.styleType});
+  CouponItemConfigModel({this.couponStyle, this.selectColor, this.styleType});
 
   int couponStyle;
   int styleType;
-  int selectCorlor;
+  int selectColor;
 
   factory CouponItemConfigModel.fromJson(Map<String, dynamic> json) {
     return CouponItemConfigModel(
       couponStyle: json["couponStyle"] == null ? 2 : json["couponStyle"],
-      selectCorlor: json["selectCorlor"] == null ? 0 : json["selectCorlor"],
+      selectColor: json["selectColor"] == null ? 0 : json["selectColor"],
       styleType: json["styleType"] == null ? 1 : json["styleType"],
     );
   }
@@ -40,7 +40,7 @@ class CouponItemConfigModel {
   Map<String, dynamic> toJson() => {
     "couponStyle": couponStyle,
     "styleType": styleType,
-    "selectCorlor": selectCorlor,
+    "selectColor": selectColor,
   };
 
   Color get bgColor {
@@ -152,25 +152,25 @@ class CouponItemConfigModel {
       switch (style) {
         case CouponItemStyleType.rowOne:
           if (statusType == CouponStatusType.gone) {
-            return "images/Coupon/coupon_bg_one_color_gone$selectCorlor.png";
+            return "images/Coupon/coupon_bg_one_color_gone$selectColor.png";
           } else if (statusType == CouponStatusType.geted) {
-            return "images/Coupon/coupon_bg_one_color_get$selectCorlor.png";
+            return "images/Coupon/coupon_bg_one_color_get$selectColor.png";
           } else {
-            return "images/Coupon/coupon_bg_one_color$selectCorlor.png";
+            return "images/Coupon/coupon_bg_one_color$selectColor.png";
           }
           break;
         case CouponItemStyleType.rowTwo:
           if (statusType == CouponStatusType.gone) {
-            return "images/Coupon/coupon_bg_two_color_gone$selectCorlor.png";
+            return "images/Coupon/coupon_bg_two_color_gone$selectColor.png";
           } else {
-            return "images/Coupon/coupon_bg_two_color$selectCorlor.png";
+            return "images/Coupon/coupon_bg_two_color$selectColor.png";
           }
           break;
         case CouponItemStyleType.rowThree:
           if (statusType == CouponStatusType.gone) {
-            return "images/Coupon/coupon_bg_three_color_gone$selectCorlor.png";
+            return "images/Coupon/coupon_bg_three_color_gone$selectColor.png";
           } else {
-            return "images/Coupon/coupon_bg_three_color$selectCorlor.png";
+            return "images/Coupon/coupon_bg_three_color$selectColor.png";
           }
           break;
         default:
@@ -216,7 +216,7 @@ class CouponItemConfigModel {
   Color get couponHaveStyleFaceColor {
     if (statusType == CouponStatusType.gone) {
       /// 已领完
-      switch (selectCorlor) {
+      switch (selectColor) {
         case 1:
         case 4:
         case 5:
@@ -228,7 +228,7 @@ class CouponItemConfigModel {
     } else {
       /// 已领取
       /// 可领
-      switch (selectCorlor) {
+      switch (selectColor) {
         case 1:
           return xtColor_FFFF4D6A;
           break;
@@ -246,7 +246,7 @@ class CouponItemConfigModel {
   Color get couponNameColor {
     if (statusType == CouponStatusType.gone) {
       /// 已领完
-      switch (selectCorlor) {
+      switch (selectColor) {
         case 4:
           return Colors.white;
           break;
@@ -256,7 +256,7 @@ class CouponItemConfigModel {
     } else {
       /// 已领取
       /// 可领
-      switch (selectCorlor) {
+      switch (selectColor) {
         case 1:
           return xtColor_FFFF4D6A;
           break;
@@ -277,7 +277,7 @@ class CouponItemConfigModel {
 
   /// 立即领取按钮颜色
   List<Color> get couponGetNowColors {
-    switch (selectCorlor) {
+    switch (selectColor) {
       case 0:
         return [mainRedColor, Colors.white];
         break;
@@ -330,7 +330,7 @@ class CouponItemConfigModel {
           /// 无样式
           return mainCCColor;
         }
-        if (selectCorlor == 4) {
+        if (selectColor == 4) {
           return main66GrayColor;
         } else {
           return main99GrayColor;
@@ -486,15 +486,17 @@ class CouponItemDataModel {
   /// 自定义参数
   /// 优惠券状态
   CouponStatusType get statusType {
+    if (received) {
+      return CouponStatusType.geted;
+    } else if (stock <= 0) {
+      return CouponStatusType.gone;
+    }
     switch (status) {
       case 1:
         return CouponStatusType.normal;
         break;
       case 2:
         return CouponStatusType.gone;
-        break;
-      case 3:
-        return CouponStatusType.geted;
         break;
       default:
         return CouponStatusType.normal;
@@ -551,76 +553,76 @@ class CouponItemModel {
 const Map<String, dynamic> couponData = {
   "dataList": [
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 0},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 0},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 0},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 0},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 0},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 0},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 1},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 1},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 1},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 1},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 1},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 1},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 2},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 2},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 2},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 2},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 2},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 2},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 3},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 3},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 3},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 3},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 3},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 3},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 4},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 4},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 4},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 4},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 4},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 4},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 5},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 5},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 5},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 5},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 5},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 5},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 1, "selectCorlor": 6},
+      "config": {"couponStyle": 1, "styleType": 1, "selectColor": 6},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 2, "selectCorlor": 6},
+      "config": {"couponStyle": 1, "styleType": 2, "selectColor": 6},
     },
     {
-      "config": {"couponStyle": 1, "styleType": 3, "selectCorlor": 6},
+      "config": {"couponStyle": 1, "styleType": 3, "selectColor": 6},
     },
     {
-      "config": {"couponStyle": 2, "styleType": 1, "selectCorlor": 6},
+      "config": {"couponStyle": 2, "styleType": 1, "selectColor": 6},
     },
     {
-      "config": {"couponStyle": 2, "styleType": 2, "selectCorlor": 6},
+      "config": {"couponStyle": 2, "styleType": 2, "selectColor": 6},
     },
     {
-      "config": {"couponStyle": 2, "styleType": 3, "selectCorlor": 6},
+      "config": {"couponStyle": 2, "styleType": 3, "selectColor": 6},
     },
   ]
 };

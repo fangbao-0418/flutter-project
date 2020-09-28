@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
+import 'package:xtflutter/net_work/promotion_request.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/model/coupon_model.dart';
 import 'package:xtflutter/router/router.dart';
+import 'package:xtflutter/utils/appconfig.dart';
 
 /// 优惠券组件
 class CouponItems extends StatefulWidget {
@@ -64,9 +66,28 @@ class _CouponItemState extends State<CouponItem> {
   CouponItemDataModel _itemDataModel;
 
   /// 优惠券立即领取
-  void _couponGetNow() {
+  void _couponGetNow() async {
     if (_itemDataModel.statusType == CouponStatusType.normal) {
-      Toast.showToast(msg: "立即领取");
+      if (!AppConfig.isLogin) {
+        /// 未登录，跳转登录页
+        XTRouter.pushToPage(routerName: "gotoLogin", context: context, isNativePage: true);
+        return; 
+      }
+      Map<String, dynamic> result = await PromotionRequest.couponReceiveReq({"code": _itemDataModel.code});
+      bool isReceive = result["isReceive"];
+      String msg = result["msg"];
+      Toast.showToast(msg: "领取成功~");
+      if (!isReceive) {
+        setState(() {
+          if (msg.contains("已领取")) {
+            widget.itemDataModel.received = true;
+          } else if (msg.contains("点击领取")) {
+            widget.itemDataModel.status = 1;
+          } else if (msg.contains("抢光")) {
+            widget.itemDataModel.status = 2;
+          }
+        });
+      }
     }
   }
 
@@ -127,11 +148,10 @@ class _CouponItemState extends State<CouponItem> {
                         child: Container(
                           height: 22,
                           width: 60,
-                          margin: EdgeInsets.only(right: 25, top: 10),
+                          margin: EdgeInsets.only(right: 25, top: 5),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            // color: _itemConfigModel.couponGetNowColors.first,
-                            color: Colors.red,
+                            color: _itemConfigModel.couponGetNowColors.first,
                             borderRadius: BorderRadius.all(Radius.circular(11))
                           ),
                           child: xtText("点击领取", 12, _itemConfigModel.couponGetNowColors.last, fontWeight: FontWeight.w500),
