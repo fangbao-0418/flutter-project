@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:xtflutter/Utils/XtLogger.dart';
+import 'package:xtflutter/Utils/logger_utils.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/message_model.dart';
@@ -12,7 +12,7 @@ import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/widget/scrollview/DefaultBehavior.dart';
+import 'package:xtflutter/widget/scrollview/scroll_behaviors.dart';
 
 // 消息中心页面
 // create by yuanl at 2020/09/17
@@ -42,7 +42,7 @@ class MessageCenterPage extends StatefulWidget {
             xtText(
               "主人，暂时没有收到任何消息哦～ ",
               13,
-              AppColors.FFA8A8A8,
+              mainA8GrayColor,
             ),
           ],
         ),
@@ -159,7 +159,7 @@ class _MessageItemWidget extends StatelessWidget {
                   xtText(
                     model.title ?? "还没有消息哦",
                     11,
-                    AppColors.FFA8A8A8,
+                    mainA8GrayColor,
                     alignment: TextAlign.left,
                   )
                 ],

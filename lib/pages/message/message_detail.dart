@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:xtflutter/Utils/DateUtils.dart';
-import 'package:xtflutter/Utils/StringUtils.dart';
+import 'package:xtflutter/Utils/date_utils.dart';
+import 'package:xtflutter/Utils/string_utils.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/message_model.dart';
@@ -11,7 +11,7 @@ import 'package:xtflutter/net_work/message_request.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/widget/scrollview/DefaultBehavior.dart';
+import 'package:xtflutter/widget/scrollview/scroll_behaviors.dart';
 
 // 消息详情页，也是列表页
 // create by yuanl at 2020/09/19
@@ -99,7 +99,7 @@ class _MessageDetailState extends State<MessageDetailPage> {
             horizontal: 20.0,
           ),
           margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-          color: AppColors.FFFFFFFF,
+          color: whiteColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -108,7 +108,7 @@ class _MessageDetailState extends State<MessageDetailPage> {
                   xtTextWithStyle(
                     model.title,
                     TextStyle(
-                      color: AppColors.FF333333,
+                      color: mainBlackColor,
                       fontWeight: FontWeight.w600,
                       fontSize: 14.0,
                     ),
@@ -118,7 +118,7 @@ class _MessageDetailState extends State<MessageDetailPage> {
                   xtTextWithStyle(
                     DateUtils.formatMs(model.time),
                     TextStyle(
-                      color: AppColors.FFA8A8A8,
+                      color: mainA8GrayColor,
                       fontSize: 11.0,
                     ),
                     alignment: TextAlign.end,
@@ -130,7 +130,7 @@ class _MessageDetailState extends State<MessageDetailPage> {
                 child: xtTextWithStyle(
                   model.content,
                   TextStyle(
-                    color: AppColors.FF333333,
+                    color: mainBlackColor,
                     fontSize: 12.0,
                     fontWeight: FontWeight.w200,
                   ),
@@ -140,7 +140,7 @@ class _MessageDetailState extends State<MessageDetailPage> {
               Container(
                 margin: EdgeInsets.only(bottom: hasLink ? 10 : 0),
                 height: hasLink ? 1 : 0,
-                color: AppColors.FFF3F3F3,
+                color: xtColor_FFF3F3F3,
               ),
               _bottomWidget(context, hasLink),
             ],
@@ -157,7 +157,7 @@ class _MessageDetailState extends State<MessageDetailPage> {
               xtTextWithStyle(
                 "查看详情",
                 TextStyle(
-                  color: AppColors.FF4D88FF,
+                  color: xtColor_4D88FF,
                   fontWeight: FontWeight.w500,
                   fontSize: 13.0,
                 ),
@@ -174,4 +174,3 @@ class _MessageDetailState extends State<MessageDetailPage> {
         : Container();
   }
 }
-

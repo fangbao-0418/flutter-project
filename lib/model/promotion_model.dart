@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:xtflutter/model/coupon_model.dart';
+
 class PromotionData {
   PromotionData({
     this.recordId,
@@ -51,6 +53,7 @@ class ComponentVoList {
     this.platform,
     this.isAuchor,
     this.auchorName,
+    this.couponConfig
   });
 
   int id;
@@ -64,6 +67,7 @@ class ComponentVoList {
   List<String> platform;
   bool isAuchor;
   String auchorName;
+  CouponItemConfigModel couponConfig;
 
   factory ComponentVoList.fromJson(Map<String, dynamic> json) =>
       ComponentVoList(
@@ -80,6 +84,7 @@ class ComponentVoList {
         platform: List<String>.from(json["platform"].map((x) => x)),
         isAuchor: json["isAuchor"],
         auchorName: json["auchorName"],
+        couponConfig: CouponItemConfigModel.fromJson(json["config"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -96,12 +101,15 @@ class ComponentVoList {
         "platform": List<dynamic>.from(platform.map((x) => x)),
         "isAuchor": isAuchor,
         "auchorName": auchorName,
+        "couponConfig": couponConfig.toJson()
       };
 }
 
 class Config {
   Config({
     this.bgColor,
+    this.videoUrl,
+    this.backgroundColor,
     this.title,
     this.styleType,
     this.padding,
@@ -112,7 +120,8 @@ class Config {
     this.buttonBgColor,
     this.data,
   });
-
+  String backgroundColor;
+  String videoUrl;
   String bgColor;
   String title;
   int styleType;
@@ -125,7 +134,10 @@ class Config {
   ConfigData data;
 
   factory Config.fromJson(Map<String, dynamic> json) => Config(
+        videoUrl: json["videoUrl"] == null ? null : json["videoUrl"],
         bgColor: json["bgColor"] == null ? null : json["bgColor"],
+        backgroundColor:
+            json["backgroundColor"] == null ? null : json["backgroundColor"],
         title: json["title"] == null ? null : json["title"],
         styleType: json["styleType"] == null ? null : json["styleType"],
         padding: json["padding"] == null
@@ -143,7 +155,9 @@ class Config {
       );
 
   Map<String, dynamic> toJson() => {
+        "videoUrl": videoUrl == null ? null : videoUrl,
         "bgColor": bgColor == null ? null : bgColor,
+        "backgroundColor": bgColor == null ? null : backgroundColor,
         "title": title == null ? null : title,
         "styleType": styleType == null ? null : styleType,
         "padding":

@@ -22,7 +22,7 @@ import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/pages/setting/setting_page.dart';
 import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/utils/numberUtils.dart';
+import 'package:xtflutter/utils/number_utils.dart';
 
 class AnchorPersonalPage extends StatefulWidget {
   static String routerName = "AnchorPersonalPage";

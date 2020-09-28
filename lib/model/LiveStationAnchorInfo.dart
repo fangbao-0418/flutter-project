@@ -1,3 +1,5 @@
+import 'package:common_utils/common_utils.dart';
+
 ///主播信息模型
 class LiveStationAnchorModel {
   LiveStationAnchorModel(
@@ -130,6 +132,25 @@ class LivePlanHistoryModel {
     }
     return isEdit;
   }              //当前状态对应的按钮是查看还是重新编辑
+
+  String getPVString (){
+    int pv = statistics.popularity;
+    String pvString = "人气" + pv.toString();
+    if (pv > 10000){
+      double pvNum = pv/10000;
+      pvString = "人气" + pvNum.toString() + "W";
+    }
+    return pvString;
+  }
+
+  String getTimeText(){
+    String timeText = DateUtil.formatDateMs( startTime,format:"yyyy.MM.dd HH:mm:ss");
+    if (endTime != null) {
+      timeText = DateUtil.formatDateMs( startTime,format:"yyyy.MM.dd HH:mm:ss") + "-\n" +
+          DateUtil.formatDateMs( endTime,format:"yyyy.MM.dd HH:mm:ss");
+    }
+    return timeText;
+  }
 
   String getStatusText(){
     String statusString = "";
