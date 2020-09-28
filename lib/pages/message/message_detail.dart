@@ -11,7 +11,7 @@ import 'package:xtflutter/net_work/message_request.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:xtflutter/widget/scrollview/DefaultBehavior.dart';
+import 'package:xtflutter/widget/scrollview/scroll_behaviors.dart';
 
 // 消息详情页，也是列表页
 // create by yuanl at 2020/09/19
