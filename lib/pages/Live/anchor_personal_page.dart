@@ -841,7 +841,18 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
             ClipRRect(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-              child: _buildVideoOrPicItem(url, isVideo, commentShowModel),
+              child: Stack(
+                children: <Widget>[
+                  _buildVideoOrPicItem(url, isVideo, commentShowModel),
+                  if (isVideo)
+                    Image.asset(
+                      R.imagesLiveLiveIconPlay,
+                      width: 38,
+                      height: 38,
+                    )
+                ],
+                alignment: Alignment.center,
+              ),
 //            child: AspectRatio(
 //                aspectRatio: index % 2 == 0 ? 1 : 1440 / 800,
 //                child: Image.network(index % 2 == 0
@@ -953,12 +964,6 @@ _buildVideoOrPicItem(
           } else {
             return Container(
               height: 60,
-              alignment: Alignment.center,
-              child: Image.asset(
-                R.imagesLiveLiveIconPlay,
-                width: 38,
-                height: 38,
-              ),
             );
           }
         });
