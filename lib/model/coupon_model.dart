@@ -486,9 +486,9 @@ class CouponItemDataModel {
   /// 自定义参数
   /// 优惠券状态
   CouponStatusType get statusType {
-    if (received) {
+    if (received != null && received) {
       return CouponStatusType.geted;
-    } else if (stock <= 0) {
+    } else if (stock != null && stock <= 0) {
       return CouponStatusType.gone;
     }
     switch (status) {
