@@ -73,7 +73,7 @@ class _CouponItemState extends State<CouponItem> {
         XTRouter.pushToPage(routerName: "gotoLogin", context: context, isNativePage: true);
         return; 
       }
-      Map<String, dynamic> result = await PromotionRequest.couponReceiveReq({"code": _itemDataModel.code});
+      Map<String, dynamic> result = await PromotionRequest.couponReceiveReq({"code": _itemDataModel.code ?? ""});
       bool isReceive = result["isReceive"];
       String msg = result["msg"];
       Toast.showToast(msg: "领取成功~");
@@ -82,9 +82,10 @@ class _CouponItemState extends State<CouponItem> {
           if (msg.contains("已领取")) {
             widget.itemDataModel.received = true;
           } else if (msg.contains("点击领取")) {
-            widget.itemDataModel.status = 1;
+            widget.itemDataModel.received = false;
+            widget.itemDataModel.remainInventory = 1;
           } else if (msg.contains("抢光")) {
-            widget.itemDataModel.status = 2;
+            widget.itemDataModel.remainInventory = 0;
           }
         });
       }

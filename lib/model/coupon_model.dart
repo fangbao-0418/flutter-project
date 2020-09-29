@@ -356,150 +356,90 @@ class CouponItemDataModel {
       CouponItemDataModel.fromJson(couponData);
 
   CouponItemDataModel({
-    this.id,
-    this.couponId,
-    this.code,
+    this.couponCode,
     this.name,
-    this.describe,
-    this.remark,
     this.avlRange,
-    this.avlValues,
-    this.useSill,
-    this.faceValueRestrict,
     this.faceValue,
     this.faceValueDesc,
-    this.receiveRestrict,
-    this.platformRestrict,
-    this.startReceiveTime,
-    this.overReceiveTime,
+    this.faceValueRestrict,
+    this.receiveTime,
     this.useTime,
-    this.startUseTime,
-    this.overUseTime,
-    this.status,
-    this.displayStyle,
-    this.receivePattern,
-    this.businessPlatform,
-    this.platformType,
-    this.platformShopId,
-    this.couponTypeDesc,
-    this.curTm,
     this.received,
-    this.stock,
+    this.describe,
+    this.remainInventory,
+    this.useImmediatelyUlr,
+    this.couponTypeDesc,
+    this.shopName,
+    this.code,
+    this.couponId
   });
 
-  int id;
-  int couponId;
+  String couponCode;
   String code;
+  int couponId;
   String name;
-  dynamic describe;
-  String remark;
   int avlRange;
-  String avlValues;
-  int useSill;
-  dynamic faceValueRestrict;
   String faceValue;
   String faceValueDesc;
-  String receiveRestrict;
-  String platformRestrict;
-  int startReceiveTime;
-  int overReceiveTime;
+  dynamic faceValueRestrict;
+  dynamic receiveTime;
   dynamic useTime;
-  dynamic startUseTime;
-  dynamic overUseTime;
-  int status;
-  dynamic displayStyle;
-  int receivePattern;
-  int businessPlatform;
-  int platformType;
-  dynamic platformShopId;
-  String couponTypeDesc;
-  int curTm;
   bool received;
-  int stock;
+  dynamic describe;
+  dynamic remainInventory;
+  dynamic useImmediatelyUlr;
+  String couponTypeDesc;
+  dynamic shopName;
 
   factory CouponItemDataModel.fromJson(Map<String, dynamic> json) {
     return CouponItemDataModel(
-      id: json["id"],
-      couponId: json["couponId"],
-      code: json["code"],
-      name: json["name"],
-      describe: json["describe"],
-      remark: json["remark"],
-      avlRange: json["avlRange"],
-      avlValues: json["avlValues"],
-      useSill: json["useSill"],
-      faceValueRestrict: json["faceValueRestrict"],
-      faceValue: json["faceValue"],
-      faceValueDesc: json["faceValueDesc"],
-      receiveRestrict: json["receiveRestrict"],
-      platformRestrict: json["platformRestrict"],
-      startReceiveTime: json["startReceiveTime"],
-      overReceiveTime: json["overReceiveTime"],
-      useTime: json["useTime"],
-      startUseTime: json["startUseTime"],
-      overUseTime: json["overUseTime"],
-      status: json["status"],
-      displayStyle: json["displayStyle"],
-      receivePattern: json["receivePattern"],
-      businessPlatform: json["businessPlatform"],
-      platformType: json["platformType"],
-      platformShopId: json["platformShopId"],
-      couponTypeDesc: json["couponTypeDesc"],
-      curTm: json["curTm"],
-      received: json["received"],
-      stock: json["stock"],
+      couponCode: json["couponCode"],
+        name: json["name"],
+        avlRange: json["avlRange"],
+        faceValue: json["faceValue"],
+        faceValueDesc: json["faceValueDesc"],
+        faceValueRestrict: json["faceValueRestrict"],
+        receiveTime: json["receiveTime"],
+        useTime: json["useTime"],
+        received: json["received"],
+        describe: json["describe"],
+        remainInventory: json["remainInventory"],
+        useImmediatelyUlr: json["useImmediatelyUlr"],
+        couponTypeDesc: json["couponTypeDesc"],
+        shopName: json["shopName"],
+        code: json["code"],
+        couponId: json["couponId"],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "couponId": couponId,
-        "code": code,
-        "name": name,
-        "describe": describe,
-        "remark": remark,
-        "avlRange": avlRange,
-        "avlValues": avlValues,
-        "useSill": useSill,
-        "faceValueRestrict": faceValueRestrict,
-        "faceValue": faceValue,
-        "faceValueDesc": faceValueDesc,
-        "receiveRestrict": receiveRestrict,
-        "platformRestrict": platformRestrict,
-        "startReceiveTime": startReceiveTime,
-        "overReceiveTime": overReceiveTime,
-        "useTime": useTime,
-        "startUseTime": startUseTime,
-        "overUseTime": overUseTime,
-        "status": status,
-        "displayStyle": displayStyle,
-        "receivePattern": receivePattern,
-        "businessPlatform": businessPlatform,
-        "platformType": platformType,
-        "platformShopId": platformShopId,
-        "couponTypeDesc": couponTypeDesc,
-        "curTm": curTm,
-        "received": received,
-        "stock": stock,
-      };
+    "couponCode": couponCode,
+    "name": name,
+    "avlRange": avlRange,
+    "faceValue": faceValue,
+    "faceValueDesc": faceValueDesc,
+    "faceValueRestrict": faceValueRestrict,
+    "receiveTime": receiveTime,
+    "useTime": useTime,
+    "received": received,
+    "describe": describe,
+    "remainInventory": remainInventory,
+    "useImmediatelyUlr": useImmediatelyUlr,
+    "couponTypeDesc": couponTypeDesc,
+    "shopName": shopName,
+    "code": code,
+    "couponId": couponId,
+  };
 
   /// 自定义参数
   /// 优惠券状态
   CouponStatusType get statusType {
     if (received != null && received) {
       return CouponStatusType.geted;
-    } else if (stock != null && stock <= 0) {
+    } else if (remainInventory != null && remainInventory <= 0) {
       return CouponStatusType.gone;
-    }
-    switch (status) {
-      case 1:
-        return CouponStatusType.normal;
-        break;
-      case 2:
-        return CouponStatusType.gone;
-        break;
-      default:
-        return CouponStatusType.normal;
+    } else {
+      return CouponStatusType.normal;
     }
   }
 
