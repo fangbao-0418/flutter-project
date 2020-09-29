@@ -81,6 +81,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       if (_memberInfoModel != null && _memberInfoModel.isAnchor) {
         RenderBox _tabKeyrenderObject =
             _tabKey.currentContext.findRenderObject();
+        if (_tabKeyrenderObject == null) return;
         Offset _tabKeyOffset = _tabKeyrenderObject.localToGlobal(Offset.zero);
         if (_tabKeyOffset.dy - size.height <= 0 && !_showStickTabView) {
           setState(() {
@@ -247,11 +248,15 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   ///去发布页面
   void goCommentPublish() {
     XTRouter.pushToPage(
-        routerName:
-            "goPublish?logtype1=profilepublish&memberId1=$_memberId&source1=profile",
+            routerName:
+                "goPublish?logtype1=profilepublish&memberId1=$_memberId&source1=profile",
 //            "https://testing.hzxituan.com/index.html?v=202009281026/#/goods/comment/release?logtype=profilepublish&memberId=$_memberId&source=profile",
-        context: context,
-        isNativePage: true);
+            params: {"requestCode": 100},
+            context: context,
+            isNativePage: true)
+        .then((value) {
+      refreshPage();
+    });
   }
 
   ///刷新
@@ -422,7 +427,10 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
         ),
         onTap: () {
           XTRouter.pushToPage(
-              routerName: SettingPage.routerName, context: context);
+                  routerName: SettingPage.routerName, context: context)
+              .then((value) {
+            refreshPage();
+          });
         },
       );
     } else {
@@ -833,18 +841,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
             ClipRRect(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-              child: Stack(
-                children: <Widget>[
-                  _buildVideoOrPicItem(url, isVideo, commentShowModel),
-                  if (isVideo)
-                    Image.asset(
-                      R.imagesLiveLiveIconPlay,
-                      width: 38,
-                      height: 38,
-                    )
-                ],
-                alignment: Alignment.center,
-              ),
+              child: _buildVideoOrPicItem(url, isVideo, commentShowModel),
 //            child: AspectRatio(
 //                aspectRatio: index % 2 == 0 ? 1 : 1440 / 800,
 //                child: Image.network(index % 2 == 0
@@ -920,10 +917,13 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       ),
       onTap: () {
         XTRouter.pushToPage(
-            routerName:
-                "goods_comment_detail?id1=${commentShowModel.id}&logtype1=profilepublish&productId1=${commentShowModel.productId}&content1=${commentShowModel.content}",
-            context: context,
-            isNativePage: true);
+                routerName:
+                    "goods_comment_detail?id1=${commentShowModel.id}&logtype1=profilepublish&productId1=${commentShowModel.productId}&content1=${commentShowModel.content}",
+                context: context,
+                isNativePage: true)
+            .then((value) {
+          refreshPage();
+        });
       },
     );
   }
@@ -940,6 +940,7 @@ _buildVideoOrPicItem(
       );
     }
     return FutureBuilder<Uint8List>(
+        initialData: null,
         future: VideoThumbnail.thumbnailData(
             video: url, quality: 25, maxWidth: 300),
         builder: (ctx, result) {
@@ -952,6 +953,12 @@ _buildVideoOrPicItem(
           } else {
             return Container(
               height: 60,
+              alignment: Alignment.center,
+              child: Image.asset(
+                R.imagesLiveLiveIconPlay,
+                width: 38,
+                height: 38,
+              ),
             );
           }
         });
