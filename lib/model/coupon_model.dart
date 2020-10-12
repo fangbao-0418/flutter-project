@@ -71,7 +71,7 @@ class CouponItemConfigModel {
     }
   }
 
-  /// 单个item高度
+  /// 单个item宽度
   double itemWidth(BuildContext ctx) {
     final width = MediaQuery.of(ctx).size.width;
     switch (style) {
