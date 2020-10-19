@@ -126,7 +126,7 @@ class AppConfig {
 
   static updateNavHeight(double height) {
     ///更新导航栏高度
-    _instance.navHeight = height;
+    if (height > 0) _instance.navHeight = height;
   }
 
   static updateBottomMargin(double height) {

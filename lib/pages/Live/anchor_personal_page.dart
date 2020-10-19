@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:xtflutter/Utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/comment_show_model.dart';
@@ -20,8 +19,10 @@ import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/pages/setting/setting_page.dart';
+import 'package:xtflutter/pages/share/share_builder.dart';
 import 'package:xtflutter/r.dart';
 import 'package:xtflutter/router/router.dart';
+import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/utils/number_utils.dart';
 
 class AnchorPersonalPage extends StatefulWidget {
@@ -259,6 +260,20 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     });
   }
 
+  ///分享
+  void doShareAction(){
+    String page = "module_live/pages/personal/index";
+    String scene = "id=$_memberId&mid=${AppConfig.user.mid}&type=${_currentTab == 0?"1":"0"}";
+    String title ;
+    if(_currentTab == 0){
+      title = "@${_memberInfoModel?.nickName}的喜团主页，快来关注吧！";
+      shareToMiNi(context, page, scene,title: title);
+    }else{
+      title = "给你推荐了一个超棒的喜团主播-${_memberInfoModel?.nickName}";
+      showBottomShareDialog(context,page,scene,title: title,desc: "主播昵称: ${_memberInfoModel?.nickName}",anchorId: _memberId);
+    }
+  }
+
   ///刷新
   void refreshPage() {
     haveRequestReplay = false;
@@ -310,7 +325,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   _buildTopBarAndStickTab() {
     return Column(
       children: <Widget>[
-        AnchorAppBar(_memberInfoModel, _appBarKey, attentionRequest),
+        AnchorAppBar(_memberInfoModel, _appBarKey, attentionRequest,doShareAction),
         if (_showStickTabView) _buildTabView(true, null)
       ],
     );
@@ -357,7 +372,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                       XTRouter.closePage(context: context);
                     }),
                     _buildIconButton(R.imagesLiveLiveAnchorTopShare, 22, () {
-                      Toast.showToast(msg: "点击了分享");
+                      doShareAction();
                     })
                   ],
                 ),
@@ -417,7 +432,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
 
   _buildContainerTopBarIsSelf() {
     if (_memberInfoModel == null) {
-      return Container();
+      return _buildEmptyView();
     } else if (_memberInfoModel.isSelf) {
       return GestureDetector(
         child: Image.asset(
@@ -457,7 +472,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   ///页面appBar下面的内容,包含直播状态和tabview
   _buildContainerTopAppBarBelow() {
     var list = List<Widget>();
-    if (_memberInfoModel == null) return Container();
+    if (_memberInfoModel == null) return _buildEmptyView();
     if (_memberInfoModel.isAnchor) {
       if (_liveAnchorPlanList.length > 0) {
         _liveAnchorPlanList.forEach((element) {
@@ -635,7 +650,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   _buildListItemByType() {
     if (_memberInfoModel == null)
       return SliverToBoxAdapter(
-        child: Container(),
+        child: _buildEmptyView()
       );
     if (_currentTab == 1) {
       //todo 缺少主播拉黑样式,不知道字段
@@ -962,7 +977,7 @@ _buildVideoOrPicItem(
               fit: BoxFit.fitWidth,
             );
           } else {
-            return Container(
+            return SizedBox(
               height: 60,
             );
           }
@@ -978,8 +993,9 @@ _buildVideoOrPicItem(
 class AnchorAppBar extends StatefulWidget {
   final MemberInfoModel _memberInfoModel;
   final Function clickAttention;
+  final Function clickShare;
 
-  AnchorAppBar(this._memberInfoModel, Key appbarKey, this.clickAttention)
+  AnchorAppBar(this._memberInfoModel, Key appbarKey, this.clickAttention,this.clickShare)
       : super(key: appbarKey);
 
   @override
@@ -1048,14 +1064,16 @@ class _AnchorAppBarState extends State<AnchorAppBar> {
                   widget.clickAttention();
                 },
               ),
-            _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22, () {
-              Toast.showToast(msg: "点击了分享");
-            })
+            _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22, widget.clickShare)
           ],
         ),
       ),
     );
   }
+}
+
+_buildEmptyView(){
+  return SizedBox.shrink();
 }
 
 _buildHeadView(double imageWidth, String headImage) {
