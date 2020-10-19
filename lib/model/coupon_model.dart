@@ -371,7 +371,8 @@ class CouponItemDataModel {
     this.couponTypeDesc,
     this.shopName,
     this.code,
-    this.couponId
+    this.couponId,
+    this.status
   });
 
   String couponCode;
@@ -390,6 +391,7 @@ class CouponItemDataModel {
   dynamic useImmediatelyUlr;
   String couponTypeDesc;
   dynamic shopName;
+  int status;
 
   factory CouponItemDataModel.fromJson(Map<String, dynamic> json) {
     return CouponItemDataModel(
@@ -409,6 +411,7 @@ class CouponItemDataModel {
         shopName: json["shopName"],
         code: json["code"],
         couponId: json["couponId"],
+        status: json["status"],
     );
   }
 
@@ -429,6 +432,7 @@ class CouponItemDataModel {
     "shopName": shopName,
     "code": code,
     "couponId": couponId,
+    "status": status,
   };
 
   /// 自定义参数
@@ -436,7 +440,7 @@ class CouponItemDataModel {
   CouponStatusType get statusType {
     if (received != null && received) {
       return CouponStatusType.geted;
-    } else if (remainInventory != null && remainInventory <= 0) {
+    } else if (remainInventory == null || remainInventory <= 0 || status == 2) {
       return CouponStatusType.gone;
     } else {
       return CouponStatusType.normal;
