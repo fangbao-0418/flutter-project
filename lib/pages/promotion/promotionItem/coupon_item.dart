@@ -26,7 +26,6 @@ class _CouponItemsState extends State<CouponItems> {
   Widget build(BuildContext context) {
     return Container(
       height: widget.itemConfigModel.gridHeight(widget.dataList.length, context),
-      color: widget.itemConfigModel.bgColor,
       child: GridView.builder(
         padding: EdgeInsets.only(left: 12, top: 4, right: 12),
         itemCount: widget.dataList.length,

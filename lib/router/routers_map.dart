@@ -6,6 +6,7 @@ import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/message/message_detail.dart';
 import 'package:xtflutter/pages/promotion/promotion.dart';
+import 'package:xtflutter/pages/promotion/promotionItem/goods_item.dart';
 import 'package:xtflutter/pages/setting/user_info/about_xituan.dart';
 import 'package:xtflutter/pages/setting/user_info/add_address.dart';
 import 'package:xtflutter/pages/setting/user_info/address_list.dart';
@@ -74,6 +75,7 @@ Map<String, PageBuilder> routeConfigs = {
   /// -------------------------  Home  -------------------------
   /// 限时秒杀
   LimitTimeSeckillPage.routerName: (pageName, params, _) => LimitTimeSeckillPage(),
+  GoodsPage.routerName: (pageName, params, _) => GoodsPage(),
 
   /// -------------------------  Live  -------------------------
   /// 主播台
