@@ -16,15 +16,15 @@ class PromotionData {
   });
 
   int recordId;
-  DateTime startTime;
-  DateTime endTime;
+  String startTime;
+  String endTime;
   List<ComponentVoList> componentVoList;
   int countDownMills;
 
   factory PromotionData.fromJson(Map<String, dynamic> json) => PromotionData(
         recordId: json["recordId"],
-        startTime: DateTime.parse(json["startTime"]),
-        endTime: DateTime.parse(json["endTime"]),
+        startTime: json["startTime"],
+        endTime: json["endTime"],
         componentVoList: List<ComponentVoList>.from(json["componentVOList"]
             .map((x) => ComponentVoList.fromJson(Map.from(x)))),
         countDownMills: json["countDownMills"],
@@ -32,8 +32,8 @@ class PromotionData {
 
   Map<String, dynamic> toJson() => {
         "recordId": recordId,
-        "startTime": startTime.toIso8601String(),
-        "endTime": endTime.toIso8601String(),
+        "startTime": startTime,
+        "endTime": endTime,
         "componentVOList":
             List<dynamic>.from(componentVoList.map((x) => x.toJson())),
         "countDownMills": countDownMills,
@@ -41,20 +41,19 @@ class PromotionData {
 }
 
 class ComponentVoList {
-  ComponentVoList({
-    this.id,
-    this.type,
-    this.childType,
-    this.bizType,
-    this.config,
-    this.data,
-    this.dataTotal,
-    this.userLevel,
-    this.platform,
-    this.isAuchor,
-    this.auchorName,
-    this.couponConfig
-  });
+  ComponentVoList(
+      {this.id,
+      this.type,
+      this.childType,
+      this.bizType,
+      this.config,
+      this.data,
+      this.dataTotal,
+      this.userLevel,
+      this.platform,
+      this.isAuchor,
+      this.auchorName,
+      this.couponConfig});
 
   int id;
   String type;
