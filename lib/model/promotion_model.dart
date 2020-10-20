@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:xtflutter/model/coupon_model.dart';
+import 'package:xtflutter/model/goods_model.dart';
 
 class PromotionData {
   PromotionData({
@@ -53,7 +54,8 @@ class ComponentVoList {
     this.platform,
     this.isAuchor,
     this.auchorName,
-    this.couponConfig
+    this.couponConfig,
+    this.goodsConfig
   });
 
   int id;
@@ -68,6 +70,7 @@ class ComponentVoList {
   bool isAuchor;
   String auchorName;
   CouponItemConfigModel couponConfig;
+  GoodsItemConfigModel goodsConfig;
 
   factory ComponentVoList.fromJson(Map<String, dynamic> json) =>
       ComponentVoList(
@@ -85,6 +88,7 @@ class ComponentVoList {
         isAuchor: json["isAuchor"],
         auchorName: json["auchorName"],
         couponConfig: CouponItemConfigModel.fromJson(json["config"]),
+        goodsConfig: GoodsItemConfigModel.fromJson(json["config"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -101,7 +105,8 @@ class ComponentVoList {
         "platform": List<dynamic>.from(platform.map((x) => x)),
         "isAuchor": isAuchor,
         "auchorName": auchorName,
-        "couponConfig": couponConfig.toJson()
+        "couponConfig": couponConfig.toJson(),
+        "goodsConfig": goodsConfig.toJson()
       };
 }
 
