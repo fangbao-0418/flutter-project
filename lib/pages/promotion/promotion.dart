@@ -14,6 +14,7 @@ import 'package:xtflutter/pages/promotion/promotionItem/banner.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/coupon_item.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/flow_bar_titles.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/goods.dart';
+import 'package:xtflutter/pages/promotion/promotionItem/goods_item.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/nav_bar_titles.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/player.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/time.dart';
@@ -336,7 +337,8 @@ class _PromotionState extends State<Promotion> {
         } else if (model.type == "goods") {
           // print("--goods-- " + model.id.toString() + "-" + index.toString());
           List<GoodsItemDataModel> list = goods[model.id.toString()];
-          return goodsView(list);
+          GoodsItemConfigModel temp = model.goodsConfig;
+          return goodsView(temp, list);
         } else if (model.type == "video") {
           return GestureDetector(
             child: Container(
@@ -470,11 +472,14 @@ class _PromotionState extends State<Promotion> {
     );
   }
 
-  Widget goodsView(List<GoodsItemDataModel> goods) {
+  Widget goodsView(GoodsItemConfigModel model, List<GoodsItemDataModel> goods) {
     return Container(
         color: Colors.lightGreenAccent,
-        height: 500,
-        child: Goods(9, 10, goods));
+        height: model.gridHeight(goods.length, context),
+        child: GoodsItems(
+          configModel: model,
+          dataList: goods,
+        ));
   }
 
   Widget bannerUtil(ComponentVoList model) {

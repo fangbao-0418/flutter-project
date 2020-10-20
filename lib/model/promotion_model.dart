@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:xtflutter/model/coupon_model.dart';
+import 'package:xtflutter/model/goods_model.dart';
 
 class PromotionData {
   PromotionData({
@@ -41,19 +42,22 @@ class PromotionData {
 }
 
 class ComponentVoList {
-  ComponentVoList(
-      {this.id,
-      this.type,
-      this.childType,
-      this.bizType,
-      this.config,
-      this.data,
-      this.dataTotal,
-      this.userLevel,
-      this.platform,
-      this.isAuchor,
-      this.auchorName,
-      this.couponConfig});
+
+  ComponentVoList({
+    this.id,
+    this.type,
+    this.childType,
+    this.bizType,
+    this.config,
+    this.data,
+    this.dataTotal,
+    this.userLevel,
+    this.platform,
+    this.isAuchor,
+    this.auchorName,
+    this.couponConfig,
+    this.goodsConfig
+  });
 
   int id;
   String type;
@@ -67,6 +71,7 @@ class ComponentVoList {
   bool isAuchor;
   String auchorName;
   CouponItemConfigModel couponConfig;
+  GoodsItemConfigModel goodsConfig;
 
   factory ComponentVoList.fromJson(Map<String, dynamic> json) =>
       ComponentVoList(
@@ -84,6 +89,7 @@ class ComponentVoList {
         isAuchor: json["isAuchor"],
         auchorName: json["auchorName"],
         couponConfig: CouponItemConfigModel.fromJson(json["config"]),
+        goodsConfig: GoodsItemConfigModel.fromJson(json["config"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -100,7 +106,8 @@ class ComponentVoList {
         "platform": List<dynamic>.from(platform.map((x) => x)),
         "isAuchor": isAuchor,
         "auchorName": auchorName,
-        "couponConfig": couponConfig.toJson()
+        "couponConfig": couponConfig.toJson(),
+        "goodsConfig": goodsConfig.toJson()
       };
 }
 
