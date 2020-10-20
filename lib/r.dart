@@ -139,8 +139,6 @@ class R {
   static final String imagesLiveLiveStationXituanLogoNormal = 'images/Live/live_station_xituan_logo_normal.png';
   /// ![](http://127.0.0.1:9527/images/Live/live_station_xituan_logo_selected.png)
   static final String imagesLiveLiveStationXituanLogoSelected = 'images/Live/live_station_xituan_logo_selected.png';
-  /// ![](http://127.0.0.1:9527/images/.DS_Store)
-  static final String images = 'images/.DS_Store';
   /// ![](http://127.0.0.1:9527/images/default_header_img.png)
   static final String imagesDefaultHeaderImg = 'images/default_header_img.png';
   /// ![](http://127.0.0.1:9527/images/edit_phone_icon.png)
@@ -181,6 +179,8 @@ class R {
   static final String imagesProductTagAbroadS = 'images/product_tag_abroad_s.png';
   /// ![](http://127.0.0.1:9527/images/product_tag_global_s.png)
   static final String imagesProductTagGlobalS = 'images/product_tag_global_s.png';
+  /// ![](http://127.0.0.1:9527/images/share_genImg.png)
+  static final String imagesShareGenImg = 'images/share_genImg.png';
   /// ![](http://127.0.0.1:9527/images/share_save_img.png)
   static final String imagesShareSaveImg = 'images/share_save_img.png';
   /// ![](http://127.0.0.1:9527/images/share_wechat.png)

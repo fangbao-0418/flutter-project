@@ -191,7 +191,6 @@ flutter:
     - images/Live/live_station_xituan_logo_normal.png
     - images/Live/live_station_xituan_logo_selected.png
   # images/*
-    - images/.DS_Store
     - images/default_header_img.png
     - images/edit_phone_icon.png
     - images/empty.png
@@ -212,6 +211,7 @@ flutter:
     - images/product_sellOut_small.png
     - images/product_tag_abroad_s.png
     - images/product_tag_global_s.png
+    - images/share_genImg.png
     - images/share_save_img.png
     - images/share_wechat.png
     - images/tuanzi_refresh_header.gif
