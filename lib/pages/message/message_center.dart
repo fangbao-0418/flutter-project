@@ -17,7 +17,7 @@ import 'package:xtflutter/widget/scrollview/scroll_behaviors.dart';
 // 消息中心页面
 // create by yuanl at 2020/09/17
 class MessageCenterPage extends StatefulWidget {
-  static final String routeName = "/message/center";
+  static final String routerName = "/message/center";
 
   static const String title = "消息中心";
 
@@ -179,7 +179,7 @@ class _MessageItemWidget extends StatelessWidget {
 
   _toMessageDetail(BuildContext context, MessageBriefModel model) {
     XTRouter.pushToPage(
-      routerName: MessageDetailPage.routeName,
+      routerName: MessageDetailPage.routerName,
       context: context,
       params: model.toJson(),
     );

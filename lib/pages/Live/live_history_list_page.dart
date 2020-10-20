@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
-import 'package:xtflutter/model/LiveStationAnchorInfo.dart';
+import 'package:xtflutter/model/live_anchor_model.dart';
 import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
