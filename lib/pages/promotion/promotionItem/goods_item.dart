@@ -6,47 +6,12 @@ import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/router/router.dart';
 import '../../../r.dart';
 
-/// ----------------------------------------- 优惠券组件测试页面 -----------------------------------------
-class GoodsPage extends StatefulWidget {
-  static String routerName = "goods";
-
-  @override
-  _GoodsPageState createState() => _GoodsPageState();
-}
-
-class _GoodsPageState extends State<GoodsPage> {
-
-  GoodsModel _model = GoodsModel.getData();
-
-  List<GoodsItemDataModel> goodsDataList = GoodsModel.getDataList();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: xtBackBar(
-          title: "商品", back: () => XTRouter.closePage(context: context)),
-      body: Container(
-        child: ListView.builder(
-          itemCount: _model.configList.length,
-          itemBuilder: (BuildContext ctx, int index) {
-            return GoodsItems(configModel: _model.configList[index], dataList: goodsDataList);
-          }
-        ),
-      ),
-    );
-  }
-}
-
-
+/// 商品组件
 class GoodsItems extends StatefulWidget {
   GoodsItems({this.configModel, this.dataList});
-
+  /// 样式模型
   final GoodsItemConfigModel configModel;
+  /// 数据列表
   final List<GoodsItemDataModel> dataList;
 
   @override
@@ -94,10 +59,24 @@ class _GoodsItemState extends State<GoodsItem> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(widget.configModel.style == GoodsItemRowStyleType.rowThree ? 4 : 6)),
-      child: Container(
-        color: Colors.white,
-        child: _getWidget(),
+      child: GestureDetector(
+        onTap: () {
+          _gotoDetail();
+        },
+        child: Container(
+          color: Colors.white,
+          child: _getWidget(),
+        ),
       ),
+    );
+  }
+
+  /// 前往详情页面
+  void _gotoDetail() {
+    XTRouter.pushToPage(
+      routerName: "goods-detail?id=${widget.dataModel.productId}", 
+      context: context, 
+      isNativePage: true
     );
   }
 
@@ -789,6 +768,42 @@ class _GoodsItemState extends State<GoodsItem> {
           )
         )
       ],
+    );
+  }
+}
+
+
+
+
+
+/// ----------------------------------------- 优惠券组件测试页面 -----------------------------------------
+class GoodsPage extends StatefulWidget {
+  static String routerName = "goods";
+  @override
+  _GoodsPageState createState() => _GoodsPageState();
+}
+
+class _GoodsPageState extends State<GoodsPage> {
+  GoodsModel _model = GoodsModel.getData();
+  List<GoodsItemDataModel> goodsDataList = GoodsModel.getDataList();
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: xtBackBar(
+          title: "商品", back: () => XTRouter.closePage(context: context)),
+      body: Container(
+        child: ListView.builder(
+          itemCount: _model.configList.length,
+          itemBuilder: (BuildContext ctx, int index) {
+            return GoodsItems(configModel: _model.configList[index], dataList: goodsDataList);
+          }
+        ),
+      ),
     );
   }
 }
