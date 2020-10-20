@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:xtflutter/model/goods_model.dart';
 
 class Goods extends StatelessWidget {
-  Goods(this.count, this.top, this.bottom);
-  final int count;
+  Goods(this.top, this.bottom, this.list);
+
   final double top;
   final double bottom;
+  final List<GoodsItemDataModel> list;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class Goods extends StatelessWidget {
               crossAxisSpacing: 5,
               // childAspectRatio: 2,
             ),
-            itemCount: count,
+            itemCount: list.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 decoration: BoxDecoration(
@@ -29,10 +31,17 @@ class Goods extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Image.network(
-                      "https://pics7.baidu.com/feed/50da81cb39dbb6fdd27c01c33e61f81f962b37f8.jpeg?token=660ec63b4187d1d92cd384f634b09c29",
+                      list[index].coverImage,
                       fit: BoxFit.fill,
                     ),
-                    Text("好好的哈" + index.toString()),
+                    Container(
+                      margin: EdgeInsets.only(left: 5,right: 5),
+                      child: Text(
+                        list[index].buyingPrice.toString(),
+                        maxLines: 1,
+                        softWrap: true,
+                      ),
+                    ),
                   ],
                 ),
               );

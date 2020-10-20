@@ -3,6 +3,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/coupon_model.dart';
+import 'package:xtflutter/model/goods_model.dart';
 import 'package:xtflutter/model/promotion_model.dart';
 import 'package:xtflutter/net_work/http_request.dart';
 import 'package:xtflutter/net_work/promotion_request.dart';
@@ -46,8 +47,28 @@ class _PromotionState extends State<Promotion> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
+  ///优惠券信息 id -> 优惠券列表数据
   Map<String, List<CouponItemDataModel>> coupons = {};
+
+  ///商品信息 id -> 商品数据
+  Map<String, List<GoodsItemDataModel>> goods = {};
+
+  ///每个商品ID 对应的商品个数
+  Map<String, int> goodsCountDict = {};
+
+  ///每个商品ID 对应商品的页码
+  Map<String, int> goodsPage = {};
+
+  ///每个商品ID 对应商品的页码
+  Map<String, bool> goodsIDLoading = {};
+
+  ///每个商品ID 对应商品的页码
+  Map<String, bool> goodsIDGetAll = {};
+
+  ///优惠券ID
   List<String> couponIds = [];
+
+  ///商品ID
   List<String> goodsIds = [];
 
   int couponCount = 0;
@@ -123,7 +144,10 @@ class _PromotionState extends State<Promotion> {
             temp.add(item);
           } else if (item.type == "goods") {
             goodsIds.add(item.id.toString());
-            
+            goods[item.id.toString()] = [];
+            goodsCountDict[item.id.toString()] = item.dataTotal;
+            itemIndex.add(item.id);
+            temp.add(item);
           } else {
             itemIndex.add(item.id);
             temp.add(item);
@@ -166,6 +190,11 @@ class _PromotionState extends State<Promotion> {
       tt.componentVoList = temp;
       dataInfo = tt;
       getCouponsData();
+      if (goodsIds.length > 0) {
+        var ids = goodsIds.first;
+        getIDGoodsData(ids);
+      }
+
       print("object1" + dataInfo.componentVoList.length.toString());
       dataInfo = tt;
 
@@ -174,6 +203,61 @@ class _PromotionState extends State<Promotion> {
       });
     }).whenComplete(() {
       print("object");
+    });
+  }
+
+  void getIDGoodsData(String ids) {
+    print("getIDGoodsData ---" + ids + "-" + goodsCountDict[ids].toString());
+
+    ///当前ID 总个数
+    int totalCount = goodsCountDict[ids];
+    List<GoodsItemDataModel> clist = goods[ids];
+    if (goodsIDGetAll[ids] == true) {
+      print("product LoadFinsish --- " + ids);
+      //已经加载全部商品
+      return;
+    }
+
+    bool isLoading = goodsIDLoading[ids];
+    if (isLoading == true) {
+      return;
+    }
+    int page = goodsPage[ids];
+    print("page");
+    print(page);
+    print("page");
+    if (page == null) {
+      goods[ids] = [];
+      page = 1;
+    } else {
+      page += 1;
+    }
+
+    goodsIDLoading[ids] = true;
+    goodsPage[ids] = page;
+    PromotionRequest.promotionMgicData(ids, page,
+            pageSize: totalCount <= 20 ? totalCount : 10, source: "0")
+        .then((value) {
+      print("value---" + value.toString());
+      List<GoodsItemDataModel> list = [];
+      for (var item in value["list"]) {
+        GoodsItemDataModel temp = GoodsItemDataModel.fromJson(Map.from(item));
+        list.add(temp);
+      }
+      if (list.length == 0) {
+        goodsIDGetAll[ids] = true;
+      }
+      if (totalCount <= 20 && list.length > 0) {
+        goodsIDGetAll[ids] = true;
+      }
+      clist.addAll(list);
+      print("goods----" + ids + " ------ " + clist.length.toString());
+      goods[ids] = clist;
+    }).whenComplete(() {
+      goodsIDLoading[ids] = false;
+      if (!goodsIDLoading.values.contains(true)) {
+        setState(() {});
+      }
     });
   }
 
@@ -245,27 +329,14 @@ class _PromotionState extends State<Promotion> {
           });
           // navBar = bar;
           return bar;
-        } else
-
-        // {
-        //   return GestureDetector(
-        //     child: Container(
-        //       child: xtText(index.toString(), 14, main66GrayColor),
-        //       width: 100,
-        //       height: 50,
-        //       color: mainF5GrayColor,
-        //     ),
-        //   );
-        // }
-
-        if (model.type == "title") {
+        } else if (model.type == "title") {
           return titleNav(model);
         } else if (model.type == "banner") {
           return bannerUtil(model);
         } else if (model.type == "goods") {
-          print(
-              "-------------------------goods-----------------------------------");
-          return goodsView();
+          // print("--goods-- " + model.id.toString() + "-" + index.toString());
+          List<GoodsItemDataModel> list = goods[model.id.toString()];
+          return goodsView(list);
         } else if (model.type == "video") {
           return GestureDetector(
             child: Container(
@@ -297,8 +368,8 @@ class _PromotionState extends State<Promotion> {
           return GestureDetector(
             child: Container(
               width: 100,
-              height: 20,
-              color: Colors.yellow,
+              height: 50,
+              color: Colors.brown,
             ),
           );
         }
@@ -399,9 +470,11 @@ class _PromotionState extends State<Promotion> {
     );
   }
 
-  Widget goodsView() {
+  Widget goodsView(List<GoodsItemDataModel> goods) {
     return Container(
-        color: Colors.lightGreenAccent, height: 500, child: Goods(9, 10, 10));
+        color: Colors.lightGreenAccent,
+        height: 500,
+        child: Goods(9, 10, goods));
   }
 
   Widget bannerUtil(ComponentVoList model) {
@@ -428,9 +501,30 @@ class _PromotionState extends State<Promotion> {
     for (var i = 0; i < li.length; i++) {
       ItemPosition posi = li[i];
       showItems.add(posi.index);
+
+      ///加载商品模块数据
+      // for (var i = showItems.length; i >= 0; i--) {
+      ComponentVoList model = dataInfo.componentVoList[posi.index];
+      // print(model.type);
+      String goodId = model.id.toString();
+      // // print("loading - goods" + " ------ " + goodId);
+
+      if (goodsIds.contains(goodId)) {
+        // print("loading - goods" + " ------ " + goodId);
+
+        // print("loading " + " ------ " + goodsIds.toString());
+
+        getIDGoodsData(goodId);
+      }
     }
+    // print("-------------------------------------------------------");
+    // print(li.toString());
+    // print(showItems.toString());
+    // print("-------------------------------------------------------");
+
     //排序
     showItems.sort((a, b) => b.compareTo(a));
+
     //获取当前选中的导航所在的模块位置
     int itemIndex = navToReal[barSelectIndex];
     if (showItems.contains(itemIndex)) {
