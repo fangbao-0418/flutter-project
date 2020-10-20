@@ -118,6 +118,8 @@ class _GoodsItemState extends State<GoodsItem> {
       return _getGoodsTypeThreeAndRowOneWidget();
     } else if (widget.configModel.style == GoodsItemRowStyleType.rowTwo && widget.configModel.goodsType == GoodsItemStyleType.styleThree) {
       return _getGoodsTypeThreeAndRowTwoWidget();
+    } else if (widget.configModel.style == GoodsItemRowStyleType.rowThree && widget.configModel.goodsType == GoodsItemStyleType.styleThree) {
+      return _getGoodsTypeThreeAndRowThreeWidget();
     }
 
     return Container(color: Colors.red);
@@ -632,19 +634,21 @@ class _GoodsItemState extends State<GoodsItem> {
                     Row(
                       children: <Widget>[
                         xtText(_model.buyingPriceText, 18, mainRedColor),
-                        SizedBox(width: 2),
-                        Text(
-                          _model.marketPriceText,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: main99GrayColor,
-                            decoration: TextDecoration.lineThrough,
-                            decorationColor: main99GrayColor
+                        Container(
+                          padding: EdgeInsets.only(left: 4),
+                          child: Text(
+                            _model.marketPriceText,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: main99GrayColor,
+                              decoration: TextDecoration.lineThrough,
+                              decorationColor: main99GrayColor
+                            ),
                           ),
                         ),
                         Visibility(
                           visible: _model.mostEarnText.isNotEmpty,
-                          child: xtText("  " + _model.mostEarnText, 12, xtColor_FFFF7700),
+                          child: Container(padding: EdgeInsets.only(left: 4), child: xtText(_model.mostEarnText, 12, xtColor_FFFF7700)),
                         ),
                       ],
                     ),
@@ -685,6 +689,32 @@ class _GoodsItemState extends State<GoodsItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 xtText(_model.productName, 14, mainBlackColor, fontWeight: FontWeight.w500, maxLines: 1, overflow: TextOverflow.ellipsis, alignment: TextAlign.left),
+                Row(
+                  children: <Widget>[
+                    xtText(_model.buyingPriceText, 14, mainRedColor),
+                    Visibility(
+                      visible: _model.mostEarnText.isEmpty,
+                      child: Container(
+                        padding: EdgeInsets.only(left: 2),
+                        child: Text(
+                          _model.marketPriceText,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: main99GrayColor,
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: main99GrayColor
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: _model.mostEarnText.isNotEmpty,
+                      child: Container(padding: EdgeInsets.only(left: 2), child: xtText(_model.mostEarnText, 10, xtColor_FFFF7700)),
+                    ),
+                    Spacer(),
+                    xtText(_model.productSaleCountText, 10, mainBlackColor),
+                  ],
+                ),
                 Container(
                   height: 24,
                   width: double.infinity,
@@ -694,6 +724,65 @@ class _GoodsItemState extends State<GoodsItem> {
                     borderRadius: BorderRadius.all(Radius.circular(12))
                   ),
                   child: xtText("立即购买", 14, Colors.white, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          )
+        )
+      ],
+    );
+  }
+
+  /// 商品样式3 && 排列样式3
+  Widget _getGoodsTypeThreeAndRowThreeWidget() {
+    GoodsItemDataModel _model = widget.dataModel;
+    GoodsItemConfigModel _config = widget.configModel;
+    return Column(
+      children: <Widget>[
+        Stack(
+          children: _getProductImgAndSubTag(_model, _config.itemWidth(context))
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.fromLTRB(4, 4, 4, 6),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                xtText(_model.productName, 12, mainBlackColor, fontWeight: FontWeight.w500, maxLines: 1, overflow: TextOverflow.ellipsis, alignment: TextAlign.left),
+                Row(
+                  children: <Widget>[
+                    xtText(_model.buyingPriceText, 14, mainRedColor),
+                    Visibility(
+                      visible: _model.mostEarnText.isEmpty,
+                      child: Container(
+                        padding: EdgeInsets.only(left: 2),
+                        child: Text(
+                          _model.marketPriceText,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: main99GrayColor,
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: main99GrayColor
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: _model.mostEarnText.isNotEmpty,
+                      child: Container(padding: EdgeInsets.only(left: 2), child: xtText(_model.mostEarnText, 10, xtColor_FFFF7700)),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 20,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: HexColor(_config.buttonBgColor),
+                    borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+                  child: xtText("立即购买", 12, Colors.white, fontWeight: FontWeight.w500),
                 ),
               ],
             ),

@@ -433,24 +433,24 @@ class GoodsItemDataModel {
 
 
 const List<Map<String, dynamic>> goodsConfigList = [
-  // {
-  //   "id": 7221,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 3,
-  //     "goodsStyleType": 3,
-  //     "type": 1,
-  //     "buttonBgColor": "#e7e0e0"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, 
+  {
+    "id": 7221,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 3,
+      "goodsStyleType": 3,
+      "type": 1,
+      "buttonBgColor": "#e7e0e0"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
   {
     "id": 7222,
     "type": "goods",
@@ -662,7 +662,7 @@ const List<Map<String, dynamic>> goodsDataList = [
 			"bannerImage": "https://sh-tximg.hzxituan.com/tximg/crm/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8551600076432435.jpg",
 			"productName": "wl的测试商品-pop商家",
 			"productDescription": "wl的测试商品-pop商家",
-			"marketPrice": 1900,
+			"marketPrice": 0,
 			"buyingPrice": 900,
 			"limitNumber": 2,
 			"groupBuyingPrice": null,
