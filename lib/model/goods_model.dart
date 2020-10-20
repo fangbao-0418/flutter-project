@@ -35,20 +35,6 @@ enum TagPositionType {
   rightBottom
 }
 
-class GoodsModel {
-  static GoodsModel getData() => GoodsModel.fromJson({});
-  static List<GoodsItemDataModel> getDataList() =>
-      List<GoodsItemDataModel>.from(
-          goodsDataList.map((e) => GoodsItemDataModel.fromJson(e)));
-  GoodsModel({this.configList});
-  List<GoodsItemConfigModel> configList;
-  factory GoodsModel.fromJson(Map<String, dynamic> json) {
-    return GoodsModel(
-        configList: List<GoodsItemConfigModel>.from(
-            goodsConfigList.map((e) => GoodsItemConfigModel.fromJson(e["config"]))));
-  }
-}
-
 class GoodsItemConfigModel extends Config {
 
   GoodsItemConfigModel({
@@ -205,7 +191,7 @@ class GoodsItemConfigModel extends Config {
       case GoodsItemStyleType.styleThree:
         switch (style) {
           case GoodsItemRowStyleType.rowOne:
-            return 351 / 260;
+            return 351 / 250;
             break;
           case GoodsItemRowStyleType.rowTwo:
             return 172 / 252;
@@ -368,15 +354,7 @@ class GoodsItemDataModel {
     }
     /// 是否已售罄
     bool get isSellOut {
-      if (inventory == null) {
-        return true;
-      }
-      int salesCount = productSaleCount ?? 0;
-      if (salesCount >= inventory || inventory == 0) {
-        return true;
-      } else {
-        return false;
-      }
+      return (remainInventory == null) || (remainInventory != null && remainInventory <= 0);
     }
      /// 秒杀价
   String get buyingPriceText {
@@ -430,7 +408,20 @@ class GoodsItemDataModel {
 
 
 
-
+/// ----------------------------------------- 优惠券组件测试页面数据 -----------------------------------------
+class GoodsModel {
+  static GoodsModel getData() => GoodsModel.fromJson({});
+  static List<GoodsItemDataModel> getDataList() =>
+      List<GoodsItemDataModel>.from(
+          goodsDataList.map((e) => GoodsItemDataModel.fromJson(e)));
+  GoodsModel({this.configList});
+  List<GoodsItemConfigModel> configList;
+  factory GoodsModel.fromJson(Map<String, dynamic> json) {
+    return GoodsModel(
+        configList: List<GoodsItemConfigModel>.from(
+            goodsConfigList.map((e) => GoodsItemConfigModel.fromJson(e["config"]))));
+  }
+}
 
 const List<Map<String, dynamic>> goodsConfigList = [
   {

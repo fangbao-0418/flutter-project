@@ -156,6 +156,24 @@ class _GoodsItemState extends State<GoodsItem> {
       );
     }
 
+    widgetList.add(
+      Visibility(
+        visible: model.isSellOut,
+        child: Container(
+          alignment: Alignment.center,
+          height: imgWH,
+          width: imgWH,
+          color: Color(0x7D000000),
+          child: Image(
+            width: 68,
+            height: 68,
+            fit: BoxFit.fitWidth,
+            image: AssetImage(R.imagesProductSellOutSmall),
+          ),
+        )
+      ),
+    );
+
     return widgetList;
   }
 
@@ -548,14 +566,16 @@ class _GoodsItemState extends State<GoodsItem> {
   Widget _getGoodsTypeThreeAndRowOneWidget() {
     GoodsItemDataModel _model = widget.dataModel;
     GoodsItemConfigModel _config = widget.configModel;
+    double imgW = _config.itemWidth(context);
+    double imgH = _config.itemWidth(context) * 160 / 351;
     return Column(
       children: <Widget>[
         Stack(
           children: <Widget>[
             Image(
               image: NetworkImage(_model.coverImage),
-              width: _config.itemWidth(context),
-              height: _config.itemWidth(context) * 160 / 351,
+              width: imgW,
+              height: imgH,
               fit: BoxFit.cover,
             ),
             /// 4个角落上的标签
@@ -581,6 +601,21 @@ class _GoodsItemState extends State<GoodsItem> {
               visible: _model.tagType == TagPositionType.rightBottom,
               child: Positioned(right: 0, bottom: 0,
                 child: Image(image: NetworkImage(_model.tagUrl), width: 50, height: 30)
+              )
+            ),
+            Visibility(
+              visible: _model.isSellOut,
+              child: Container(
+                alignment: Alignment.center,
+                height: imgH,
+                width: imgW,
+                color: Color(0x7D000000),
+                child: Image(
+                  width: 136,
+                  height: 136,
+                  fit: BoxFit.fitWidth,
+                  image: AssetImage(R.imagesProductSellOutSmall),
+                ),
               )
             ),
           ],
@@ -613,15 +648,18 @@ class _GoodsItemState extends State<GoodsItem> {
                     Row(
                       children: <Widget>[
                         xtText(_model.buyingPriceText, 18, mainRedColor),
-                        Container(
-                          padding: EdgeInsets.only(left: 4),
-                          child: Text(
-                            _model.marketPriceText,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: main99GrayColor,
-                              decoration: TextDecoration.lineThrough,
-                              decorationColor: main99GrayColor
+                        Visibility(
+                          visible: _model.mostEarnText.isEmpty,
+                          child: Container(
+                            padding: EdgeInsets.only(left: 4),
+                            child: Text(
+                              _model.marketPriceText,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: main99GrayColor,
+                                decoration: TextDecoration.lineThrough,
+                                decorationColor: main99GrayColor
+                              ),
                             ),
                           ),
                         ),
