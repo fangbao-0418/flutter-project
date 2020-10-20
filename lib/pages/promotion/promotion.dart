@@ -13,7 +13,6 @@ import 'package:xtflutter/pages/promotion/promotionItem/area.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/banner.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/coupon_item.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/flow_bar_titles.dart';
-import 'package:xtflutter/pages/promotion/promotionItem/goods.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/goods_item.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/nav_bar_titles.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/player.dart';
@@ -104,12 +103,15 @@ class _PromotionState extends State<Promotion> {
   bool flowNavBarShow = false;
   bool jumpIng = false;
   bool initIng = true;
-
+  bool haveShare = false;
+  ConfigData shareData;
   @override
   void initState() {
     super.initState();
 
     promotionInfo();
+
+    ///页面滚动监听
     itemPositionsListener.itemPositions.addListener(() {
       //导航悬浮
       checkNavTitleBar();
@@ -118,6 +120,7 @@ class _PromotionState extends State<Promotion> {
     });
   }
 
+  ///请求活动信息
   void promotionInfo() {
     PromotionRequest.promotionMgic(widget.params["id"]).then((value) {
       Map<String, dynamic> map = Map.from(value);
@@ -143,6 +146,9 @@ class _PromotionState extends State<Promotion> {
           } else if (item.type == "tab") {
             tabNav = item;
             temp.add(item);
+          } else if (item.type == "share") {
+            haveShare = true;
+            shareData = item.config.data;
           } else if (item.type == "goods") {
             goodsIds.add(item.id.toString());
             goods[item.id.toString()] = [];
@@ -207,6 +213,7 @@ class _PromotionState extends State<Promotion> {
     });
   }
 
+  ///根据活动ID 获取活动商品
   void getIDGoodsData(String ids) {
     print("getIDGoodsData ---" + ids + "-" + goodsCountDict[ids].toString());
 
@@ -262,6 +269,7 @@ class _PromotionState extends State<Promotion> {
     });
   }
 
+  ///根据活动ID 获取优惠券列表
   void getCouponsData() {
     if (couponIds.length == 0) {
       return;
@@ -305,7 +313,8 @@ class _PromotionState extends State<Promotion> {
     });
   }
 
-  Widget list() {
+  ///活动魔方内容列表 分解
+  Widget promotionList() {
     return ScrollablePositionedList.builder(
       itemScrollController: itemScrollController,
       itemPositionsListener: itemPositionsListener,
@@ -379,6 +388,7 @@ class _PromotionState extends State<Promotion> {
     );
   }
 
+  ///过滤显示内容
   Widget showWidgetFilter() {
     if (dataInfo.componentVoList == null) {
       return Container(
@@ -387,9 +397,10 @@ class _PromotionState extends State<Promotion> {
         color: mainF5GrayColor,
       );
     } else {
+      ///有导航栏添加吸顶导航栏
       if (auchorids.length > 0) {
         return Stack(alignment: Alignment.topCenter, children: <Widget>[
-          list(),
+          promotionList(),
           Positioned(
               child: FlowBarTitles(
             auchorNames,
@@ -407,7 +418,7 @@ class _PromotionState extends State<Promotion> {
           ))
         ]);
       } else {
-        return list();
+        return promotionList();
       }
     }
   }
@@ -416,6 +427,22 @@ class _PromotionState extends State<Promotion> {
   Widget build(BuildContext context) {
     // print(" ======= " + dataInfo.componentVoList.last.toString());
     return Scaffold(
+      floatingActionButton: Builder(builder: (BuildContext context) {
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            print("-----FloatingActionButton-----");
+          },
+          tooltip: "Hello",
+          heroTag: null,
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.black,
+          elevation: 0.0,
+          highlightElevation: 14.0,
+          shape: xtShapeRound(0),
+        );
+      }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: tabBottom == null ? null : tabbar(tabBottom),
       appBar: xtBackBar(
           title: "活动", back: () => XTRouter.closePage(context: context)),

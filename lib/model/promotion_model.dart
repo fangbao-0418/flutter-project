@@ -224,7 +224,7 @@ class Datum {
         img: json["img"] == null ? null : json["img"],
         title: json["title"] == null ? null : json["title"],
         type: json["type"] == null ? null : json["type"],
-        url: json["url"],
+        url: json["url"].toString(),
         area: json["area"] == null
             ? null
             : List<Area>.from(json["area"].map((x) => Area.fromJson(x))),
