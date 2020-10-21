@@ -48,6 +48,8 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   bool _isAttention = false; //是否关注
   GlobalKey<_AnchorAppBarState> _appBarKey = GlobalKey();
   GlobalKey _tabKey = GlobalKey();
+  GlobalKey _stickTabKey = GlobalKey();
+  GlobalKey _listItemKey = GlobalKey();
   bool _showStickTabView = false;
   int _currentTab; //默认0为口碑秀tab,1为回放tab,
   TabController _tabController;
@@ -75,23 +77,21 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       double _appBarOpacity = opacity >= 1 ? 1 : opacity <= 0 ? 0 : opacity;
       if (_appBarOpacity <= 1) {
         _AnchorAppBarState currentState = _appBarKey.currentState;
-        currentState.appBarOpacity = _appBarOpacity;
-        currentState.setState(() {});
+        currentState.setAppBarOpacity(_appBarOpacity);
       }
       //主播端才有回放
       if (_memberInfoModel != null && _memberInfoModel.isAnchor) {
         RenderBox _tabKeyrenderObject =
             _tabKey.currentContext.findRenderObject();
         if (_tabKeyrenderObject == null) return;
+        _AnchorTabBarState _anchorTabBarState = _stickTabKey.currentState;
         Offset _tabKeyOffset = _tabKeyrenderObject.localToGlobal(Offset.zero);
         if (_tabKeyOffset.dy - size.height <= 0 && !_showStickTabView) {
-          setState(() {
-            _showStickTabView = true;
-          });
+          _showStickTabView = true;
+          _anchorTabBarState?.showStickView(_showStickTabView);
         } else if (_tabKeyOffset.dy - size.height > 0 && _showStickTabView) {
-          setState(() {
-            _showStickTabView = false;
-          });
+          _showStickTabView = false;
+          _anchorTabBarState?.showStickView(_showStickTabView);
         }
       }
     });
@@ -111,7 +111,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     XTUserInfoRequest.getMemberInfo(_memberId).then((value) {
       _memberInfoModel = value;
       _isAttention = _memberInfoModel.isFocus;
-      _appBarKey.currentState.isAttention = _isAttention;
+      _appBarKey.currentState.setAttention(_isAttention);
       _controller.finishRefresh();
       canPublish();
       getAnchorPlanList(_memberInfoModel.anchor.id.toString());
@@ -127,11 +127,19 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       if (!haveRequestReplay) {
         getVideoReplayList(
             _memberInfoModel.anchor.id.toString(), _repalyCurrentPage);
+      } else {
+        _AnchorListItemState _anchorListItemState = _listItemKey.currentState;
+        _anchorListItemState.setVideoReplayList(
+            _videoReplayList, _memberInfoModel, _currentTab);
       }
       haveRequestReplay = true;
     } else {
       if (!haveRequestComment) {
         getCommentShowList(_commentCurrentPage);
+      } else {
+        _AnchorListItemState _anchorListItemState = _listItemKey.currentState;
+        _anchorListItemState.setCommentShowList(
+            _commentShowList, _memberInfoModel, _currentTab);
       }
       haveRequestComment = true;
     }
@@ -155,7 +163,9 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
         _videoReplayList.addAll(value);
         _controller.finishLoad(noMore: value.length < 10);
       }
-      setState(() {});
+      _AnchorListItemState _anchorListItemState = _listItemKey.currentState;
+      _anchorListItemState.setVideoReplayList(
+          _videoReplayList, _memberInfoModel, _currentTab);
     });
   }
 
@@ -169,7 +179,9 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
         _commentShowList.addAll(value);
         _controller.finishLoad(noMore: value.length < 10);
       }
-      setState(() {});
+      _AnchorListItemState _anchorListItemState = _listItemKey.currentState;
+      _anchorListItemState.setCommentShowList(
+          _commentShowList, _memberInfoModel, _currentTab);
     });
   }
 
@@ -202,7 +214,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                         .then((value) {
                       if (value) {
                         _isAttention = !_isAttention;
-                        _appBarKey.currentState.isAttention = _isAttention;
+                        _appBarKey.currentState.setAttention(_isAttention);
                         setState(() {});
                         Toast.showToast(msg: "取消关注主播成功~");
                       }
@@ -216,7 +228,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       LiveRequest.attentionRequest(int.parse(_memberId), 1, 1, 0).then((value) {
         if (value) {
           _isAttention = !_isAttention;
-          _appBarKey.currentState.isAttention = _isAttention;
+          _appBarKey.currentState.setAttention(_isAttention);
           setState(() {});
           Toast.showToast(msg: "关注主播成功~");
         }
@@ -241,7 +253,8 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
     LiveRequest.canPublish().then((value) {
       if (value) {
         _canPublish = true;
-        setState(() {});
+        _AnchorListItemState _anchorListItemState = _listItemKey.currentState;
+        _anchorListItemState.canPublish = _canPublish;
       }
     });
   }
@@ -261,16 +274,20 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   }
 
   ///分享
-  void doShareAction(){
+  void doShareAction() {
     String page = "module_live/pages/personal/index";
-    String scene = "id=$_memberId&mid=${AppConfig.user.mid}&type=${_currentTab == 0?"1":"0"}";
-    String title ;
-    if(_currentTab == 0){
+    String scene =
+        "id=$_memberId&mid=${AppConfig.user.mid}&type=${_currentTab == 0 ? "1" : "0"}";
+    String title;
+    if (_currentTab == 0) {
       title = "@${_memberInfoModel?.nickName}的喜团主页，快来关注吧！";
-      shareToMiNi(context, page, scene,title: title);
-    }else{
+      shareToMiNi(context, page, scene, title: title);
+    } else {
       title = "给你推荐了一个超棒的喜团主播-${_memberInfoModel?.nickName}";
-      showBottomShareDialog(context,page,scene,title: title,desc: "主播昵称: ${_memberInfoModel?.nickName}",anchorId: _memberId);
+      showBottomShareDialog(context, page, scene,
+          title: title,
+          desc: "主播昵称: ${_memberInfoModel?.nickName}",
+          anchorId: _memberId);
     }
   }
 
@@ -325,8 +342,9 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
   _buildTopBarAndStickTab() {
     return Column(
       children: <Widget>[
-        AnchorAppBar(_memberInfoModel, _appBarKey, attentionRequest,doShareAction),
-        if (_showStickTabView) _buildTabView(true, null)
+        AnchorAppBar(
+            _memberInfoModel, _appBarKey, attentionRequest, doShareAction),
+        _buildTabView(true, _stickTabKey)
       ],
     );
   }
@@ -343,7 +361,8 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
           SliverToBoxAdapter(
             child: _buildContainerTopAppBar(),
           ),
-          _buildListItemByType(),
+          AnchorListItem(_listItemKey, _memberInfoModel, _currentTab,
+              goCommentPublish, refreshPage, likeOrCancelLike),
         ],
       ),
     );
@@ -597,19 +616,143 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
         if (_currentTab != _tabController.index) {
           _currentTab = _tabController.index;
           getInfoByTab();
-          setState(() {});
+          _AnchorTabBarState tabBarState = _tabKey.currentState;
+          _AnchorTabBarState _sticktabBarState = _stickTabKey.currentState;
+          tabBarState?.setCurrentTab(_currentTab);
+          _sticktabBarState?.setCurrentTab(_currentTab);
         }
       });
     }
+    return AnchorTabBar(key, _tabController, isStick, _currentTab);
+  }
+}
+
+///顶部透明度变化的appBar widget
+class AnchorAppBar extends StatefulWidget {
+  final MemberInfoModel _memberInfoModel;
+  final Function clickAttention;
+  final Function clickShare;
+
+  AnchorAppBar(this._memberInfoModel, Key appbarKey, this.clickAttention,
+      this.clickShare)
+      : super(key: appbarKey);
+
+  @override
+  _AnchorAppBarState createState() => _AnchorAppBarState();
+}
+
+class _AnchorAppBarState extends State<AnchorAppBar> {
+  bool _isAttention = false; //是否关注
+  double _appBarOpacity = 0.0; //appbar透明度
+
+  void setAttention(bool value) {
+    _isAttention = value;
+    setState(() {});
+  }
+
+  void setAppBarOpacity(double value) {
+    _appBarOpacity = value;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: _appBarOpacity,
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        height: AppConfig.navH,
+        padding: EdgeInsets.only(top: AppConfig.statusH),
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                size: 22,
+              ),
+              onPressed: () {
+                XTRouter.closePage(context: context);
+              },
+            ),
+            _buildHeadView(30, widget._memberInfoModel?.headImage),
+            SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              child: widget._memberInfoModel?.nickName != null
+                  ? FractionallySizedBox(
+                      alignment: Alignment.topLeft,
+                      widthFactor: 0.55,
+                      child: xtText(
+                          widget._memberInfoModel?.nickName, 14, mainBlackColor,
+                          overflow: TextOverflow.ellipsis),
+                    )
+                  : Container(),
+            ),
+            if ((widget._memberInfoModel != null &&
+                !widget._memberInfoModel.isSelf))
+              GestureDetector(
+                child: _isAttention
+                    ? _buildShapeText("已关注", 12, main66GrayColor,
+                        main66GrayColor, EdgeInsets.fromLTRB(5, 0, 5, 1),
+                        isSold: false)
+                    : _buildShapeText("+ 关注", 12, xtColor_FFE60113,
+                        xtColor_FFE60113, EdgeInsets.fromLTRB(5, 0, 5, 1),
+                        isSold: false),
+                onTap: () {
+                  widget.clickAttention();
+                },
+              ),
+            _buildIconButton(
+                R.imagesLiveLiveAnchorTopWhiteShare, 22, widget.clickShare)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+///吸顶和非吸顶的tabbar
+class AnchorTabBar extends StatefulWidget {
+  final TabController tabController;
+  final bool isStick;
+  final int currentTab;
+
+  AnchorTabBar(Key key, this.tabController, this.isStick, this.currentTab)
+      : super(key: key);
+
+  @override
+  _AnchorTabBarState createState() => _AnchorTabBarState(currentTab);
+}
+
+class _AnchorTabBarState extends State<AnchorTabBar> {
+  int _currentTab;
+  bool _showStickTabView = false;
+
+  _AnchorTabBarState(this._currentTab);
+
+  void setCurrentTab(int tab) {
+    _currentTab = tab;
+    setState(() {});
+  }
+
+  void showStickView(show) {
+    _showStickTabView = show;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.isStick && !_showStickTabView) return _buildEmptyView();
+
     return TabBar(
-      key: key,
       labelPadding: EdgeInsets.zero,
-      controller: _tabController,
+      controller: widget.tabController,
       unselectedLabelColor: xtColor_B3FFFFFF,
       indicatorColor: Colors.transparent,
       tabs: <Widget>[
-        _buildSingleTabview(isStick, "口碑秀", 0),
-        _buildSingleTabview(isStick, "直播回放", 1),
+        _buildSingleTabview(widget.isStick, "口碑秀", 0),
+        _buildSingleTabview(widget.isStick, "直播回放", 1),
       ],
     );
   }
@@ -646,12 +789,58 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
       ],
     );
   }
+}
 
-  _buildListItemByType() {
+///底部列表
+class AnchorListItem extends StatefulWidget {
+  final MemberInfoModel _memberInfoModel;
+  final int _currentTab;
+  final Function goCommentPublish;
+  final Function refreshPage;
+  final Function likeOrCancelLike;
+
+  AnchorListItem(Key key, this._memberInfoModel, this._currentTab,
+      this.goCommentPublish, this.refreshPage, this.likeOrCancelLike)
+      : super(key: key);
+
+  @override
+  _AnchorListItemState createState() =>
+      _AnchorListItemState(_currentTab, _memberInfoModel);
+}
+
+class _AnchorListItemState extends State<AnchorListItem> {
+  int _currentTab;
+  bool _canPublish = false;
+  MemberInfoModel _memberInfoModel;
+  List<VideoReplayModel> _videoReplayList = List();
+  List<CommentShowModel> _commentShowList = List();
+
+  _AnchorListItemState(this._currentTab, this._memberInfoModel);
+
+  void setVideoReplayList(List<VideoReplayModel> value,
+      MemberInfoModel memberInfoModel, int currentTab) {
+    _videoReplayList = value;
+    _currentTab = currentTab;
+    _memberInfoModel = memberInfoModel;
+    setState(() {});
+  }
+
+  void setCommentShowList(List<CommentShowModel> value,
+      MemberInfoModel memberInfoModel, int currentTab) {
+    _commentShowList = value;
+    _currentTab = currentTab;
+    _memberInfoModel = memberInfoModel;
+    setState(() {});
+  }
+
+  set canPublish(bool value) {
+    _canPublish = value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     if (_memberInfoModel == null)
-      return SliverToBoxAdapter(
-        child: _buildEmptyView()
-      );
+      return SliverToBoxAdapter(child: _buildEmptyView());
     if (_currentTab == 1) {
       //todo 缺少主播拉黑样式,不知道字段
       if ("主播被拉黑" == "主播没有拉黑") {
@@ -724,7 +913,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 height: 20,
               ),
               xtText(
-                  _memberInfoModel.isSelf && _canPublish
+                  widget._memberInfoModel.isSelf && _canPublish
                       ? "暂无内容，赶快发布口碑秀积攒人气吧～"
                       : "暂无口碑秀内容",
                   14,
@@ -733,7 +922,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 height: 20,
               ),
               Visibility(
-                  visible: _memberInfoModel.isSelf && _canPublish,
+                  visible: widget._memberInfoModel.isSelf && _canPublish,
                   child: GestureDetector(
                     child: _buildShapeText(
                         "发布口碑秀",
@@ -744,7 +933,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                         isSold: false,
                         radius: 8),
                     onTap: () {
-                      goCommentPublish();
+                      widget.goCommentPublish();
                     },
                   ))
             ],
@@ -921,7 +1110,7 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                           ],
                         ),
                         onTap: () {
-                          likeOrCancelLike(commentShowModel.id);
+                          widget.likeOrCancelLike(commentShowModel.id);
                           commentShowModel.like = !commentShowModel.like;
                           if (commentShowModel.like) {
                             commentShowModel.likeUv =
@@ -948,131 +1137,49 @@ class _AnchorPersonalPageState extends State<AnchorPersonalPage>
                 context: context,
                 isNativePage: true)
             .then((value) {
-          refreshPage();
+          widget.refreshPage();
         });
       },
     );
   }
-}
 
-_buildVideoOrPicItem(
-    String url, bool isVideo, CommentShowModel commentShowModel) {
-  if (isVideo) {
-    //不加入缓存会build会闪烁
-    if (commentShowModel.uint8list != null) {
-      return Image.memory(
-        commentShowModel.uint8list,
+  _buildVideoOrPicItem(
+      String url, bool isVideo, CommentShowModel commentShowModel) {
+    if (isVideo) {
+      //不加入缓存会build会闪烁
+      if (commentShowModel.uint8list != null) {
+        return Image.memory(
+          commentShowModel.uint8list,
+          fit: BoxFit.fitWidth,
+        );
+      }
+      return FutureBuilder<Uint8List>(
+          initialData: null,
+          future: VideoThumbnail.thumbnailData(
+              video: url, quality: 25, maxWidth: 300),
+          builder: (ctx, result) {
+            if (result.data != null) {
+              commentShowModel.uint8list = result.data;
+              return Image.memory(
+                commentShowModel.uint8list,
+                fit: BoxFit.fitWidth,
+              );
+            } else {
+              return SizedBox(
+                height: 60,
+              );
+            }
+          });
+    } else {
+      return Image.network(
+        url,
         fit: BoxFit.fitWidth,
       );
     }
-    return FutureBuilder<Uint8List>(
-        initialData: null,
-        future: VideoThumbnail.thumbnailData(
-            video: url, quality: 25, maxWidth: 300),
-        builder: (ctx, result) {
-          if (result.data != null) {
-            commentShowModel.uint8list = result.data;
-            return Image.memory(
-              commentShowModel.uint8list,
-              fit: BoxFit.fitWidth,
-            );
-          } else {
-            return SizedBox(
-              height: 60,
-            );
-          }
-        });
-  } else {
-    return Image.network(
-      url,
-      fit: BoxFit.fitWidth,
-    );
   }
 }
 
-class AnchorAppBar extends StatefulWidget {
-  final MemberInfoModel _memberInfoModel;
-  final Function clickAttention;
-  final Function clickShare;
-
-  AnchorAppBar(this._memberInfoModel, Key appbarKey, this.clickAttention,this.clickShare)
-      : super(key: appbarKey);
-
-  @override
-  _AnchorAppBarState createState() => _AnchorAppBarState();
-}
-
-class _AnchorAppBarState extends State<AnchorAppBar> {
-  bool _isAttention = false; //是否关注
-  double _appBarOpacity = 0.0; //appbar透明度
-
-  set isAttention(bool value) {
-    _isAttention = value;
-    setState(() {});
-  }
-
-  set appBarOpacity(double value) {
-    _appBarOpacity = value;
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Opacity(
-      opacity: _appBarOpacity,
-      child: Container(
-        color: Theme.of(context).primaryColor,
-        height: AppConfig.navH,
-        padding: EdgeInsets.only(top: AppConfig.statusH),
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                size: 22,
-              ),
-              onPressed: () {
-                XTRouter.closePage(context: context);
-              },
-            ),
-            _buildHeadView(30, widget._memberInfoModel?.headImage),
-            SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              child: widget._memberInfoModel?.nickName != null
-                  ? FractionallySizedBox(
-                      alignment: Alignment.topLeft,
-                      widthFactor: 0.55,
-                      child: xtText(
-                          widget._memberInfoModel?.nickName, 14, mainBlackColor,
-                          overflow: TextOverflow.ellipsis),
-                    )
-                  : Container(),
-            ),
-            if ((widget._memberInfoModel != null &&
-                !widget._memberInfoModel.isSelf))
-              GestureDetector(
-                child: _isAttention
-                    ? _buildShapeText("已关注", 12, main66GrayColor,
-                        main66GrayColor, EdgeInsets.fromLTRB(5, 0, 5, 1),
-                        isSold: false)
-                    : _buildShapeText("+ 关注", 12, xtColor_FFE60113,
-                        xtColor_FFE60113, EdgeInsets.fromLTRB(5, 0, 5, 1),
-                        isSold: false),
-                onTap: () {
-                  widget.clickAttention();
-                },
-              ),
-            _buildIconButton(R.imagesLiveLiveAnchorTopWhiteShare, 22, widget.clickShare)
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-_buildEmptyView(){
+_buildEmptyView() {
   return SizedBox.shrink();
 }
 
