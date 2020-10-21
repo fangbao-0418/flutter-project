@@ -3,6 +3,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/coupon_model.dart';
+import 'package:xtflutter/model/goods_model.dart';
 import 'package:xtflutter/model/promotion_model.dart';
 import 'package:xtflutter/net_work/http_request.dart';
 import 'package:xtflutter/net_work/promotion_request.dart';
@@ -11,9 +12,11 @@ import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/area.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/banner.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/coupon_item.dart';
-import 'package:xtflutter/pages/promotion/promotionItem/goods.dart';
+import 'package:xtflutter/pages/promotion/promotionItem/flow_bar_titles.dart';
+import 'package:xtflutter/pages/promotion/promotionItem/goods_item.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/nav_bar_titles.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/player.dart';
+import 'package:xtflutter/pages/promotion/promotionItem/time.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/title_sepment.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/tab_bottom.dart';
 import 'package:xtflutter/router/router.dart';
@@ -44,8 +47,30 @@ class _PromotionState extends State<Promotion> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
+  ///优惠券信息 id -> 优惠券列表数据
   Map<String, List<CouponItemDataModel>> coupons = {};
+
+  ///商品信息 id -> 商品数据
+  Map<String, List<GoodsItemDataModel>> goods = {};
+
+  ///每个商品ID 对应的商品个数
+  Map<String, int> goodsCountDict = {};
+
+  ///每个商品ID 对应商品的页码
+  Map<String, int> goodsPage = {};
+
+  ///每个商品ID 对应商品的页码
+  Map<String, bool> goodsIDLoading = {};
+
+  ///每个商品ID 对应商品的页码
+  Map<String, bool> goodsIDGetAll = {};
+
+  ///优惠券ID
   List<String> couponIds = [];
+
+  ///商品ID
+  List<String> goodsIds = [];
+
   int couponCount = 0;
 
   PromotionData dataInfo = PromotionData();
@@ -53,123 +78,87 @@ class _PromotionState extends State<Promotion> {
   ComponentVoList tabBottom;
   ComponentVoList tabNav;
   String title = "最新推进啊";
+  String endTime = "";
 
   List<String> auchorNames = [];
   List<int> auchorids = [];
 
+  ///当前模块位置对应的导航位置
+  Map<int, int> realToNav = {};
+
+  ///当前的导航位置对应模块位置
+  Map<int, int> navToReal = {};
+
   List<int> itemIndex = [];
-  int currentIndex = 0;
   TitlesNavBar navBar;
 
-  int navBarIndex = 0;
-  bool flowNavBarShow = false;
-  Visibility flowStage;
+  ///导航选中位置
+  int barSelectIndex = 0;
 
+  ///导航选中位置
+  int barSelectRealIndex = 0;
+
+  ///导航条所在position位置
+  int barPositionIndex = 0;
+  bool flowNavBarShow = false;
+  bool jumpIng = false;
+  bool initIng = true;
+  bool haveShare = false;
+  ConfigData shareData;
   @override
   void initState() {
     super.initState();
 
     promotionInfo();
+
+    ///页面滚动监听
     itemPositionsListener.itemPositions.addListener(() {
-      print("--------addListeneraddListener-----------");
-
-      // bool contain = checkNavTitleBar();
-      // var max = itemPositionsListener.itemPositions.value
-      //     .where((ItemPosition position) => position.itemLeadingEdge < 1)
-      //     .reduce((ItemPosition max, ItemPosition position) =>
-      //         position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
-      //     .index;
-      // print("-------------------" + max.toString());
-      // print("-------------------" + currentIndex.toString());
-
-      // itemPositionsListener.itemPositions.value.forEach((element) {
-      //   element.index == currentIndex;
-      // });
-
-      // if (currentIndex != max) {
-      //   currentIndex = max;
-      //   print("-----------111111--------" + currentIndex.toString());
-      //   if (!contain) {
-      //     Future.delayed(Duration(milliseconds: 300), () {
-      //       bus.emit(TitlesNavBar.busName, [currentIndex]);
-      //       print('延时1s执行');
-      //     });
-      //   }
-      // }
+      //导航悬浮
+      checkNavTitleBar();
+      //滚动检测
+      scrollListener();
     });
   }
 
-  bool checkNavTitleBar() {
-    List arr = List.from(itemPositionsListener.itemPositions.value);
-
-    bool containNav = false;
-    ItemPosition positionT;
-    for (var i = 0; i < arr.length; i++) {
-      // print(arr[i].toString());
-      ItemPosition position = arr[i];
-      if (position.index == navBarIndex) {
-        containNav = true;
-        positionT = position;
-        break;
-      }
-    }
-    if (containNav == true) {
-      if (positionT.itemLeadingEdge <= 0) {
-        if (flowNavBarShow != true) {
-          flowNavBarShow = true;
-          setState(() {});
-        }
-
-        print("导航要消失了-------------------------- 展示顶部导航");
-      } else {
-        if (flowNavBarShow != false) {
-          flowNavBarShow = false;
-          setState(() {});
-        }
-
-        print("导航出来了-------------------------- 隐藏顶部导航");
-      }
-    } else {
-      if (auchorNames.length > 0) {
-        if (flowNavBarShow != true) {
-          flowNavBarShow = true;
-          setState(() {});
-        }
-        print("导航要已经消失了-------------------------- 继续展示顶部导航");
-      }
-    }
-
-    return containNav;
-  }
-
+  ///请求活动信息
   void promotionInfo() {
     PromotionRequest.promotionMgic(widget.params["id"]).then((value) {
-      print("--------------------va" + value.toString());
       Map<String, dynamic> map = Map.from(value);
       PromotionData tt = PromotionData.fromJson(map);
-
+      endTime = tt.endTime;
       var list = tt.componentVoList;
       List<ComponentVoList> temp = [];
 
       var memberType = AppConfig.user.memberType != null
           ? AppConfig.user.memberType.toString()
           : "0";
-
       for (var item in list) {
+        //是H5并且符合用户身份
         if (item.platform.contains("wx-h5") &&
             item.userLevel.contains(memberType)) {
+          //整体页面配置
           if (item.type == "body") {
             bodyConfig = item;
+            //底部导航配置
           } else if (item.type == "bottomTab") {
             tabBottom = item;
+            //吸顶 顶部导航栏
           } else if (item.type == "tab") {
             tabNav = item;
+            temp.add(item);
+          } else if (item.type == "share") {
+            haveShare = true;
+            shareData = item.config.data;
+          } else if (item.type == "goods") {
+            goodsIds.add(item.id.toString());
+            goods[item.id.toString()] = [];
+            goodsCountDict[item.id.toString()] = item.dataTotal;
+            itemIndex.add(item.id);
             temp.add(item);
           } else {
             itemIndex.add(item.id);
             temp.add(item);
           }
-
           if (item.isAuchor) {
             if (item.auchorName != null && item.auchorName.length > 0) {
               auchorNames.add(item.auchorName);
@@ -177,25 +166,114 @@ class _PromotionState extends State<Promotion> {
             }
           }
         }
-
+        //优惠券
         if (item.type == "coupon") {
           coupons[item.id.toString()] = [];
           couponIds.add(item.id.toString());
         }
       }
+
+      /// 记录导航的对应的实际位置
+      for (var i = 0; i < temp.length; i++) {
+        ComponentVoList tm = temp[i];
+        if (tm.isAuchor && tm.auchorName != null && tm.auchorName.length > 0) {
+          ///导航所在的整体内容的位置
+          int index = i;
+
+          ///当前模块在导航的位置
+          int navIndex = auchorids.indexOf(tm.id);
+
+          ///记录下来当前模块对应导航的位置，在整体滚动的时候可以当前模块的位置对应到导航位置，进而做出相应的滚动
+          realToNav[index] = navIndex;
+
+          navToReal[navIndex] = index;
+        }
+      }
+      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      print(realToNav);
+      print(navToReal);
+      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
       tt.componentVoList = temp;
       dataInfo = tt;
       getCouponsData();
+      if (goodsIds.length > 0) {
+        var ids = goodsIds.first;
+        getIDGoodsData(ids);
+      }
+
       print("object1" + dataInfo.componentVoList.length.toString());
       dataInfo = tt;
 
-      setState(() {});
+      setState(() {
+        initIng = false;
+      });
     }).whenComplete(() {
       print("object");
     });
   }
 
+  ///根据活动ID 获取活动商品
+  void getIDGoodsData(String ids) {
+    print("getIDGoodsData ---" + ids + "-" + goodsCountDict[ids].toString());
+
+    ///当前ID 总个数
+    int totalCount = goodsCountDict[ids];
+    List<GoodsItemDataModel> clist = goods[ids];
+    if (goodsIDGetAll[ids] == true) {
+      print("product LoadFinsish --- " + ids);
+      //已经加载全部商品
+      return;
+    }
+
+    bool isLoading = goodsIDLoading[ids];
+    if (isLoading == true) {
+      return;
+    }
+    int page = goodsPage[ids];
+    print("page");
+    print(page);
+    print("page");
+    if (page == null) {
+      goods[ids] = [];
+      page = 1;
+    } else {
+      page += 1;
+    }
+
+    goodsIDLoading[ids] = true;
+    goodsPage[ids] = page;
+    PromotionRequest.promotionMgicData(ids, page,
+            pageSize: totalCount <= 20 ? totalCount : 10, source: "0")
+        .then((value) {
+      print("value---" + value.toString());
+      List<GoodsItemDataModel> list = [];
+      for (var item in value["list"]) {
+        GoodsItemDataModel temp = GoodsItemDataModel.fromJson(Map.from(item));
+        list.add(temp);
+      }
+      if (list.length == 0) {
+        goodsIDGetAll[ids] = true;
+      }
+      if (totalCount <= 20 && list.length > 0) {
+        goodsIDGetAll[ids] = true;
+      }
+      clist.addAll(list);
+      print("goods----" + ids + " ------ " + clist.length.toString());
+      goods[ids] = clist;
+    }).whenComplete(() {
+      goodsIDLoading[ids] = false;
+      if (!goodsIDLoading.values.contains(true)) {
+        setState(() {});
+      }
+    });
+  }
+
+  ///根据活动ID 获取优惠券列表
   void getCouponsData() {
+    if (couponIds.length == 0) {
+      return;
+    }
     for (var ids in couponIds) {
       PromotionRequest.promotionMgicData(ids, 1).then((value) {
         List<CouponItemDataModel> list = [];
@@ -225,12 +303,18 @@ class _PromotionState extends State<Promotion> {
       alignment: 0);
 
   void jumpTo(int index) {
-    currentIndex = index;
-    itemScrollController.jumpTo(index: index, alignment: 0);
-    // checkNavTitleBar();
+    barSelectIndex = index;
+    jumpIng = true;
+    Future.delayed(Duration(milliseconds: 500), () {
+      itemScrollController.jumpTo(index: index, alignment: 0.04);
+      Future.delayed(Duration(milliseconds: 500), () {
+        jumpIng = false;
+      });
+    });
   }
 
-  Widget list() {
+  ///活动魔方内容列表 分解
+  Widget promotionList() {
     return ScrollablePositionedList.builder(
       itemScrollController: itemScrollController,
       itemPositionsListener: itemPositionsListener,
@@ -239,8 +323,8 @@ class _PromotionState extends State<Promotion> {
       itemBuilder: (context, index) {
         ComponentVoList model = dataInfo.componentVoList[index];
         if (model.type == "tab") {
-          navBarIndex = index;
-          TitlesNavBar bar = TitlesNavBar(auchorNames, auchorids,
+          barPositionIndex = index;
+          TitlesNavBar bar = TitlesNavBar(auchorNames, auchorids, "item",
               barbackColor: model.config.bgColor != null
                   ? HexColor(model.config.bgColor)
                   : mainF5GrayColor,
@@ -251,34 +335,19 @@ class _PromotionState extends State<Promotion> {
                   ? HexColor(model.config.fontColorSelect)
                   : mainRedColor, onTap: (value) {
             var index = itemIndex.indexOf(value);
-
             jumpTo(index);
-            // scrollTo(index);
-            print(" ===value==== ");
-            print(value);
-            print(" ===value==== ");
           });
           // navBar = bar;
           return bar;
-        } else
-
-        // {
-        //   return GestureDetector(
-        //     child: Container(
-        //       child: xtText(index.toString(), 14, main66GrayColor),
-        //       width: 100,
-        //       height: 50,
-        //       color: mainF5GrayColor,
-        //     ),
-        //   );
-        // }
-
-        if (model.type == "title") {
+        } else if (model.type == "title") {
           return titleNav(model);
         } else if (model.type == "banner") {
           return bannerUtil(model);
         } else if (model.type == "goods") {
-          return goodsView();
+          // print("--goods-- " + model.id.toString() + "-" + index.toString());
+          List<GoodsItemDataModel> list = goods[model.id.toString()];
+          GoodsItemConfigModel temp = model.goodsConfig;
+          return goodsView(temp, list);
         } else if (model.type == "video") {
           return GestureDetector(
             child: Container(
@@ -300,12 +369,18 @@ class _PromotionState extends State<Promotion> {
                 itemConfigModel: model.couponConfig,
                 dataList: coupons[model.id.toString()]),
           );
+        } else if (model.type == "time") {
+          return PromotionTime(
+            endTime,
+            Color.fromRGBO(255, 255, 255, 0.3),
+            styleType: model.config.styleType,
+          );
         } else {
           return GestureDetector(
             child: Container(
               width: 100,
-              height: 20,
-              color: Colors.yellow,
+              height: 50,
+              color: Colors.brown,
             ),
           );
         }
@@ -313,6 +388,7 @@ class _PromotionState extends State<Promotion> {
     );
   }
 
+  ///过滤显示内容
   Widget showWidgetFilter() {
     if (dataInfo.componentVoList == null) {
       return Container(
@@ -321,37 +397,28 @@ class _PromotionState extends State<Promotion> {
         color: mainF5GrayColor,
       );
     } else {
+      ///有导航栏添加吸顶导航栏
       if (auchorids.length > 0) {
-        Visibility offstage = Visibility(
-          maintainSize: false,
-          maintainState: true, // 隐藏后是否维持组件状态
-          maintainAnimation: true, // 隐藏后是否维持子组件中的动画
-          visible: flowNavBarShow,
-          child: TitlesNavBar(auchorNames, auchorids,
-              barbackColor: tabNav.config.bgColor != null
-                  ? HexColor(tabNav.config.bgColor)
-                  : mainF5GrayColor,
-              barTitleNormalColor: tabNav.config.fontColor != null
-                  ? HexColor(tabNav.config.fontColor)
-                  : mainBlackColor,
-              barTitleSelectColor: tabNav.config.fontColorSelect != null
-                  ? HexColor(tabNav.config.fontColorSelect)
-                  : mainRedColor, onTap: (value) {
-            var index = itemIndex.indexOf(value);
+        return Stack(alignment: Alignment.topCenter, children: <Widget>[
+          promotionList(),
+          Positioned(
+              child: FlowBarTitles(
+            auchorNames,
+            auchorids,
+            tabNav.config,
+            onTap: (value) {
+              var index = itemIndex.indexOf(value);
 
-            jumpTo(index);
-            // scrollTo(index);
-            print(" ===nav flow value==== ");
-            print(value);
-            print(" ===nav flow value==== ");
-          }),
-        );
-        flowStage = offstage;
-        return Stack(
-            alignment: Alignment.topCenter,
-            children: <Widget>[list(), Positioned(child: offstage)]);
+              jumpTo(index);
+              // scrollTo(index);
+              print(" ===value==== ");
+              print(value);
+              print(" ===value==== ");
+            },
+          ))
+        ]);
       } else {
-        return list();
+        return promotionList();
       }
     }
   }
@@ -360,6 +427,22 @@ class _PromotionState extends State<Promotion> {
   Widget build(BuildContext context) {
     // print(" ======= " + dataInfo.componentVoList.last.toString());
     return Scaffold(
+      floatingActionButton: Builder(builder: (BuildContext context) {
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            print("-----FloatingActionButton-----");
+          },
+          tooltip: "Hello",
+          heroTag: null,
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.black,
+          elevation: 0.0,
+          highlightElevation: 14.0,
+          shape: xtShapeRound(0),
+        );
+      }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: tabBottom == null ? null : tabbar(tabBottom),
       appBar: xtBackBar(
           title: "活动", back: () => XTRouter.closePage(context: context)),
@@ -416,9 +499,14 @@ class _PromotionState extends State<Promotion> {
     );
   }
 
-  Widget goodsView() {
+  Widget goodsView(GoodsItemConfigModel model, List<GoodsItemDataModel> goods) {
     return Container(
-        color: Colors.lightGreenAccent, height: 500, child: Goods(9, 10, 10));
+        color: Colors.lightGreenAccent,
+        height: model.gridHeight(goods.length, context),
+        child: GoodsItems(
+          configModel: model,
+          dataList: goods,
+        ));
   }
 
   Widget bannerUtil(ComponentVoList model) {
@@ -428,55 +516,100 @@ class _PromotionState extends State<Promotion> {
       return BannerUtil(300, model);
     }
   }
+
+  ///滚动检测
+  void scrollListener() {
+    ///滚动检测
+    //跳转时候防止再次调用滚动代理
+    if (jumpIng) {
+      return;
+    }
+    if (!initIng) {}
+    List li = List.from(itemPositionsListener.itemPositions.value);
+
+    ///当前显示模块列表
+    List<int> showItems = [];
+
+    for (var i = 0; i < li.length; i++) {
+      ItemPosition posi = li[i];
+      showItems.add(posi.index);
+
+      ///加载商品模块数据
+      // for (var i = showItems.length; i >= 0; i--) {
+      ComponentVoList model = dataInfo.componentVoList[posi.index];
+      // print(model.type);
+      String goodId = model.id.toString();
+      // // print("loading - goods" + " ------ " + goodId);
+
+      if (goodsIds.contains(goodId)) {
+        // print("loading - goods" + " ------ " + goodId);
+
+        // print("loading " + " ------ " + goodsIds.toString());
+
+        getIDGoodsData(goodId);
+      }
+    }
+    // print("-------------------------------------------------------");
+    // print(li.toString());
+    // print(showItems.toString());
+    // print("-------------------------------------------------------");
+
+    //排序
+    showItems.sort((a, b) => b.compareTo(a));
+
+    //获取当前选中的导航所在的模块位置
+    int itemIndex = navToReal[barSelectIndex];
+    if (showItems.contains(itemIndex)) {
+      return;
+    } else {
+      for (var i = 0; i < showItems.length; i++) {
+        int posi = showItems[i];
+        if (realToNav.containsKey(posi)) {
+          int scrollIndex = realToNav[posi];
+          bus.emit(TitlesNavBar.busName, [scrollIndex]);
+          return;
+        }
+      }
+    }
+  }
+
+  ///控制悬浮是否展示
+  void checkNavTitleBar() {
+    ///控制悬浮是否展示
+
+    List arr = List.from(itemPositionsListener.itemPositions.value);
+    bool containNav = false;
+    ItemPosition positionT;
+    for (var i = 0; i < arr.length; i++) {
+      ItemPosition position = arr[i];
+      if (position.index == barPositionIndex) {
+        containNav = true;
+        positionT = position;
+        break;
+      }
+    }
+    if (containNav == true) {
+      if (positionT.itemLeadingEdge <= 0) {
+        if (flowNavBarShow != true) {
+          print("导航要消失了-------------------------- 展示顶部导航");
+          flowNavBarShow = true;
+          bus.emit(FlowBarTitles.busName, [flowNavBarShow]);
+        }
+      } else {
+        if (flowNavBarShow != false) {
+          print("导航出来了-------------------------- 隐藏顶部导航");
+          flowNavBarShow = false;
+          bus.emit(FlowBarTitles.busName, [flowNavBarShow]);
+        }
+      }
+    } else {
+      if (auchorNames.length > 0) {
+        if (flowNavBarShow != true) {
+          print("导航要已经消失了-------------------------- 继续展示顶部导航");
+          flowNavBarShow = true;
+          bus.emit(FlowBarTitles.busName, [flowNavBarShow]);
+        }
+      }
+    }
+  }
 }
-// Widget oldList() {
-//   return ListView.builder(
-//       itemCount: dataInfo.componentVoList == null
-//           ? 0
-//           : dataInfo.componentVoList.length,
-//       itemBuilder: (con, index) {
-//         ComponentVoList model = dataInfo.componentVoList[index];
-//         if (model.type == "tab") {
-//           return TitlesNavBar(auchorNames, auchorids,
-//               barbackColor: model.config.bgColor != null
-//                   ? HexColor(model.config.bgColor)
-//                   : mainF5GrayColor,
-//               barTitleNormalColor: model.config.fontColor != null
-//                   ? HexColor(model.config.fontColor)
-//                   : mainBlackColor,
-//               barTitleSelectColor: model.config.fontColorSelect != null
-//                   ? HexColor(model.config.fontColorSelect)
-//                   : mainRedColor, onTap: (value) {
-//             print(" ===value==== ");
-//             print(value);
-//             print(" ===value==== ");
-//           });
-//         } else if (model.type == "title") {
-//           return titleNav(model);
-//         } else if (model.type == "banner") {
-//           return bannerUtil(model);
-//         } else if (model.type == "goods") {
-//           return goodsView();
-//         } else if (model.type == "video") {
-//           return GestureDetector(
-//             child: Container(
-//               width: 100,
-//               height: 20,
-//               color: Colors.yellow,
-//               child: xtText("这是个视频", 12, mainBlackColor),
-//             ),
-//           );
-//           // return palyer(model);
-//         } else if (model.type == "area") {
-//           return AreaAttach(model);
-//         } else {
-//           return GestureDetector(
-//             child: Container(
-//               width: 100,
-//               height: 20,
-//               color: Colors.yellow,
-//             ),
-//           );
-//         }
-//       });
-// }

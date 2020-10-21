@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:xtflutter/model/coupon_model.dart';
+import 'package:xtflutter/model/goods_model.dart';
 
 class PromotionData {
   PromotionData({
@@ -16,15 +17,15 @@ class PromotionData {
   });
 
   int recordId;
-  DateTime startTime;
-  DateTime endTime;
+  String startTime;
+  String endTime;
   List<ComponentVoList> componentVoList;
   int countDownMills;
 
   factory PromotionData.fromJson(Map<String, dynamic> json) => PromotionData(
         recordId: json["recordId"],
-        startTime: DateTime.parse(json["startTime"]),
-        endTime: DateTime.parse(json["endTime"]),
+        startTime: json["startTime"],
+        endTime: json["endTime"],
         componentVoList: List<ComponentVoList>.from(json["componentVOList"]
             .map((x) => ComponentVoList.fromJson(Map.from(x)))),
         countDownMills: json["countDownMills"],
@@ -32,8 +33,8 @@ class PromotionData {
 
   Map<String, dynamic> toJson() => {
         "recordId": recordId,
-        "startTime": startTime.toIso8601String(),
-        "endTime": endTime.toIso8601String(),
+        "startTime": startTime,
+        "endTime": endTime,
         "componentVOList":
             List<dynamic>.from(componentVoList.map((x) => x.toJson())),
         "countDownMills": countDownMills,
@@ -41,6 +42,7 @@ class PromotionData {
 }
 
 class ComponentVoList {
+
   ComponentVoList({
     this.id,
     this.type,
@@ -53,7 +55,8 @@ class ComponentVoList {
     this.platform,
     this.isAuchor,
     this.auchorName,
-    this.couponConfig
+    this.couponConfig,
+    this.goodsConfig
   });
 
   int id;
@@ -68,6 +71,7 @@ class ComponentVoList {
   bool isAuchor;
   String auchorName;
   CouponItemConfigModel couponConfig;
+  GoodsItemConfigModel goodsConfig;
 
   factory ComponentVoList.fromJson(Map<String, dynamic> json) =>
       ComponentVoList(
@@ -85,6 +89,7 @@ class ComponentVoList {
         isAuchor: json["isAuchor"],
         auchorName: json["auchorName"],
         couponConfig: CouponItemConfigModel.fromJson(json["config"]),
+        goodsConfig: GoodsItemConfigModel.fromJson(json["config"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -101,7 +106,8 @@ class ComponentVoList {
         "platform": List<dynamic>.from(platform.map((x) => x)),
         "isAuchor": isAuchor,
         "auchorName": auchorName,
-        "couponConfig": couponConfig.toJson()
+        "couponConfig": couponConfig.toJson(),
+        "goodsConfig": goodsConfig.toJson()
       };
 }
 
@@ -218,7 +224,7 @@ class Datum {
         img: json["img"] == null ? null : json["img"],
         title: json["title"] == null ? null : json["title"],
         type: json["type"] == null ? null : json["type"],
-        url: json["url"],
+        url: json["url"].toString(),
         area: json["area"] == null
             ? null
             : List<Area>.from(json["area"].map((x) => Area.fromJson(x))),

@@ -37,7 +37,7 @@ class _AreaAttachState extends State<AreaAttach> {
     for (var i = 0; i < widget.model.data.first.area.length; i++) {
       Area arinfo = widget.model.data.first.area[i];
       List<String> areaPoint = arinfo.coordinate.split(",");
-      print(areaPoint.toString());
+      // print(areaPoint.toString());
       double a1 = double.parse(areaPoint.first);
       double a2 = double.parse(areaPoint[1]);
       double a3 = double.parse(areaPoint[2]);
@@ -46,24 +46,24 @@ class _AreaAttachState extends State<AreaAttach> {
       double y = imgH / imgW * width * a2;
       double ww = width * a3;
       double hh = imgH / imgW * width * a4;
-      print(a1.toString());
-      print(a2.toString());
-      print(a3.toString());
-      print(a4.toString());
-      print("object-----------Stack");
+      // print(a1.toString());
+      // print(a2.toString());
+      // print(a3.toString());
+      // print(a4.toString());
+      // print("object-----------Stack");
 
-      print(x.toString());
-      print(y.toString());
-      print(ww.toString());
-      print(hh.toString());
+      // print(x.toString());
+      // print(y.toString());
+      // print(ww.toString());
+      // print(hh.toString());
 
       var pos = Positioned(
           left: x,
           top: y,
           child: GestureDetector(
             onTap: () {
-              print("object-----------Stack");
-              print(arinfo.value);
+              // print("object-----------Stack");
+              // print(arinfo.value);
             },
             child: Container(
               width: ww,
@@ -91,9 +91,9 @@ class _AreaAttachState extends State<AreaAttach> {
           imgW = info.image.width;
           imgH = info.image.height;
           scale = width / imgW;
-          print("info -------" + info.image.width.toString());
-          print("info -------" + info.image.height.toString());
-          print("info -------" + succe.toString());
+          // print("info -------" + info.image.width.toString());
+          // print("info -------" + info.image.height.toString());
+          // print("info -------" + succe.toString());
         }, onChunk: (event) {}, onError: null));
     image.image.resolve(ImageConfiguration()).addListener(
         ImageStreamListener((ImageInfo image, bool synchronousCall) {

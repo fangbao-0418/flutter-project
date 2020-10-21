@@ -65,8 +65,7 @@ class BannerOnlyUtil extends StatelessWidget {
     if (this.mode.config.backgroundColor != null) {
       bgcolor = HexColor(this.mode.config.backgroundColor);
     }
-    print("bgcolor.toString()");
-    print(bgcolor.toString());
+
     return Container(
         color: bgcolor,
         padding: EdgeInsets.only(top: top, bottom: bottom),

@@ -55,3 +55,4 @@ const xtColor_FFEE071F = Color(0xFFEE071F);
 const xtColor_FF10AC48 = Color(0xFF10AC48);
 
 const xtColor_FFF3F3F3 = Color(0xFFF3F3F3);
+const xtColor_FFFF7700 = Color(0xFFFF7700);

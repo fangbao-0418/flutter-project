@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
@@ -11,8 +12,8 @@ import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/utils/event_bus.dart';
 
 class TitlesNavBar extends StatefulWidget {
-  static const busName = "eventBusName";
-  TitlesNavBar(this.auchorNames, this.auchorids,
+  static const busName = "TitlesNavBarUpdate";
+  TitlesNavBar(this.auchorNames, this.auchorids, this.name,
       {this.barTitleSelectColor = mainRedColor,
       this.barTitleNormalColor = mainBlackColor,
       this.barbackColor = mainF5GrayColor,
@@ -23,6 +24,8 @@ class TitlesNavBar extends StatefulWidget {
   final Color barTitleNormalColor;
   final Color barTitleSelectColor;
   final ValueChanged<int> onTap;
+
+  final String name;
 
   @override
   _TitlesNavBarState createState() => _TitlesNavBarState();
@@ -36,7 +39,6 @@ class _TitlesNavBarState extends State<TitlesNavBar>
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
-  TabController tabC;
   List<Widget> list = [];
   bool gridView = false;
 
@@ -45,6 +47,7 @@ class _TitlesNavBarState extends State<TitlesNavBar>
   double spacing = 20;
   OverlayEntry _overlay;
   int selectIndex = 0;
+  TabController tabC;
   @override
   void initState() {
     super.initState();
@@ -56,15 +59,21 @@ class _TitlesNavBarState extends State<TitlesNavBar>
         vsync: this);
 
     bus.on(TitlesNavBar.busName, (arg) {
-      print("-------arg ------------" + arg.toString());
       int index = (arg as List<int>).first;
+
       if (selectIndex != index) {
+        // print(widget.name);
         selectIndex = (arg as List<int>).first;
-        setState(() {});
+        if (mounted) {
+          setState(() {
+            tabC.index = selectIndex;
+          });
+        }
       }
     });
   }
 
+  /// index == -1的时候属于点击箭头 qi yu
   void showAlert() {
     setState(() {
       if (!arrowDown) {
@@ -161,9 +170,10 @@ class _TitlesNavBarState extends State<TitlesNavBar>
               controller: tabC,
               onTap: (index) {
                 selectIndex = index;
-                tabC.index = selectIndex;
-                _handleTap(index);
-                setState(() {});
+                setState(() {
+                  bus.emit(TitlesNavBar.busName, [index]);
+                  _handleTap(selectIndex);
+                });
               },
             )),
       ),
@@ -172,6 +182,7 @@ class _TitlesNavBarState extends State<TitlesNavBar>
 
   void _handleTap(int index) {
     if (widget.onTap != null) {
+      print("1234");
       widget.onTap(widget.auchorids[index]);
     }
   }
@@ -223,12 +234,12 @@ class _TitlesNavBarState extends State<TitlesNavBar>
                         fontSize: 15,
                       ),
                       onPressed: (i) {
-                        // selectIndex = index;
+                        selectIndex = index;
                         arrowDown = true;
                         _handleTap(index);
-
                         showAlert();
-                        // tabC.index = selectIndex;
+                        bus.emit(TitlesNavBar.busName, [index]);
+                        tabC.index = selectIndex;
                       },
                     ),
                   );
@@ -263,6 +274,12 @@ class _TitlesNavBarState extends State<TitlesNavBar>
         children: arrowPage(),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // tabC.dispose();
+    super.dispose();
   }
 
   OverlayEntry _createSelectViewWithContext(BuildContext context) {

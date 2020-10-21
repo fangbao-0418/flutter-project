@@ -16,7 +16,7 @@ import 'package:xtflutter/widget/scrollview/scroll_behaviors.dart';
 // 消息详情页，也是列表页
 // create by yuanl at 2020/09/19
 class MessageDetailPage extends StatefulWidget {
-  static final String routeName = "/message/detail";
+  static final String routerName = "/message/detail";
 
   final Map<String, dynamic> params;
 

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
-import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
+import 'package:xtflutter/pages/Live/live_anchor_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
@@ -104,7 +104,7 @@ class _SettingPageState extends State<SettingPage> {
               FlatButton(
                 onPressed: () {
                   XTRouter.pushToPage(
-                    routerName: MessageCenterPage.routeName,
+                    routerName: MessageCenterPage.routerName,
                     context: context,
                   );
                 },

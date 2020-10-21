@@ -100,9 +100,9 @@ class HttpRequest {
         return map["data"] as T;
       }
     } catch (e) {
-      print("e.toString()--------111111-----------");
-      print(e.toString());
-      print("e.toString()-------------------");
+      // print("e.toString()--------111111-----------");
+      // print(e.toString());
+      // print("e.toString()-------------------");
       XTNetError xtNetError;
       String message = '网络异常';
       if (e is DioError) {

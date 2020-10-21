@@ -1,7 +1,10 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:xtflutter/model/promotion_model.dart';
+import 'package:xtflutter/utils/appconfig.dart';
 import 'dart:convert';
+
+import '../r.dart';
 
 /// 排列样式
 enum GoodsItemRowStyleType {
@@ -30,20 +33,6 @@ enum TagPositionType {
   leftBottom,
   rightTop,
   rightBottom
-}
-
-class GoodsModel {
-  static GoodsModel getData() => GoodsModel.fromJson({});
-  static List<GoodsItemDataModel> getDataList() =>
-      List<GoodsItemDataModel>.from(
-          goodsDataList.map((e) => GoodsItemDataModel.fromJson(e)));
-  GoodsModel({this.configList});
-  List<GoodsItemConfigModel> configList;
-  factory GoodsModel.fromJson(Map<String, dynamic> json) {
-    return GoodsModel(
-        configList: List<GoodsItemConfigModel>.from(
-            goodsConfigList.map((e) => GoodsItemConfigModel.fromJson(e["config"]))));
-  }
 }
 
 class GoodsItemConfigModel extends Config {
@@ -202,7 +191,7 @@ class GoodsItemConfigModel extends Config {
       case GoodsItemStyleType.styleThree:
         switch (style) {
           case GoodsItemRowStyleType.rowOne:
-            return 351 / 260;
+            return 351 / 250;
             break;
           case GoodsItemRowStyleType.rowTwo:
             return 172 / 252;
@@ -365,15 +354,7 @@ class GoodsItemDataModel {
     }
     /// 是否已售罄
     bool get isSellOut {
-      if (inventory == null) {
-        return true;
-      }
-      int salesCount = productSaleCount ?? 0;
-      if (salesCount >= inventory || inventory == 0) {
-        return true;
-      } else {
-        return false;
-      }
+      return (remainInventory == null) || (remainInventory != null && remainInventory <= 0);
     }
      /// 秒杀价
   String get buyingPriceText {
@@ -391,157 +372,202 @@ class GoodsItemDataModel {
   }
   /// 分享赚
   String get mostEarnText {
+    if (!AppConfig.isLogin) {
+      return "";
+    }
     if (mostEarn != null && mostEarn > 0) {
       return "赚" + MoneyUtil.changeF2YWithUnit(mostEarn, format: MoneyFormat.END_INTEGER, unit: MoneyUnit.YUAN_ZH);
     }
     return "";
+  }
+  /// 多少人已买
+  String get productSaleCountText {
+    if (productSaleCount != null && productSaleCount > 0) {
+      if (productSaleCount > 9999) {
+        return "${(productSaleCount / 10000).toStringAsFixed(1)}万人已买";
+      }
+      return "$productSaleCount人已买";
+    }
+    return "";
+  }
+  /// 商品类型图标路径
+  List<String> get productTagImgNameList {
+    List<String> list = [];
+    if (type == 10) {
+      list.add(R.imagesProductTagAbroadS);
+    } else if (type == 20) {
+      list.add(R.imagesProductTagGlobalS);
+    }
+    if (limitNumber != null && limitNumber >= 2) {
+      list.add(R.imagesPintuanTwo);
+    }
+    return list;
   }
 }
 
 
 
 
-
+/// ----------------------------------------- 优惠券组件测试页面数据 -----------------------------------------
+class GoodsModel {
+  static GoodsModel getData() => GoodsModel.fromJson({});
+  static List<GoodsItemDataModel> getDataList() =>
+      List<GoodsItemDataModel>.from(
+          goodsDataList.map((e) => GoodsItemDataModel.fromJson(e)));
+  GoodsModel({this.configList});
+  List<GoodsItemConfigModel> configList;
+  factory GoodsModel.fromJson(Map<String, dynamic> json) {
+    return GoodsModel(
+        configList: List<GoodsItemConfigModel>.from(
+            goodsConfigList.map((e) => GoodsItemConfigModel.fromJson(e["config"]))));
+  }
+}
 
 const List<Map<String, dynamic>> goodsConfigList = [
-  // {
-  //   "id": 7221,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 3,
-  //     "goodsStyleType": 3,
-  //     "type": 1,
-  //     "buttonBgColor": "#e7e0e0"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, 
-  // {
-  //   "id": 7222,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 2,
-  //     "goodsStyleType": 3,
-  //     "type": 1,
-  //     "buttonBgColor": "#0e0000"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, {
-  //   "id": 7223,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 1,
-  //     "goodsStyleType": 3,
-  //     "type": 1,
-  //     "buttonBgColor": "#ef0c0c"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 1,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, {
-  //   "id": 7224,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 3,
-  //     "goodsStyleType": 2,
-  //     "type": 1,
-  //     "buttonBgColor": "#4D4D4D"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, {
-  //   "id": 7225,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 2,
-  //     "goodsStyleType": 2,
-  //     "type": 1,
-  //     "buttonBgColor": "#4D4D4D"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, {
-  //   "id": 7226,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 1,
-  //     "goodsStyleType": 2,
-  //     "type": 1,
-  //     "buttonBgColor": "#4D4D4D"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 1,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, {
-  //   "id": 7227,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 3,
-  //     "goodsStyleType": 1,
-  //     "type": 1,
-  //     "buttonBgColor": "#4D4D4D"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, {
-  //   "id": 7228,
-  //   "type": "goods",
-  //   "childType": 1,
-  //   "bizType": 1,
-  //   "config": {
-  //     "styleType": 2,
-  //     "goodsStyleType": 1,
-  //     "type": 1,
-  //     "buttonBgColor": "#4D4D4D"
-  //   },
-  //   "data": null,
-  //   "dataTotal": 2,
-  //   "userLevel": ["0", "10", "20", "30", "40"],
-  //   "platform": ["app", "wx-mini", "wx-h5"],
-  //   "isAuchor": false,
-  //   "auchorName": ""
-  // }, 
+  {
+    "id": 7221,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 3,
+      "goodsStyleType": 3,
+      "type": 1,
+      "buttonBgColor": "#e7e0e0"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7222,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 2,
+      "goodsStyleType": 3,
+      "type": 1,
+      "buttonBgColor": "#0e0000"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7223,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 1,
+      "goodsStyleType": 3,
+      "type": 1,
+      "buttonBgColor": "#ef0c0c"
+    },
+    "data": null,
+    "dataTotal": 1,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7224,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 3,
+      "goodsStyleType": 2,
+      "type": 1,
+      "buttonBgColor": "#4D4D4D"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7225,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 2,
+      "goodsStyleType": 2,
+      "type": 1,
+      "buttonBgColor": "#4D4D4D"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7226,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 1,
+      "goodsStyleType": 2,
+      "type": 1,
+      "buttonBgColor": "#4D4D4D"
+    },
+    "data": null,
+    "dataTotal": 1,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7227,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 3,
+      "goodsStyleType": 1,
+      "type": 1,
+      "buttonBgColor": "#4D4D4D"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
+  {
+    "id": 7228,
+    "type": "goods",
+    "childType": 1,
+    "bizType": 1,
+    "config": {
+      "styleType": 2,
+      "goodsStyleType": 1,
+      "type": 1,
+      "buttonBgColor": "#4D4D4D"
+    },
+    "data": null,
+    "dataTotal": 2,
+    "userLevel": ["0", "10", "20", "30", "40"],
+    "platform": ["app", "wx-mini", "wx-h5"],
+    "isAuchor": false,
+    "auchorName": ""
+  }, 
   {
     "id": 7229,
     "type": "goods",
@@ -578,8 +604,8 @@ const List<Map<String, dynamic>> goodsDataList = [
 			"groupMarketPrice": null,
 			"remainInventory": 30,
 			"inventory": null,
-			"mostEarn": 200,
-			"productSaleCount": 0,
+			"mostEarn": 25342,
+			"productSaleCount": 2824230,
 			"tagUrl": null,
 			"tagPosition": null,
 			"showNum": 1,
@@ -600,14 +626,14 @@ const List<Map<String, dynamic>> goodsDataList = [
 			"productDescription": "",
 			"marketPrice": 0,
 			"buyingPrice": 1990,
-			"limitNumber": 0,
+			"limitNumber": 2,
 			"groupBuyingPrice": null,
 			"groupMostEarn": null,
 			"groupMarketPrice": null,
 			"remainInventory": 220,
 			"inventory": null,
-			"mostEarn": 557,
-			"productSaleCount": 0,
+			"mostEarn": null,
+			"productSaleCount": 3423,
 			"tagUrl": null,
 			"tagPosition": null,
 			"showNum": 1,
@@ -627,9 +653,9 @@ const List<Map<String, dynamic>> goodsDataList = [
 			"bannerImage": "https://sh-tximg.hzxituan.com/tximg/crm/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8551600076432435.jpg",
 			"productName": "wl的测试商品-pop商家",
 			"productDescription": "wl的测试商品-pop商家",
-			"marketPrice": 1900,
+			"marketPrice": 0,
 			"buyingPrice": 900,
-			"limitNumber": 0,
+			"limitNumber": 2,
 			"groupBuyingPrice": null,
 			"groupMostEarn": null,
 			"groupMarketPrice": null,
@@ -640,7 +666,7 @@ const List<Map<String, dynamic>> goodsDataList = [
 			"tagUrl": null,
 			"tagPosition": null,
 			"showNum": 1,
-			"type": 0,
+			"type": 10,
 			"shopType": 1,
 			"promotionId": null,
 			"promotionType": null,
