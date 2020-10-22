@@ -63,7 +63,9 @@ class HttpRequest {
       if (!processData) {
         return response as T;
       }
-
+      if (map["message"] == null) {
+        map["message"] = "网络异常";
+      }
       if (map["success"] == false) {
         XTNetError xtNetError = XTNetError(
             type: XTNetErrorType.DEFAULT,

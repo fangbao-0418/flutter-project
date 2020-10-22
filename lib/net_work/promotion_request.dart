@@ -9,9 +9,9 @@ class PromotionRequest {
   }
 
   static Future<Map> promotionMgicData(String componentId, int page,
-      {int pageSize = 10, String bizSource = "0", String source = "1"}) async {
+      {int pageSize = 10, String bizSource = "0", String source = "1",}) async {
     final url = "/ncweb/magic/getMagicData";
-    return HttpRequest.request(url, method: "post", params: {
+    return HttpRequest.request(url, method: "post", hideToast: true,params: {
       "componentId": componentId,
       "source": source,
       "pageSize": pageSize,

@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:xtflutter/config/app_config/app_listener.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
+import 'package:xtflutter/config/app_config/method_channel.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/coupon_model.dart';
 import 'package:xtflutter/model/goods_model.dart';
@@ -261,6 +265,8 @@ class _PromotionState extends State<Promotion> {
       clist.addAll(list);
       print("goods----" + ids + " ------ " + clist.length.toString());
       goods[ids] = clist;
+    }).catchError((err) {
+      goodsIDGetAll[ids] = true;
     }).whenComplete(() {
       goodsIDLoading[ids] = false;
       if (!goodsIDLoading.values.contains(true)) {
@@ -427,22 +433,41 @@ class _PromotionState extends State<Promotion> {
   Widget build(BuildContext context) {
     // print(" ======= " + dataInfo.componentVoList.last.toString());
     return Scaffold(
-      floatingActionButton: Builder(builder: (BuildContext context) {
-        return FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            print("-----FloatingActionButton-----");
-          },
-          tooltip: "Hello",
-          heroTag: null,
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.black,
-          elevation: 0.0,
-          highlightElevation: 14.0,
-          shape: xtShapeRound(0),
-        );
-      }),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: haveShare
+          ? FloatingActionButton(
+              child: Image.network(shareData.icon),
+              onPressed: () {
+                if (AppConfig.isLogin) {
+                  showPromotion({
+                    "icon": shareData.icon,
+                    "poster": shareData.poster,
+                    "posterTitle": shareData.posterTitle,
+                    "title": shareData.title,
+                    "page": "pages/home/home",
+                    "scene": "mid=" +
+                        AppConfig.user.id.toString() +
+                        (Random().nextInt(85) + 10).toString() +
+                        "&t=4" +
+                        "&url=/pages/webview/index&bizSource=0" +
+                        "&id=" +
+                        widget.params["id"].toString()
+                  });
+                } else {
+                  XTMTDChannel.invokeMethod("loginOut");
+                }
+
+                // print("-----FloatingActionButton-----");
+              },
+              tooltip: "Hello",
+              heroTag: null,
+              foregroundColor: clearColor,
+              backgroundColor: clearColor,
+              elevation: 0.0,
+              highlightElevation: 14.0,
+              shape: xtShapeRound(0),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: tabBottom == null ? null : tabbar(tabBottom),
       appBar: xtBackBar(
           title: "活动", back: () => XTRouter.closePage(context: context)),

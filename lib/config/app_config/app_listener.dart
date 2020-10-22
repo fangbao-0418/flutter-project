@@ -118,12 +118,14 @@ class AppListener {
   }
 
   ///获取推送token
-  static Future<String> getPushToken() async{
+  static Future<String> getPushToken() async {
     return await XTMTDChannel.invokeMethod("getPushToken");
   }
 
   ///展示直播类分享弹框
-  static void showLiveDialog(Map<String, dynamic> params){
-    XTMTDChannel.invokeMethod("showLiveDialog",params);
+  static void showLiveDialog(Map<String, dynamic> params) {
+    XTMTDChannel.invokeMethod("showLiveDialog", params);
   }
- }
+
+ 
+}

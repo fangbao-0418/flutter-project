@@ -3,81 +3,56 @@ import 'package:flutter/widgets.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/promotion_model.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:xtflutter/router/router.dart';
 import 'package:xtflutter/utils/appconfig.dart';
-import 'package:xtflutter/utils/global.dart';
 
-class XTTabbar extends StatelessWidget {
+class XTTabbar extends StatefulWidget {
   XTTabbar(this.data);
 
   final ComponentVoList data;
+
+  @override
+  _XTTabbarState createState() => _XTTabbarState();
+}
+
+class _XTTabbarState extends State<XTTabbar> with TickerProviderStateMixin {
+  List<Widget> list = [];
+
+  TabController tabC;
+
+  int selectIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    tabC = TabController(
+        initialIndex: selectIndex,
+        length: widget.data.data.length,
+        vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Style temp = Style();
     Color bgColor = whiteColor;
     Color fontColor = mainBlackColor;
-    if (data.config.fontColor != null && data.config.fontColor.length > 0) {
-      fontColor = HexColor(data.config.fontColor);
+    if (widget.data.config.fontColor != null &&
+        widget.data.config.fontColor.length > 0) {
+      fontColor = HexColor(widget.data.config.fontColor);
     }
-    if (data.config.bgColor != null && data.config.bgColor.length > 0) {
-      bgColor = HexColor(data.config.bgColor);
+    if (widget.data.config.bgColor != null &&
+        widget.data.config.bgColor.length > 0) {
+      bgColor = HexColor(widget.data.config.bgColor);
     }
 
-    if (data.config.styleType == 0) {
-    } else {}
-    temp.textStyle(fontColor);
-
-    if (data.config.styleType == 1) {
-      return titles(data);
+    if (widget.data.config.styleType == 0) {
+      return titles(widget.data, bgColor);
     } else {
-      return StyleProvider(
-          style: Style(),
-          child: ConvexAppBar(
-            style:
-                data.config.styleType == 1 ? TabStyle.titled : TabStyle.fixed,
-            curveSize: 0,
-            elevation: 0,
-            top: 0,
-            color: fontColor,
-            activeColor: fontColor,
-            backgroundColor: bgColor,
-            items: tabbarItems(data),
-            initialActiveIndex: 0, //optional, default as 0
-            onTap: (int i) {
-              Datum item = data.data[i];
-              print(item.url);
-            },
-          ));
+      return imgAndtitles(widget.data, bgColor);
     }
   }
 }
 
-List<TabItem> tabbarItems(ComponentVoList data) {
-  List<TabItem> temp = [];
-  for (var item in data.data) {
-    temp.add(TabItem(icon: Image.network(item.img), title: item.title));
-  }
-  return temp;
-}
-
-class Style extends StyleHook {
-  @override
-  double get activeIconSize => 27;
-
-  @override
-  double get activeIconMargin => 10;
-
-  @override
-  double get iconSize => 27;
-
-  @override
-  TextStyle textStyle(Color color) {
-    return TextStyle(fontSize: 12, color: color);
-  }
-}
-
-Widget titles(ComponentVoList data) {
+Widget titles(ComponentVoList data, Color bgcolor) {
   List<Widget> titles = [];
   Color fontColor = data.config.fontColor == null
       ? mainBlackColor
@@ -101,8 +76,59 @@ Widget titles(ComponentVoList data) {
 
     titles.add(tep);
   }
+
+  return Container(
+    color: bgcolor,
+    padding: EdgeInsets.only(bottom: AppConfig.bottomH),
+    child: Row(
+      children: titles,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+    ),
+  );
+}
+
+Widget imgAndtitles(ComponentVoList data, Color bgcolor) {
+  List<Widget> titles = [];
+  Color fontColor = data.config.fontColor == null
+      ? mainBlackColor
+      : HexColor(data.config.fontColor);
+  for (var item in data.data) {
+    // print(item.title);
+    GestureDetector tep = GestureDetector(
+        onTap: () {
+          print("item.url");
+          print(item.url);
+          print("item.url");
+        },
+        child: Container(
+            height: 60,
+            alignment: Alignment(0, 0),
+            color: Colors.yellow,
+            padding: EdgeInsets.only(
+                left: data.data.length >= 5 ? 5 : 10,
+                right: data.data.length >= 5 ? 5 : 10),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Image.network(
+                    item.img,
+                    height: 27,
+                    width: 27,
+                  ),
+                ),
+                Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child:
+                        xtText(item.title, 12, fontColor, bgcolor: clearColor)),
+              ],
+            )));
+
+    titles.add(tep);
+  }
   // titles.add(tt);
   return Container(
+    color: bgcolor,
     padding: EdgeInsets.only(bottom: AppConfig.bottomH),
     child: Row(
       children: titles,
