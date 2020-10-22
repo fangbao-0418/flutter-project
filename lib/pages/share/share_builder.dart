@@ -44,7 +44,7 @@ void showBottomShareDialog(BuildContext context, String page, String scene,{Stri
                           ],
                         )),
                         onTap: () {
-                          shareToMiNi(context, page, scene,title: title,shareImg: shareImg,desc: desc);
+                          shareToMiNi(context, page, scene,title: title,shareImg: shareImg,desc: desc,needPop: true);
                         },
                       )),
                       ///生成海报
@@ -105,9 +105,9 @@ void showBottomShareDialog(BuildContext context, String page, String scene,{Stri
       });
 }
 
-void shareToMiNi(BuildContext context, String page, String scene,{String title,String shareImg,String desc}){
+void shareToMiNi(BuildContext context, String page, String scene,{String title,String shareImg,String desc,bool needPop = false}){
   HomeRequest.getCardInfo({"page": page, "scene": scene})
-      .whenComplete((){  Navigator.of(context).pop();})
+      .whenComplete((){  if(needPop) Navigator.of(context).pop();})
       .then((value) {
     var shareModel = value.toJson();
     shareModel["appId"] = value.appid;

@@ -4,13 +4,12 @@ import 'package:xtflutter/r.dart';
 import 'package:xtflutter/utils/appconfig.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
-import 'package:xtflutter/model/LiveStationAnchorInfo.dart';
+import 'package:xtflutter/model/live_anchor_model.dart';
 import 'package:xtflutter/net_work/live_request.dart';
 import 'package:xtflutter/pages/normal/loading.dart';
 import 'package:xtflutter/pages/normal/toast.dart';
 import 'package:xtflutter/router/router.dart';
-import 'package:intl/intl.dart';
-import 'LiveHistoryListPage.dart';
+import 'live_history_list_page.dart';
 
 class LiveAnchorStationPage extends StatefulWidget {
   static String routerName = "LiveAnchorStationPage";

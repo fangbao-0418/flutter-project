@@ -440,6 +440,8 @@ class CouponItemDataModel {
   CouponStatusType get statusType {
     if (received != null && received) {
       return CouponStatusType.geted;
+    } else if (status == 1) {
+      return CouponStatusType.normal;
     } else if (remainInventory == null || remainInventory <= 0 || status == 2) {
       return CouponStatusType.gone;
     } else {

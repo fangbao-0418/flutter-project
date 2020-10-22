@@ -81,27 +81,29 @@ class _GoodsItemState extends State<GoodsItem> {
   }
 
   Widget _getWidget() {
-    if (widget.configModel.style == GoodsItemRowStyleType.rowOne && widget.configModel.goodsType == GoodsItemStyleType.styleOne) {
+    GoodsItemRowStyleType style = widget.configModel.style;
+    GoodsItemStyleType goodsType = widget.configModel.goodsType;
+    if (goodsType == GoodsItemStyleType.styleOne && style == GoodsItemRowStyleType.rowOne) {
       return _getGoodsTypeOneAndRowOneWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowTwo && widget.configModel.goodsType == GoodsItemStyleType.styleOne) {
+    } else if (goodsType == GoodsItemStyleType.styleOne && style == GoodsItemRowStyleType.rowTwo) {
       return _getGoodsTypeOneAndRowTwoWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowThree && widget.configModel.goodsType == GoodsItemStyleType.styleOne) {
+    } else if (goodsType == GoodsItemStyleType.styleOne && style == GoodsItemRowStyleType.rowThree) {
       return _getGoodsTypeOneAndRowThreeWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowOne && widget.configModel.goodsType == GoodsItemStyleType.styleTwo) {
+    } else if (goodsType == GoodsItemStyleType.styleTwo && style == GoodsItemRowStyleType.rowOne) {
       return _getGoodsTypeTwoAndRowOneWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowTwo && widget.configModel.goodsType == GoodsItemStyleType.styleTwo) {
+    } else if (goodsType == GoodsItemStyleType.styleTwo && style == GoodsItemRowStyleType.rowTwo) {
       return _getGoodsTypeTwoAndRowTwoWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowThree && widget.configModel.goodsType == GoodsItemStyleType.styleTwo) {
+    } else if (goodsType == GoodsItemStyleType.styleTwo && style == GoodsItemRowStyleType.rowThree) {
       return _getGoodsTypeTwoAndRowThreeWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowOne && widget.configModel.goodsType == GoodsItemStyleType.styleThree) {
+    } else if (goodsType == GoodsItemStyleType.styleThree && style == GoodsItemRowStyleType.rowOne) {
       return _getGoodsTypeThreeAndRowOneWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowTwo && widget.configModel.goodsType == GoodsItemStyleType.styleThree) {
+    } else if (goodsType == GoodsItemStyleType.styleThree && style == GoodsItemRowStyleType.rowTwo) {
       return _getGoodsTypeThreeAndRowTwoWidget();
-    } else if (widget.configModel.style == GoodsItemRowStyleType.rowThree && widget.configModel.goodsType == GoodsItemStyleType.styleThree) {
+    } else if (goodsType == GoodsItemStyleType.styleThree && style == GoodsItemRowStyleType.rowThree) {
       return _getGoodsTypeThreeAndRowThreeWidget();
     }
 
-    return Container(color: Colors.red);
+    return Container(color: mainF5GrayColor);
   }
 
   /// 获取标签tag
@@ -184,7 +186,7 @@ class _GoodsItemState extends State<GoodsItem> {
     return Row(
       children: <Widget>[
         Stack(
-          children: _getProductImgAndSubTag(_model, _config.itemHeight(context)),
+          children: _getProductImgAndSubTag(_model, _config.itemHeight(context), tagW: 80, tagH: 48),
         ),
         Expanded(
           child: Container(
@@ -282,7 +284,7 @@ class _GoodsItemState extends State<GoodsItem> {
     return Column(
       children: <Widget>[
         Stack(
-          children: _getProductImgAndSubTag(_model, _config.itemWidth(context), isShowWrap: true, wrapPadding: 6),
+          children: _getProductImgAndSubTag(_model, _config.itemWidth(context), isShowWrap: true, wrapPadding: 6, tagW: 80, tagH: 48),
         ),
         Expanded(
           child: Container(
@@ -417,7 +419,7 @@ class _GoodsItemState extends State<GoodsItem> {
     return Row(
       children: <Widget>[
         Stack(
-          children: _getProductImgAndSubTag(_model, _config.itemHeight(context)),
+          children: _getProductImgAndSubTag(_model, _config.itemHeight(context), tagW: 80, tagH: 48),
         ),
         Expanded(
           child: Container(
@@ -501,7 +503,7 @@ class _GoodsItemState extends State<GoodsItem> {
     return Column(
       children: <Widget>[
         Stack(
-          children: _getProductImgAndSubTag(_model, _config.itemWidth(context)),
+          children: _getProductImgAndSubTag(_model, _config.itemWidth(context), tagW: 80, tagH: 48),
         ),
         Expanded(
           child: Container(
@@ -582,25 +584,25 @@ class _GoodsItemState extends State<GoodsItem> {
             Visibility(
               visible: _model.tagType == TagPositionType.leftTop,
               child: Positioned(left: 0, top: 0,
-                child: Image(image: NetworkImage(_model.tagUrl), width: 50, height: 30)
+                child: Image(image: NetworkImage(_model.tagUrl), width: 80, height: 48)
               )
             ),
             Visibility(
               visible: _model.tagType == TagPositionType.leftBottom,
               child: Positioned(left: 0, bottom: 0,
-                child: Image(image: NetworkImage(_model.tagUrl), width: 50, height: 30)
+                child: Image(image: NetworkImage(_model.tagUrl), width: 80, height: 48)
               )
             ),
             Visibility(
               visible: _model.tagType == TagPositionType.rightTop,
               child: Positioned(right: 0, top: 0,
-                child: Image(image: NetworkImage(_model.tagUrl), width: 50, height: 30)
+                child: Image(image: NetworkImage(_model.tagUrl), width: 80, height: 48)
               )
             ),
             Visibility(
               visible: _model.tagType == TagPositionType.rightBottom,
               child: Positioned(right: 0, bottom: 0,
-                child: Image(image: NetworkImage(_model.tagUrl), width: 50, height: 30)
+                child: Image(image: NetworkImage(_model.tagUrl), width: 80, height: 48)
               )
             ),
             Visibility(
@@ -696,7 +698,7 @@ class _GoodsItemState extends State<GoodsItem> {
     return Column(
       children: <Widget>[
         Stack(
-          children: _getProductImgAndSubTag(_model, _config.itemWidth(context), isShowWrap: true, wrapPadding: 6)
+          children: _getProductImgAndSubTag(_model, _config.itemWidth(context), isShowWrap: true, wrapPadding: 6, tagW: 80, tagH: 48)
         ),
         Expanded(
           child: Container(

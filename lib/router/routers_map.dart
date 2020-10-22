@@ -1,6 +1,6 @@
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:xtflutter/pages/Live/LiveAnchorStationPage.dart';
-import 'package:xtflutter/pages/Live/LiveHistoryListPage.dart';
+import 'package:xtflutter/pages/Live/live_anchor_page.dart';
+import 'package:xtflutter/pages/Live/live_history_list_page.dart';
 import 'package:xtflutter/pages/Live/anchor_personal_page.dart';
 import 'package:xtflutter/pages/home/limit_time_seckill.dart';
 import 'package:xtflutter/pages/message/message_center.dart';
@@ -87,12 +87,12 @@ Map<String, PageBuilder> routeConfigs = {
   /**
    * 消息中心页面
    */
-  MessageCenterPage.routeName: (pageName, params, _) => MessageCenterPage(),
+  MessageCenterPage.routerName: (pageName, params, _) => MessageCenterPage(),
 
   /**
    * 消息详情列表页面
    */
-  MessageDetailPage.routeName: (pageName, params, _) => MessageDetailPage(
+  MessageDetailPage.routerName: (pageName, params, _) => MessageDetailPage(
         pageName: pageName,
         params: params,
       ),

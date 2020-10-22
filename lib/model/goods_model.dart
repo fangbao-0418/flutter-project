@@ -361,7 +361,7 @@ class GoodsItemDataModel {
     if (buyingPrice != null && buyingPrice > 0) {
       return MoneyUtil.changeF2YWithUnit(buyingPrice, format: MoneyFormat.END_INTEGER, unit: MoneyUnit.YUAN);
     }
-    return "";
+    return "￥0";
   }
   /// 划线价
   String get marketPriceText {
