@@ -21,8 +21,6 @@ class XTTabbar extends StatefulWidget {
 class _XTTabbarState extends State<XTTabbar> with TickerProviderStateMixin {
   List<Widget> list = [];
 
-  // int selectIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -56,34 +54,26 @@ class _XTTabbarState extends State<XTTabbar> with TickerProviderStateMixin {
         widget.data.config.selectFontColor.length > 0) {
       selectFontColor = HexColor(widget.data.config.selectFontColor);
     }
-
     if (widget.data.config.styleType == 0) {
-      return titles(widget.data, bgColor,fontColor,selectFontColor, widget.selectIndex);
+      return titles(widget.data, bgColor, fontColor, selectFontColor,
+          widget.selectIndex, true);
     } else {
-      return imgAndtitles(
-          widget.data, bgColor, fontColor, selectFontColor, widget.selectIndex);
+      return titles(widget.data, bgColor, fontColor, selectFontColor,
+          widget.selectIndex, false);
     }
   }
 
-  Widget imgAndtitles(ComponentVoList data, Color bgcolor, Color fontColor,
-      Color selectFontColor, int selectIndex) {
-    List<Widget> titles = [];
-
-    for (var i = 0; i < data.data.length; i++) {
-      var item = data.data[i];
-      // print(item.title);
-      GestureDetector tep = GestureDetector(
-          onTap: () {
-            _handleTap(item.url);
-          },
-          child: Container(
-              height: 60,
-              alignment: Alignment(0, 0),
-              color: Colors.yellow,
-              padding: EdgeInsets.only(
-                  left: data.data.length >= 5 ? 5 : 10,
-                  right: data.data.length >= 5 ? 5 : 10),
-              child: Column(
+  Widget titleWidget(Datum item, int length, Color fontColor,
+      Color selectFontColor, bool isSelect, bool istitles) {
+    return Container(
+        height: 60,
+        alignment: Alignment(0, 0),
+        padding: EdgeInsets.only(
+            left: length >= 5 ? 5 : 10, right: length >= 5 ? 5 : 10),
+        child: istitles
+            ? xtText(item.title, 14, isSelect ? selectFontColor : fontColor,
+                bgcolor: clearColor)
+            : Column(
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 5),
@@ -96,48 +86,23 @@ class _XTTabbarState extends State<XTTabbar> with TickerProviderStateMixin {
                   Container(
                       margin: EdgeInsets.only(top: 5),
                       child: xtText(item.title, 12,
-                          selectIndex == i ? selectFontColor : fontColor,
+                          isSelect ? selectFontColor : fontColor,
                           bgcolor: clearColor)),
                 ],
-              )));
-
-      titles.add(tep);
-    }
-    // titles.add(tt);
-    return Container(
-      color: bgcolor,
-      padding: EdgeInsets.only(bottom: AppConfig.bottomH),
-      child: Row(
-        children: titles,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-      ),
-    );
+              ));
   }
 
   Widget titles(ComponentVoList data, Color bgcolor, Color fontColor,
-      Color selectFontColor, int selectIndex) {
+      Color selectFontColor, int selectIndex, bool istitles) {
     List<Widget> titles = [];
-    Color fontColor = data.config.fontColor == null
-        ? mainBlackColor
-        : HexColor(data.config.fontColor);
     for (var i = 0; i < data.data.length; i++) {
       var item = data.data[i];
-      print(item.title);
       GestureDetector tep = GestureDetector(
           onTap: () {
             _handleTap(item.url);
           },
-          child: Container(
-              height: 48,
-              alignment: Alignment(0, 0),
-              color: Colors.yellow,
-              padding: EdgeInsets.only(
-                  left: data.data.length >= 5 ? 5 : 10,
-                  right: data.data.length >= 5 ? 5 : 10),
-              child: xtText(item.title, 14,
-                  selectIndex == i ? selectFontColor : fontColor,
-                  bgcolor: Colors.brown)));
-
+          child: titleWidget(item, data.data.length, fontColor, selectFontColor,
+              i == selectIndex, istitles));
       titles.add(tep);
     }
 

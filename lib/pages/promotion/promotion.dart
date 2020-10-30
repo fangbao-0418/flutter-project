@@ -133,15 +133,12 @@ class _PromotionState extends State<Promotion> {
 
     ///当前的导航位置对应模块位置
     navToReal = {};
-
     itemIndex = [];
     navBar = null;
-
     dataInfo = PromotionData();
     tabNav = null;
     title = "";
     endTime = "";
-
     auchorNames = [];
     auchorids = [];
 
@@ -150,8 +147,13 @@ class _PromotionState extends State<Promotion> {
 
     ///商品ID
     goodsIds = [];
-
     couponCount = 0;
+    goodsIDLoading = {};
+    goodsIDGetAll = {};
+    goods = {};
+    coupons = {};
+    goodsCountDict = {};
+    goodsPage = {};
   }
 
   @override
@@ -406,7 +408,6 @@ class _PromotionState extends State<Promotion> {
             child: Container(
               width: 100,
               height: 20,
-              color: Colors.yellow,
               child: xtText("这是个视频", 12, mainBlackColor),
             ),
           );
@@ -417,7 +418,6 @@ class _PromotionState extends State<Promotion> {
           return Container(
             height: model.couponConfig
                 .gridHeight(coupons[model.id.toString()].length, context),
-            color: Colors.yellow,
             child: CouponItems(
                 itemConfigModel: model.couponConfig,
                 dataList: coupons[model.id.toString()]),
@@ -583,7 +583,6 @@ class _PromotionState extends State<Promotion> {
 
   Widget goodsView(GoodsItemConfigModel model, List<GoodsItemDataModel> goods) {
     return Container(
-        color: Colors.lightGreenAccent,
         height: model.gridHeight(goods.length, context),
         child: GoodsItems(
           configModel: model,

@@ -69,6 +69,6 @@ class BannerOnlyUtil extends StatelessWidget {
     return Container(
         color: bgcolor,
         padding: EdgeInsets.only(top: top, bottom: bottom),
-        child: Image.network(this.mode.data.first.img));
+        child: Image.network(this.mode.data.first.img,fit: BoxFit.cover,));
   }
 }
