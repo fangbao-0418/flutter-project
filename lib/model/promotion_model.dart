@@ -121,6 +121,7 @@ class Config {
     this.padding,
     this.fontColorSelect,
     this.fontColor,
+    this.selectFontColor,
     this.goodsStyleType,
     this.type,
     this.buttonBgColor,
@@ -134,6 +135,7 @@ class Config {
   List<String> padding;
   String fontColorSelect;
   String fontColor;
+  String selectFontColor;
   int goodsStyleType;
   int type;
   String buttonBgColor;
@@ -152,6 +154,7 @@ class Config {
         fontColorSelect:
             json["fontColorSelect"] == null ? null : json["fontColorSelect"],
         fontColor: json["fontColor"] == null ? null : json["fontColor"],
+        selectFontColor: json["selectFontColor"] == null ? null : json["selectFontColor"],
         goodsStyleType:
             json["goodsStyleType"] == null ? null : json["goodsStyleType"],
         type: json["type"] == null ? null : json["type"],
@@ -170,6 +173,8 @@ class Config {
             padding == null ? null : List<dynamic>.from(padding.map((x) => x)),
         "fontColorSelect": fontColorSelect == null ? null : fontColorSelect,
         "fontColor": fontColor == null ? null : fontColor,
+        "selectFontColor": selectFontColor == null ? null : selectFontColor,
+
         "goodsStyleType": goodsStyleType == null ? null : goodsStyleType,
         "type": type == null ? null : type,
         "buttonBgColor": buttonBgColor == null ? null : buttonBgColor,

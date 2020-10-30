@@ -1,15 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:xtflutter/config/app_config/app_listener.dart';
 import 'package:xtflutter/config/app_config/color_config.dart';
 import 'package:xtflutter/config/app_config/method_channel.dart';
 import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/coupon_model.dart';
 import 'package:xtflutter/model/goods_model.dart';
 import 'package:xtflutter/model/promotion_model.dart';
-import 'package:xtflutter/net_work/http_request.dart';
 import 'package:xtflutter/net_work/promotion_request.dart';
 import 'package:xtflutter/pages/demo_page/scroller.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
@@ -63,10 +60,10 @@ class _PromotionState extends State<Promotion> {
   ///每个商品ID 对应商品的页码
   Map<String, int> goodsPage = {};
 
-  ///每个商品ID 对应商品的页码
+  ///正在加载中的商品ID
   Map<String, bool> goodsIDLoading = {};
 
-  ///每个商品ID 对应商品的页码
+  ///加载完成的商品ID
   Map<String, bool> goodsIDGetAll = {};
 
   ///优惠券ID
@@ -74,6 +71,9 @@ class _PromotionState extends State<Promotion> {
 
   ///商品ID
   List<String> goodsIds = [];
+
+  ///底部导航选中序号
+  int bottomBarindex = 0;
 
   int couponCount = 0;
 
@@ -109,9 +109,56 @@ class _PromotionState extends State<Promotion> {
   bool initIng = true;
   bool haveShare = false;
   ConfigData shareData;
+
+  ///当前配置的活动ID
+  String currentID = "";
+
+  void clearInfo() {
+    currentID = "";
+
+    ///导航条所在position位置
+    barPositionIndex = 0;
+    flowNavBarShow = false;
+    jumpIng = false;
+    initIng = true;
+
+    ///导航选中位置
+    barSelectIndex = 0;
+
+    ///导航选中位置
+    barSelectRealIndex = 0;
+
+    ///当前模块位置对应的导航位置
+    realToNav = {};
+
+    ///当前的导航位置对应模块位置
+    navToReal = {};
+
+    itemIndex = [];
+    navBar = null;
+
+    dataInfo = PromotionData();
+    tabNav = null;
+    title = "";
+    endTime = "";
+
+    auchorNames = [];
+    auchorids = [];
+
+    ///优惠券ID
+    couponIds = [];
+
+    ///商品ID
+    goodsIds = [];
+
+    couponCount = 0;
+  }
+
   @override
   void initState() {
     super.initState();
+
+    currentID = widget.params["id"];
 
     promotionInfo();
 
@@ -126,7 +173,7 @@ class _PromotionState extends State<Promotion> {
 
   ///请求活动信息
   void promotionInfo() {
-    PromotionRequest.promotionMgic(widget.params["id"]).then((value) {
+    PromotionRequest.promotionMgic(currentID).then((value) {
       Map<String, dynamic> map = Map.from(value);
       PromotionData tt = PromotionData.fromJson(map);
       endTime = tt.endTime;
@@ -455,8 +502,6 @@ class _PromotionState extends State<Promotion> {
                 } else {
                   XTMTDChannel.invokeMethod("loginOut");
                 }
-
-                // print("-----FloatingActionButton-----");
               },
               tooltip: "Hello",
               heroTag: null,
@@ -468,24 +513,36 @@ class _PromotionState extends State<Promotion> {
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: tabBottom == null ? null : tabbar(tabBottom),
+      bottomNavigationBar:
+          tabBottom == null ? null : tabbar(tabBottom, bottomBarindex),
       appBar: xtBackBar(
           title: "活动", back: () => XTRouter.closePage(context: context)),
       body: Container(
           color: bodyConfig == null
               ? whiteColor
               : HexColor(bodyConfig.config.bgColor),
-          child: showWidgetFilter()
-          //showWidgetFilter() //list(),// ScrollablePositionedListPage()
-          ),
-
-      // xtText("活动页呀" + widget.params["id"], 20, mainRedColor),
+          child: showWidgetFilter()),
     );
   }
 
-  Widget tabbar(ComponentVoList data) {
-    print("tabbar ---------Adddddd");
-    return XTTabbar(data);
+  Widget tabbar(ComponentVoList data, int selectIndex) {
+    return XTTabbar(
+      data,
+      selectIndex: bottomBarindex,
+      onTap: (value) {
+        print("tabbar ---------Adddddd" + value);
+        clearInfo();
+        for (var i = 0; i < tabBottom.data.length; i++) {
+          var item = tabBottom.data[i];
+          if (item.url == value) {
+            bottomBarindex = i;
+          }
+        }
+        currentID = value;
+        promotionInfo();
+        setState(() {});
+      },
+    );
   }
 
   XTPlayer palyer(ComponentVoList model) {
@@ -567,18 +624,9 @@ class _PromotionState extends State<Promotion> {
       // // print("loading - goods" + " ------ " + goodId);
 
       if (goodsIds.contains(goodId)) {
-        // print("loading - goods" + " ------ " + goodId);
-
-        // print("loading " + " ------ " + goodsIds.toString());
-
         getIDGoodsData(goodId);
       }
     }
-    // print("-------------------------------------------------------");
-    // print(li.toString());
-    // print(showItems.toString());
-    // print("-------------------------------------------------------");
-
     //排序
     showItems.sort((a, b) => b.compareTo(a));
 
