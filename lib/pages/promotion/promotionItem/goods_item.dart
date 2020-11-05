@@ -4,6 +4,7 @@ import 'package:xtflutter/config/app_config/method_config.dart';
 import 'package:xtflutter/model/goods_model.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
 import 'package:xtflutter/router/router.dart';
+import '../../../config/app_config/method_config.dart';
 import '../../../r.dart';
 
 /// 商品组件
@@ -108,7 +109,49 @@ class _GoodsItemState extends State<GoodsItem> {
 
   /// 获取标签tag
   List<Widget> _productTags(GoodsItemDataModel model) {
-    return List<Widget>.from(model.productTagImgNameList.map((e) => Image(image: AssetImage(e), height: 16)));
+    List<Widget> list = List<Widget>.from(model.productTagImgNameList.map((e) => Image(image: AssetImage(e), height: 16)));
+    if (model.interest != null && model.interest.length > 0) {
+      list.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 3, right: 3, top: 0.5, bottom: 1),
+              alignment: Alignment.center,
+              child: xtText(model.interest, 10, Colors.white),
+              decoration: BoxDecoration(
+                color: xtColor_FF6600,
+                borderRadius: BorderRadius.all(Radius.circular(7)),
+              ),
+            ),
+          ],
+        )
+      );
+    } else if (model.productTagList.isNotEmpty) {
+      model.productTagList.forEach((element) {
+        if (element.tagContentList.isNotEmpty) {
+          element.tagContentList.forEach((e) {
+            list.add(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(left: 3, right: 3, top: 0.5, bottom: 1),
+                    alignment: Alignment.center,
+                    child: xtText(e, 10, Colors.white),
+                    decoration: BoxDecoration(
+                      color: xtColor_FF6600,
+                      borderRadius: BorderRadius.all(Radius.circular(7)),
+                    ),
+                  ),
+                ],
+              )
+            );
+          });
+        }
+      });
+    }
+    return list;
   }
 
   /// 获取图标及角标

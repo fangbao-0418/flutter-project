@@ -241,9 +241,10 @@ class GoodsItemDataModel {
         this.promotionEndTime,
         this.canAddCart,
         this.showCoupon,
+        this.productTagList
     });
 
-    dynamic interest;
+    String interest;
     int productId;
     String coverImage;
     String bannerImage;
@@ -270,6 +271,7 @@ class GoodsItemDataModel {
     dynamic promotionEndTime;
     int canAddCart;
     int showCoupon;
+    List<GoodsItemDataTagsModel> productTagList;
 
     factory GoodsItemDataModel.fromJson(Map<String, dynamic> json) => GoodsItemDataModel(
         interest: json["interest"],
@@ -299,6 +301,7 @@ class GoodsItemDataModel {
         promotionEndTime: json["promotionEndTime"],
         canAddCart: json["canAddCart"],
         showCoupon: json["showCoupon"],
+        productTagList: List<GoodsItemDataTagsModel>.from(json["productTagList"].map((x) => GoodsItemDataTagsModel.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -405,6 +408,41 @@ class GoodsItemDataModel {
   }
 }
 
+
+GoodsItemDataTagsModel goodsItemDataTagsModelFromJson(String str) => GoodsItemDataTagsModel.fromJson(json.decode(str));
+String goodsItemDataTagsModelToJson(GoodsItemDataTagsModel data) => json.encode(data.toJson());
+
+class GoodsItemDataTagsModel {
+    GoodsItemDataTagsModel({
+        this.id,
+        this.tagType,
+        this.tagContentList,
+        this.url,
+        this.promotionId,
+    });
+
+    int id;
+    int tagType;
+    List<String> tagContentList;
+    dynamic url;
+    dynamic promotionId;
+
+    factory GoodsItemDataTagsModel.fromJson(Map<String, dynamic> json) => GoodsItemDataTagsModel(
+        id: json["id"],
+        tagType: json["tagType"],
+        tagContentList: List<String>.from(json["tagContentList"].map((x) => x)),
+        url: json["url"],
+        promotionId: json["promotionId"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "tagType": tagType,
+        "tagContentList": List<String>.from(tagContentList.map((x) => x)),
+        "url": url,
+        "promotionId": promotionId,
+    };
+}
 
 
 
