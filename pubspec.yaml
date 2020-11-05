@@ -44,10 +44,10 @@ dependencies:
   sqflite: ^1.3.0
   flutter_swiper : ^1.1.6
 
-  video_player: '>=0.10.12+2 <2.0.0'
+  video_player: '>=0.11.1+2 <2.0.0'
 
   pull_to_refresh: ^1.6.1
-  scrollable_positioned_list: ^0.1.7
+  scrollable_positioned_list: ^0.1.8
   flutter_tags: "^0.4.9"
 
   flutter_easyrefresh: ^2.1.5
@@ -206,6 +206,7 @@ flutter:
     - images/loading_round.gif
     - images/my_address_list_edit.png
     - images/pintuan_two.png
+    - images/play.png
     - images/product_sellOut_small.png
     - images/product_tag_abroad_s.png
     - images/product_tag_global_s.png

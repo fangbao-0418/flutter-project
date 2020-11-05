@@ -24,7 +24,7 @@ class TitleNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: xtRoundDecoration(height * 0.5, bgcolor: bgColor),
+      decoration: xtRoundDecoration(height * 0.5, bgcolor: bgColor,borderWidth: 0.0,borderColor: clearColor),
       alignment: Alignment(0, 0),
       height: height,
       margin: EdgeInsets.only(left: 20, right: 20, top: top, bottom: bottom),

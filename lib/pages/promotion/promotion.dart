@@ -10,6 +10,7 @@ import 'package:xtflutter/model/promotion_model.dart';
 import 'package:xtflutter/net_work/promotion_request.dart';
 import 'package:xtflutter/pages/demo_page/scroller.dart';
 import 'package:xtflutter/pages/normal/app_nav_bar.dart';
+import 'package:xtflutter/pages/normal/refresh.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/area.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/banner.dart';
 import 'package:xtflutter/pages/promotion/promotionItem/coupon_item.dart';
@@ -370,74 +371,86 @@ class _PromotionState extends State<Promotion> {
 
   ///活动魔方内容列表 分解
   Widget promotionList() {
-    return ScrollablePositionedList.builder(
-      itemScrollController: itemScrollController,
-      itemPositionsListener: itemPositionsListener,
-      reverse: false,
-      itemCount: dataInfo.componentVoList.length,
-      itemBuilder: (context, index) {
-        ComponentVoList model = dataInfo.componentVoList[index];
-        if (model.type == "tab") {
-          barPositionIndex = index;
-          TitlesNavBar bar = TitlesNavBar(auchorNames, auchorids, "item",
-              barbackColor: model.config.bgColor != null
-                  ? HexColor(model.config.bgColor)
-                  : mainF5GrayColor,
-              barTitleNormalColor: model.config.fontColor != null
-                  ? HexColor(model.config.fontColor)
-                  : mainBlackColor,
-              barTitleSelectColor: model.config.fontColorSelect != null
-                  ? HexColor(model.config.fontColorSelect)
-                  : mainRedColor, onTap: (value) {
-            var index = itemIndex.indexOf(value);
-            jumpTo(index);
-          });
-          // navBar = bar;
-          return bar;
-        } else if (model.type == "title") {
-          return titleNav(model);
-        } else if (model.type == "banner") {
-          return bannerUtil(model);
-        } else if (model.type == "goods") {
-          // print("--goods-- " + model.id.toString() + "-" + index.toString());
-          List<GoodsItemDataModel> list = goods[model.id.toString()];
-          GoodsItemConfigModel temp = model.goodsConfig;
-          return goodsView(temp, list);
-        } else if (model.type == "video") {
-          return GestureDetector(
-            child: Container(
-              width: 100,
-              height: 20,
-              child: xtText("这是个视频", 12, mainBlackColor),
-            ),
-          );
-          // return palyer(model);
-        } else if (model.type == "area") {
-          return AreaAttach(model);
-        } else if (model.type == "coupon") {
-          return Container(
-            height: model.couponConfig
-                .gridHeight(coupons[model.id.toString()].length, context),
-            child: CouponItems(
-                itemConfigModel: model.couponConfig,
-                dataList: coupons[model.id.toString()]),
-          );
-        } else if (model.type == "time") {
-          return PromotionTime(
-            endTime,
-            Color.fromRGBO(255, 255, 255, 0.3),
-            styleType: model.config.styleType,
-          );
-        } else {
-          return GestureDetector(
-            child: Container(
-              width: 100,
-              height: 50,
-              color: Colors.brown,
-            ),
-          );
-        }
+    return RefreshIndicator(
+      semanticsLabel: "111",
+      semanticsValue: "333",
+      color: mainRedColor,
+      // ignore: missing_return
+      onRefresh: () async {
+        var currentTempID = currentID;
+        clearInfo();
+        currentID = currentTempID;
+        promotionInfo();
       },
+      child: ScrollablePositionedList.builder(
+        itemScrollController: itemScrollController,
+        itemPositionsListener: itemPositionsListener,
+        reverse: false,
+        itemCount: dataInfo.componentVoList.length,
+        itemBuilder: (context, index) {
+          ComponentVoList model = dataInfo.componentVoList[index];
+          if (model.type == "tab") {
+            barPositionIndex = index;
+            TitlesNavBar bar = TitlesNavBar(auchorNames, auchorids, "item",
+                barbackColor: model.config.bgColor != null
+                    ? HexColor(model.config.bgColor)
+                    : mainF5GrayColor,
+                barTitleNormalColor: model.config.fontColor != null
+                    ? HexColor(model.config.fontColor)
+                    : mainBlackColor,
+                barTitleSelectColor: model.config.fontColorSelect != null
+                    ? HexColor(model.config.fontColorSelect)
+                    : mainRedColor, onTap: (value) {
+              var index = itemIndex.indexOf(value);
+              jumpTo(index);
+            });
+            // navBar = bar;
+            return bar;
+          } else if (model.type == "title") {
+            return titleNav(model);
+          } else if (model.type == "banner") {
+            return bannerUtil(model);
+          } else if (model.type == "goods") {
+            // print("--goods-- " + model.id.toString() + "-" + index.toString());
+            List<GoodsItemDataModel> list = goods[model.id.toString()];
+            GoodsItemConfigModel temp = model.goodsConfig;
+            return goodsView(temp, list);
+          } else if (model.type == "video") {
+            // return GestureDetector(
+            //   child: Container(
+            //     width: 100,
+            //     height: 20,
+            //     child: xtText("这是个视频", 12, mainBlackColor),
+            //   ),
+            // );
+            return palyer(model);
+          } else if (model.type == "area") {
+            return AreaAttach(model);
+          } else if (model.type == "coupon") {
+            return Container(
+              height: model.couponConfig
+                  .gridHeight(coupons[model.id.toString()].length, context),
+              child: CouponItems(
+                  itemConfigModel: model.couponConfig,
+                  dataList: coupons[model.id.toString()]),
+            );
+          } else if (model.type == "time") {
+            return PromotionTime(
+              endTime,
+              Color.fromRGBO(255, 255, 255, 0.3),
+              styleType: model.config.styleType,
+            );
+          } else {
+            return GestureDetector(
+              child: Container(
+                width: 100,
+                height: 50,
+                color: Colors.brown,
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 
